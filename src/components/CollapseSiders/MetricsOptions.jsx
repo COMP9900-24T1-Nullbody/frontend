@@ -1,70 +1,123 @@
-/* eslint-disable no-unused-vars */
-import React from "react";
-
-import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import React, { useState } from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { CheckBox } from "@mui/icons-material";
-import { Grid } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import { FormControlLabel, Grid } from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
-export default function IndeterminateCheckbox() {
-  const [checked, setChecked] = React.useState([true, false]);
-  const [open, setOpen] = React.useState(true);
+export default function NestedCheckbox() {
+  // State to store data
+  const [data, setData] = useState([
+    {
+      topIndicator: "TopIndicator_1",
+      subIndicatorren: [
+        { subIndicator: "SubIndicator_1", checked: false },
+        { subIndicator: "SubIndicator_2", checked: true },
+      ],
+    },
+    {
+      topIndicator: "TopIndicator2",
+      subIndicatorren: [
+        { subIndicator: "SubIndicator_1", checked: true },
+        { subIndicator: "SubIndicator_2", checked: false },
+      ],
+    },
+  ]);
 
-  const handleClick = () => {
-    setOpen(!open);
+  const [openTopIndicators, setOpenTopIndicators] = useState({});
+
+  const handleTopIndicatorClick = (topIndicator) => {
+    setOpenTopIndicators({
+      ...openTopIndicators,
+      [topIndicator]: !openTopIndicators[topIndicator],
+    });
   };
 
-  const handleChange1 = (event) => {
-    setChecked([event.target.checked, event.target.checked]);
-  };
+  const handleSubIndicatorClick = (topIndicator, subIndicator) => {
+    const updatedData = data.map((topIndicatorItem) => {
+      if (topIndicatorItem.topIndicator === topIndicator) {
+        const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
+          (subIndicatorItem) => {
+            if (subIndicatorItem.subIndicator === subIndicator) {
+              return {
+                ...subIndicatorItem,
+                checked: !subIndicatorItem.checked, // Toggle the checked state
+              };
+            }
+            return subIndicatorItem;
+          }
+        );
+        return {
+          ...topIndicatorItem,
+          subIndicatorren: updatedSubIndicatorren,
+        };
+      }
+      return topIndicatorItem;
+    });
 
-  const handleChange2 = (event) => {
-    setChecked([event.target.checked, checked[1]]);
+    // Update state
+    setData(updatedData);
   };
-
-  const handleChange3 = (event) => {
-    setChecked([checked[0], event.target.checked]);
-  };
-
-  const children = (
-    <Box sx={{ display: "flex", flexDirection: "column", ml: 3, pl: 4 }}>
-      <FormControlLabel
-        label="Child 1"
-        control={<Checkbox checked={checked[0]} onChange={handleChange2} />}
-      />
-      <FormControlLabel
-        label="Child 2"
-        control={<Checkbox checked={checked[1]} onChange={handleChange3} />}
-      />
-    </Box>
-  );
 
   return (
     <React.Fragment>
-      <Grid container>
-        <Grid item xs={2} container justifyContent="flex-end">
-          <Checkbox
-            checked={checked[0] && checked[1]}
-            indeterminate={checked[0] !== checked[1]}
-            onChange={handleChange1}
-          />
-        </Grid>
-        <Grid item xs={8} container justifyContent="flex-start">
-          <ListItemButton onClick={handleClick}>
-            <ListItemText primary="Parent" />
+      {data.map((topIndicatorItem, index) => (
+        <React.Fragment key={index}>
+          <ListItemButton
+            onClick={() =>
+              handleTopIndicatorClick(topIndicatorItem.topIndicator)
+            }
+          >
+            <Checkbox
+              checked={topIndicatorItem.subIndicatorren.every(
+                (subIndicator) => subIndicator.checked
+              )}
+              indeterminate={
+                topIndicatorItem.subIndicatorren.some(
+                  (subIndicator) => subIndicator.checked
+                ) &&
+                !topIndicatorItem.subIndicatorren.every(
+                  (subIndicator) => subIndicator.checked
+                )
+              }
+              onChange={() =>
+                handleTopIndicatorClick(topIndicatorItem.topIndicator)
+              }
+            />
+            <ListItemText primary={topIndicatorItem.topIndicator} />
             {open ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-        </Grid>
-      </Grid>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        {children}
-      </Collapse>
+          <Collapse
+            in={openTopIndicators[topIndicatorItem.topIndicator]}
+            timeout="auto"
+            unmountOnExit
+          >
+            <Grid container sx={{ pl: 6 }}>
+              {topIndicatorItem.subIndicatorren.map(
+                (subIndicatorItem, subIndicatorIndex) => (
+                  <Grid item xs={12} key={subIndicatorIndex}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={subIndicatorItem.checked}
+                          onChange={() =>
+                            handleSubIndicatorClick(
+                              topIndicatorItem.topIndicator,
+                              subIndicatorItem.subIndicator
+                            )
+                          }
+                        />
+                      }
+                      label={subIndicatorItem.subIndicator}
+                    />
+                  </Grid>
+                )
+              )}
+            </Grid>
+          </Collapse>
+        </React.Fragment>
+      ))}
     </React.Fragment>
   );
 }
