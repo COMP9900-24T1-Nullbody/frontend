@@ -5,9 +5,9 @@ import CollapseSiderMenu from "../components/CollapseSideMenu";
 
 export default function Main() {
   return (
-    <div>
+    <React.Fragment>
       <NavBar />
       <CollapseSiderMenu />
-    </div>
+    </React.Fragment>
   );
 }

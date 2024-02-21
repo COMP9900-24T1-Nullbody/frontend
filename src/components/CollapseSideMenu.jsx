@@ -2,7 +2,6 @@ import React from "react";
 
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import Grid from "@mui/material/Grid";
 
 import CollapseFrameworks from "./CollapseSiders/Framworks";
@@ -12,16 +11,7 @@ import CollapseAdditions from "./CollapseSiders/Additions";
 
 export default function CollapseSiderMenu() {
   return (
-    <List
-      sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-      component="nav"
-      aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          Nested List Items
-        </ListSubheader>
-      }
-    >
+    <List sx={{ width: "100%", maxWidth: 350 }}>
       <Grid container>
         {/* Frameworks */}
         <Grid item xs={12}>
