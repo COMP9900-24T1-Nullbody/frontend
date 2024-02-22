@@ -4,10 +4,10 @@ import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Grid from "@mui/material/Grid";
 
-import CollapseFrameworks from "./CollapseSiders/Framworks";
-import CollapseMetrics from "./CollapseSiders/Metrics";
-import CollapseYears from "./CollapseSiders/Years";
-import CollapseAdditions from "./CollapseSiders/Additions";
+import CollapseFrameworks from "./CollapseSiders/Frameworks/Frameworks";
+import CollapseMetrics from "./CollapseSiders/Metrics/Metrics";
+import CollapseYears from "./CollapseSiders/Years/Years";
+import CollapseAdditions from "./CollapseSiders/Additions/Additions";
 
 export default function CollapseSiderMenu() {
   return (

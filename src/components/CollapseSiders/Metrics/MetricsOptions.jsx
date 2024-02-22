@@ -3,7 +3,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import Checkbox from "@mui/material/Checkbox";
-import { FormControlLabel, Grid } from "@mui/material";
+import { FormControlLabel, Grid, IconButton, Tooltip } from "@mui/material";
+
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 export default function NestedCheckbox() {
@@ -11,16 +13,34 @@ export default function NestedCheckbox() {
   const [data, setData] = useState([
     {
       topIndicator: "TopIndicator_1",
+      description: "This is TopIndicator_1",
       subIndicatorren: [
-        { subIndicator: "SubIndicator_1", checked: false },
-        { subIndicator: "SubIndicator_2", checked: true },
+        {
+          subIndicator: "SubIndicator_1",
+          checked: false,
+          description: "This is SubIndicator_1",
+        },
+        {
+          subIndicator: "SubIndicator_2",
+          checked: true,
+          description: "This is SubIndicator_2",
+        },
       ],
     },
     {
       topIndicator: "TopIndicator2",
+      description: "This is TopIndicator_2",
       subIndicatorren: [
-        { subIndicator: "SubIndicator_1", checked: true },
-        { subIndicator: "SubIndicator_2", checked: false },
+        {
+          subIndicator: "SubIndicator_1",
+          checked: true,
+          description: "This is SubIndicator_1",
+        },
+        {
+          subIndicator: "SubIndicator_2",
+          checked: false,
+          description: "This is SubIndicator_2",
+        },
       ],
     },
   ]);
@@ -85,7 +105,21 @@ export default function NestedCheckbox() {
                 handleTopIndicatorClick(topIndicatorItem.topIndicator)
               }
             />
-            <ListItemText primary={topIndicatorItem.topIndicator} />
+            <ListItemText
+              primary={
+                <Grid container alignItems="center" spacing={2}>
+                  <Grid item>{topIndicatorItem.topIndicator}</Grid>
+                  <Grid item>
+                    <Tooltip title={topIndicatorItem.description}>
+                      <IconButton>
+                        <ErrorOutlineOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+              }
+              secondary={topIndicatorItem.description}
+            />
             {open ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse
@@ -109,7 +143,18 @@ export default function NestedCheckbox() {
                           }
                         />
                       }
-                      label={subIndicatorItem.subIndicator}
+                      label={
+                        <Grid container alignItems="center" spacing={2}>
+                          <Grid item>{subIndicatorItem.subIndicator}</Grid>
+                          <Grid item>
+                            <Tooltip title={subIndicatorItem.description}>
+                              <IconButton>
+                                <ErrorOutlineOutlinedIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+                      }
                     />
                   </Grid>
                 )
