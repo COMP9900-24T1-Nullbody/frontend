@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import Collapse from "@mui/material/Collapse";
@@ -7,6 +6,8 @@ import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+
+import PropTypes from "prop-types";
 
 import WeightButton from "./WeightButton";
 
@@ -62,6 +63,23 @@ const TopIndicator = ({ open, topIndicatorItem, onTopIndicatorClick }) => {
   );
 };
 
+TopIndicator.propTypes = {
+  open: PropTypes.bool.isRequired,
+  topIndicatorItem: PropTypes.shape({
+    topIndicator: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    subIndicatorren: PropTypes.arrayOf(
+      PropTypes.shape({
+        subIndicator: PropTypes.string.isRequired,
+        checked: PropTypes.bool.isRequired,
+        description: PropTypes.string.isRequired,
+        weight: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
+  onTopIndicatorClick: PropTypes.func.isRequired,
+};
+
 // SubIndicator component
 const SubIndicator = ({ subIndicatorItem, onSubIndicatorClick }) => {
   return (
@@ -90,6 +108,16 @@ const SubIndicator = ({ subIndicatorItem, onSubIndicatorClick }) => {
       </Box>
     </Box>
   );
+};
+
+SubIndicator.propTypes = {
+  subIndicatorItem: PropTypes.shape({
+    checked: PropTypes.bool.isRequired,
+    subIndicator: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    weight: PropTypes.number.isRequired,
+  }).isRequired,
+  onSubIndicatorClick: PropTypes.func.isRequired,
 };
 
 // NestedCheckbox component
@@ -138,10 +166,28 @@ export default function NestedCheckbox() {
   const [openTopIndicators, setOpenTopIndicators] = useState({});
 
   const handleTopIndicatorClick = (topIndicator) => {
+    const isOpen = !openTopIndicators[topIndicator];
     setOpenTopIndicators({
       ...openTopIndicators,
-      [topIndicator]: !openTopIndicators[topIndicator],
+      [topIndicator]: isOpen,
     });
+
+    const updatedData = data.map((topIndicatorItem) => {
+      if (topIndicatorItem.topIndicator === topIndicator) {
+        const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
+          (subIndicatorItem) => ({
+            ...subIndicatorItem,
+            checked: isOpen,
+          })
+        );
+        return {
+          ...topIndicatorItem,
+          subIndicatorren: updatedSubIndicatorren,
+        };
+      }
+      return topIndicatorItem;
+    });
+    setData(updatedData);
   };
 
   const handleSubIndicatorClick = (topIndicator, subIndicator) => {
@@ -152,7 +198,7 @@ export default function NestedCheckbox() {
             if (subIndicatorItem.subIndicator === subIndicator) {
               return {
                 ...subIndicatorItem,
-                checked: !subIndicatorItem.checked, // Toggle the checked state
+                checked: !subIndicatorItem.checked,
               };
             }
             return subIndicatorItem;
@@ -174,9 +220,8 @@ export default function NestedCheckbox() {
         <Box key={index}>
           <TopIndicator
             topIndicatorItem={topIndicatorItem}
-            open={openTopIndicators[topIndicatorItem.topIndicator]}
+            open={openTopIndicators[topIndicatorItem.topIndicator] || false}
             onTopIndicatorClick={handleTopIndicatorClick}
-            onSubIndicatorClick={handleSubIndicatorClick}
           />
           <Collapse
             in={openTopIndicators[topIndicatorItem.topIndicator]}
