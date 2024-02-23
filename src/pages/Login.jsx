@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, TextField, Button, Link } from "@mui/material";
+import { Grid, TextField, Button, Link, Box, Typography } from "@mui/material";
 import CoverImage from "../img/cover.png";
 
 function Login() {
@@ -19,7 +19,7 @@ function Login() {
         container
         id="form-section"
         xs={4}
-        style={{
+        sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -27,19 +27,21 @@ function Login() {
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
-          <div style={{ textAlign: "center" }}>
-            <h1 style={{ fontSize: "2.5rem" }}>Welcome Back!</h1>
-            <p style={{ fontSize: "1.25rem" }}>
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
+              Welcome!
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
               Log in to access your dashboard
-            </p>
-          </div>
+            </Typography>
+          </Box>
         </Grid>
 
         <Grid
           container
           rowSpacing={2}
           id="form-inputs"
-          style={{ display: "flex", justifyContent: "center", width: "70%" }}
+          sx={{ display: "flex", justifyContent: "center", width: "70%" }}
         >
           {/* Login Form */}
           <Grid item xs={12}>
@@ -48,14 +50,14 @@ function Login() {
               id="login-email"
               label="Email Address"
               variant="standard"
-              style={{ width: "100%", marginBottom: "10px" }}
+              sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
               required
               id="login-password"
               label="Password"
               variant="standard"
-              style={{ width: "100%", marginBottom: "10px" }}
+              sx={{ width: "100%", marginBottom: "10px" }}
             />
           </Grid>
 
@@ -66,7 +68,7 @@ function Login() {
 
           {/* Login Button */}
           <Grid item xs={12}>
-            <Button variant="contained" style={{ width: "100%" }}>
+            <Button variant="contained" sx={{ width: "100%" }}>
               LOG IN
             </Button>
           </Grid>

@@ -7,6 +7,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import MetricsOptions from "./MetricsOptions";
+import { Box } from "@mui/material";
 
 export default function CollapseMetrics() {
   const [open, setOpen] = React.useState(true);
@@ -16,7 +17,7 @@ export default function CollapseMetrics() {
   };
 
   return (
-    <React.Fragment>
+    <Box>
       <ListItemButton onClick={handleClick}>
         <ListItemText primary="METRICS & INDICATORS" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -25,6 +26,6 @@ export default function CollapseMetrics() {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <MetricsOptions />
       </Collapse>
-    </React.Fragment>
+    </Box>
   );
 }

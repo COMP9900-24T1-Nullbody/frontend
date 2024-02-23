@@ -1,45 +1,135 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import Checkbox from "@mui/material/Checkbox";
-import { FormControlLabel, Grid, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
+import WeightButton from "./WeightButton";
+
+// TopIndicator component
+const TopIndicator = ({ open, topIndicatorItem, onTopIndicatorClick }) => {
+  return (
+    <ListItemButton
+      onClick={() => onTopIndicatorClick(topIndicatorItem.topIndicator)}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Box>
+          <Checkbox
+            checked={topIndicatorItem.subIndicatorren.every(
+              (subIndicator) => subIndicator.checked
+            )}
+            indeterminate={
+              topIndicatorItem.subIndicatorren.some(
+                (subIndicator) => subIndicator.checked
+              ) &&
+              !topIndicatorItem.subIndicatorren.every(
+                (subIndicator) => subIndicator.checked
+              )
+            }
+            onChange={() => onTopIndicatorClick(topIndicatorItem.topIndicator)}
+          />
+        </Box>
+
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography wrap="wrap">{topIndicatorItem.topIndicator}</Typography>
+        </Box>
+
+        <Box>
+          <Tooltip title={topIndicatorItem.description}>
+            <IconButton>
+              <ErrorOutlineOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        <Box>
+          <WeightButton />
+        </Box>
+
+        <Box>{open ? <ExpandLess /> : <ExpandMore />}</Box>
+      </Box>
+    </ListItemButton>
+  );
+};
+
+// SubIndicator component
+const SubIndicator = ({ subIndicatorItem, onSubIndicatorClick }) => {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+      <Box>
+        <Checkbox
+          checked={subIndicatorItem.checked}
+          onChange={() => onSubIndicatorClick(subIndicatorItem.subIndicator)}
+        />
+      </Box>
+
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography>{subIndicatorItem.subIndicator}</Typography>
+      </Box>
+
+      <Box>
+        <Tooltip title={subIndicatorItem.description}>
+          <IconButton>
+            <ErrorOutlineOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      <Box>
+        <WeightButton />
+      </Box>
+    </Box>
+  );
+};
+
+// NestedCheckbox component
 export default function NestedCheckbox() {
-  // State to store data
   const [data, setData] = useState([
     {
       topIndicator: "TopIndicator_1",
       description: "This is TopIndicator_1",
+      weight: 0.5,
       subIndicatorren: [
         {
-          subIndicator: "SubIndicator_1",
+          subIndicator: "SubIndicator_1 SubIndicator_1 SubIndicator_1",
           checked: false,
           description: "This is SubIndicator_1",
+          weight: 0.5,
         },
         {
           subIndicator: "SubIndicator_2",
           checked: true,
           description: "This is SubIndicator_2",
+          weight: 0.5,
         },
       ],
     },
     {
       topIndicator: "TopIndicator2",
       description: "This is TopIndicator_2",
+      weight: 0.5,
       subIndicatorren: [
         {
           subIndicator: "SubIndicator_1",
           checked: true,
           description: "This is SubIndicator_1",
+          weight: 0.5,
         },
         {
           subIndicator: "SubIndicator_2",
           checked: false,
           description: "This is SubIndicator_2",
+          weight: 0.5,
         },
       ],
     },
@@ -75,94 +165,43 @@ export default function NestedCheckbox() {
       }
       return topIndicatorItem;
     });
-
-    // Update state
     setData(updatedData);
   };
 
   return (
-    <React.Fragment>
+    <Box>
       {data.map((topIndicatorItem, index) => (
-        <React.Fragment key={index}>
-          <ListItemButton
-            onClick={() =>
-              handleTopIndicatorClick(topIndicatorItem.topIndicator)
-            }
-          >
-            <Checkbox
-              checked={topIndicatorItem.subIndicatorren.every(
-                (subIndicator) => subIndicator.checked
-              )}
-              indeterminate={
-                topIndicatorItem.subIndicatorren.some(
-                  (subIndicator) => subIndicator.checked
-                ) &&
-                !topIndicatorItem.subIndicatorren.every(
-                  (subIndicator) => subIndicator.checked
-                )
-              }
-              onChange={() =>
-                handleTopIndicatorClick(topIndicatorItem.topIndicator)
-              }
-            />
-            <ListItemText
-              primary={
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item>{topIndicatorItem.topIndicator}</Grid>
-                  <Grid item>
-                    <Tooltip title={topIndicatorItem.description}>
-                      <IconButton>
-                        <ErrorOutlineOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
-                </Grid>
-              }
-              secondary={topIndicatorItem.description}
-            />
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
+        <Box key={index}>
+          <TopIndicator
+            topIndicatorItem={topIndicatorItem}
+            open={openTopIndicators[topIndicatorItem.topIndicator]}
+            onTopIndicatorClick={handleTopIndicatorClick}
+            onSubIndicatorClick={handleSubIndicatorClick}
+          />
           <Collapse
             in={openTopIndicators[topIndicatorItem.topIndicator]}
             timeout="auto"
             unmountOnExit
           >
-            <Grid container sx={{ pl: 6 }}>
+            <Box sx={{ pl: 6 }}>
               {topIndicatorItem.subIndicatorren.map(
                 (subIndicatorItem, subIndicatorIndex) => (
-                  <Grid item xs={12} key={subIndicatorIndex}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={subIndicatorItem.checked}
-                          onChange={() =>
-                            handleSubIndicatorClick(
-                              topIndicatorItem.topIndicator,
-                              subIndicatorItem.subIndicator
-                            )
-                          }
-                        />
-                      }
-                      label={
-                        <Grid container alignItems="center" spacing={2}>
-                          <Grid item>{subIndicatorItem.subIndicator}</Grid>
-                          <Grid item>
-                            <Tooltip title={subIndicatorItem.description}>
-                              <IconButton>
-                                <ErrorOutlineOutlinedIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-                      }
-                    />
-                  </Grid>
+                  <SubIndicator
+                    key={subIndicatorIndex}
+                    subIndicatorItem={subIndicatorItem}
+                    onSubIndicatorClick={(subIndicator) =>
+                      handleSubIndicatorClick(
+                        topIndicatorItem.topIndicator,
+                        subIndicator
+                      )
+                    }
+                  />
                 )
               )}
-            </Grid>
+            </Box>
           </Collapse>
-        </React.Fragment>
+        </Box>
       ))}
-    </React.Fragment>
+    </Box>
   );
 }

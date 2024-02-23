@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, TextField, Button } from "@mui/material";
+import { Grid, TextField, Button, Box, Typography } from "@mui/material";
 import CoverImage from "../img/cover.png";
 
 function Register() {
@@ -19,7 +19,7 @@ function Register() {
         container
         id="form-section"
         xs={4}
-        style={{
+        sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -27,19 +27,21 @@ function Register() {
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
-          <div style={{ textAlign: "center" }}>
-            <h1 style={{ fontSize: "2.5rem" }}>Welcome!</h1>
-            <p style={{ fontSize: "1.25rem" }}>
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
+              Welcome!
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
               Sign up to access your dashboard
-            </p>
-          </div>
+            </Typography>
+          </Box>
         </Grid>
 
         <Grid
           container
           rowSpacing={2}
           id="form-inputs"
-          style={{ display: "flex", justifyContent: "center", width: "70%" }}
+          sx={{ display: "flex", justifyContent: "center", width: "70%" }}
         >
           {/* Register Form */}
           <Grid item xs={12}>
@@ -48,34 +50,34 @@ function Register() {
               id="register-name"
               label="Name"
               variant="standard"
-              style={{ width: "100%", marginBottom: "10px" }}
+              sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
               required
               id="register-email"
               label="Email Address"
               variant="standard"
-              style={{ width: "100%", marginBottom: "10px" }}
+              sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
               required
               id="register-password"
               label="Password"
               variant="standard"
-              style={{ width: "100%", marginBottom: "10px" }}
+              sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
               required
               id="register-confirm-password"
               label="Confirm Password"
               variant="standard"
-              style={{ width: "100%", marginBottom: "10px" }}
+              sx={{ width: "100%", marginBottom: "10px" }}
             />
           </Grid>
 
           {/* Login Button */}
           <Grid item xs={12}>
-            <Button variant="contained" style={{ width: "100%" }}>
+            <Button variant="contained" sx={{ width: "100%" }}>
               SIGN UP
             </Button>
           </Grid>

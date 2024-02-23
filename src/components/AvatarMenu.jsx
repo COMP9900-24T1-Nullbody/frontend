@@ -11,6 +11,7 @@ import Divider from "@mui/material/Divider";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import { Box } from "@mui/material";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -51,7 +52,7 @@ export default function AvatarMenu() {
   };
 
   return (
-    <React.Fragment>
+    <Box>
       <StyledBadge
         overlap="circular"
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -102,6 +103,6 @@ export default function AvatarMenu() {
           Logout
         </MenuItem>
       </Menu>
-    </React.Fragment>
+    </Box>
   );
 }
