@@ -1,193 +1,69 @@
-import React, { useState } from "react";
-import ListItemButton from "@mui/material/ListItemButton";
-import Collapse from "@mui/material/Collapse";
-import Checkbox from "@mui/material/Checkbox";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Collapse } from "@mui/material";
+import TopIndicator from "./TopIndicator.jsx";
+import SubIndicator from "./SubIndicator.jsx";
 
-import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import sample_data from "./sample_data.json";
 
-import PropTypes from "prop-types";
-
-import WeightButton from "./WeightButton";
-
-// TopIndicator component
-const TopIndicator = ({ open, topIndicatorItem, onTopIndicatorClick }) => {
-  return (
-    <ListItemButton
-      onClick={() => onTopIndicatorClick(topIndicatorItem.topIndicator)}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <Box>
-          <Checkbox
-            checked={topIndicatorItem.subIndicatorren.every(
-              (subIndicator) => subIndicator.checked
-            )}
-            indeterminate={
-              topIndicatorItem.subIndicatorren.some(
-                (subIndicator) => subIndicator.checked
-              ) &&
-              !topIndicatorItem.subIndicatorren.every(
-                (subIndicator) => subIndicator.checked
-              )
-            }
-            onChange={() => onTopIndicatorClick(topIndicatorItem.topIndicator)}
-          />
-        </Box>
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography wrap="wrap">{topIndicatorItem.topIndicator}</Typography>
-        </Box>
-
-        <Box>
-          <Tooltip title={topIndicatorItem.description}>
-            <IconButton>
-              <ErrorOutlineOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-
-        <Box>
-          <WeightButton />
-        </Box>
-
-        <Box>{open ? <ExpandLess /> : <ExpandMore />}</Box>
-      </Box>
-    </ListItemButton>
-  );
-};
-
-TopIndicator.propTypes = {
-  open: PropTypes.bool.isRequired,
-  topIndicatorItem: PropTypes.shape({
-    topIndicator: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    subIndicatorren: PropTypes.arrayOf(
-      PropTypes.shape({
-        subIndicator: PropTypes.string.isRequired,
-        checked: PropTypes.bool.isRequired,
-        description: PropTypes.string.isRequired,
-        weight: PropTypes.number.isRequired,
-      })
-    ).isRequired,
-  }).isRequired,
-  onTopIndicatorClick: PropTypes.func.isRequired,
-};
-
-// SubIndicator component
-const SubIndicator = ({ subIndicatorItem, onSubIndicatorClick }) => {
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-      <Box>
-        <Checkbox
-          checked={subIndicatorItem.checked}
-          onChange={() => onSubIndicatorClick(subIndicatorItem.subIndicator)}
-        />
-      </Box>
-
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography>{subIndicatorItem.subIndicator}</Typography>
-      </Box>
-
-      <Box>
-        <Tooltip title={subIndicatorItem.description}>
-          <IconButton>
-            <ErrorOutlineOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
-
-      <Box>
-        <WeightButton />
-      </Box>
-    </Box>
-  );
-};
-
-SubIndicator.propTypes = {
-  subIndicatorItem: PropTypes.shape({
-    checked: PropTypes.bool.isRequired,
-    subIndicator: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    weight: PropTypes.number.isRequired,
-  }).isRequired,
-  onSubIndicatorClick: PropTypes.func.isRequired,
-};
-
-// NestedCheckbox component
 export default function NestedCheckbox() {
-  const [data, setData] = useState([
-    {
-      topIndicator: "TopIndicator_1",
-      description: "This is TopIndicator_1",
-      weight: 0.5,
-      subIndicatorren: [
-        {
-          subIndicator: "SubIndicator_1 SubIndicator_1 SubIndicator_1",
-          checked: false,
-          description: "This is SubIndicator_1",
-          weight: 0.5,
-        },
-        {
-          subIndicator: "SubIndicator_2",
-          checked: true,
-          description: "This is SubIndicator_2",
-          weight: 0.5,
-        },
-      ],
-    },
-    {
-      topIndicator: "TopIndicator2",
-      description: "This is TopIndicator_2",
-      weight: 0.5,
-      subIndicatorren: [
-        {
-          subIndicator: "SubIndicator_1",
-          checked: true,
-          description: "This is SubIndicator_1",
-          weight: 0.5,
-        },
-        {
-          subIndicator: "SubIndicator_2",
-          checked: false,
-          description: "This is SubIndicator_2",
-          weight: 0.5,
-        },
-      ],
-    },
-  ]);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    setData(sample_data);
+  }, []);
 
   const [openTopIndicators, setOpenTopIndicators] = useState({});
 
-  const handleTopIndicatorClick = (topIndicator) => {
-    const isOpen = !openTopIndicators[topIndicator];
-    setOpenTopIndicators({
-      ...openTopIndicators,
-      [topIndicator]: isOpen,
-    });
+  const handleTopCheckBoxClick = (topIndicator) => {
+    const currentStatus = getCurrentStatus(topIndicator);
 
     const updatedData = data.map((topIndicatorItem) => {
       if (topIndicatorItem.topIndicator === topIndicator) {
         const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
           (subIndicatorItem) => ({
             ...subIndicatorItem,
-            checked: isOpen,
+            checked:
+              currentStatus === "intermediate"
+                ? true
+                : !subIndicatorItem.checked
           })
         );
         return {
           ...topIndicatorItem,
-          subIndicatorren: updatedSubIndicatorren,
+          subIndicatorren: updatedSubIndicatorren
         };
       }
       return topIndicatorItem;
     });
+
     setData(updatedData);
+  };
+
+  const handleTopIndicatorClick = (topIndicator) => {
+    const isOpen = !openTopIndicators[topIndicator];
+    setOpenTopIndicators({
+      ...openTopIndicators,
+      [topIndicator]: isOpen
+    });
+  };
+
+  const getCurrentStatus = (topIndicator) => {
+    const topIndicatorItem = data.find(
+      (item) => item.topIndicator === topIndicator
+    );
+    const allChecked = topIndicatorItem.subIndicatorren.every(
+      (subIndicatorItem) => subIndicatorItem.checked
+    );
+    const allUnchecked = topIndicatorItem.subIndicatorren.every(
+      (subIndicatorItem) => !subIndicatorItem.checked
+    );
+
+    if (allChecked) {
+      return "checked";
+    } else if (allUnchecked) {
+      return "unchecked";
+    } else {
+      return "intermediate";
+    }
   };
 
   const handleSubIndicatorClick = (topIndicator, subIndicator) => {
@@ -198,7 +74,7 @@ export default function NestedCheckbox() {
             if (subIndicatorItem.subIndicator === subIndicator) {
               return {
                 ...subIndicatorItem,
-                checked: !subIndicatorItem.checked,
+                checked: !subIndicatorItem.checked
               };
             }
             return subIndicatorItem;
@@ -206,10 +82,24 @@ export default function NestedCheckbox() {
         );
         return {
           ...topIndicatorItem,
-          subIndicatorren: updatedSubIndicatorren,
+          subIndicatorren: updatedSubIndicatorren
         };
       }
       return topIndicatorItem;
+    });
+    setData(updatedData);
+  };
+
+  const handleSaveWeight = (topIndicator, newWeight) => {
+    // Update the data with the new weight
+    const updatedData = data.map((item) => {
+      if (item.topIndicator === topIndicator) {
+        return {
+          ...item,
+          weight: newWeight
+        };
+      }
+      return item;
     });
     setData(updatedData);
   };
@@ -222,13 +112,15 @@ export default function NestedCheckbox() {
             topIndicatorItem={topIndicatorItem}
             open={openTopIndicators[topIndicatorItem.topIndicator] || false}
             onTopIndicatorClick={handleTopIndicatorClick}
+            onTopCheckBoxClick={handleTopCheckBoxClick}
+            onWeightSave={handleSaveWeight}
           />
           <Collapse
             in={openTopIndicators[topIndicatorItem.topIndicator]}
             timeout="auto"
             unmountOnExit
           >
-            <Box sx={{ pl: 6 }}>
+            <Box sx={{ pl: 2, pr: 2 }}>
               {topIndicatorItem.subIndicatorren.map(
                 (subIndicatorItem, subIndicatorIndex) => (
                   <SubIndicator
@@ -240,6 +132,7 @@ export default function NestedCheckbox() {
                         subIndicator
                       )
                     }
+                    onWeightSave={handleSaveWeight}
                   />
                 )
               )}

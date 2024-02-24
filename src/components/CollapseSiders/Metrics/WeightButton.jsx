@@ -7,9 +7,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { Box } from "@mui/material";
+import PropTypes from "prop-types";
 
-export default function WeightButton() {
-  const [weight, setWeight] = useState(0);
+export default function WeightButton({ initial_weight }) {
+  const [weight, setWeight] = useState(initial_weight);
   const [open, setOpen] = useState(false);
 
   const handleSliderChange = (event, newValue) => {
@@ -52,3 +53,8 @@ export default function WeightButton() {
     </Box>
   );
 }
+
+// WeightButton prop validation
+WeightButton.propTypes = {
+  initial_weight: PropTypes.number.isRequired
+};
