@@ -1,7 +1,6 @@
 import React from "react";
 
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 
 import LightbulbCircleIcon from "@mui/icons-material/LightbulbCircle";
@@ -31,107 +30,105 @@ export default function NavBar() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Grid container padding={2}>
-            <Grid
-              item
-              container
-              xs={1}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <LightbulbCircleIcon fontSize="large" />
-            </Grid>
+    <AppBar position="static" sx={{ borderRadius: 2 }}>
+      <Toolbar>
+        <Grid container padding={2}>
+          <Grid
+            item
+            container
+            xs={1}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <LightbulbCircleIcon fontSize="large" />
+          </Grid>
 
+          <Grid
+            item
+            container
+            xs={10}
+            spacing={2}
+            alignContent="center"
+            justifyContent="center"
+          >
             <Grid
               item
               container
-              xs={10}
-              spacing={2}
+              xs={4}
+              justifyContent="center"
               alignContent="center"
-              justifyContent="center"
             >
-              <Grid
-                item
-                container
-                xs={4}
-                justifyContent="center"
-                alignContent="center"
-              >
-                <FormControl fullWidth>
-                  <InputLabel>Industry</InputLabel>
-                  <Select
-                    value={industry}
-                    label="Industry"
-                    onChange={IndustryChange}
-                  >
-                    <MenuItem value="Technology">Technology</MenuItem>
-                    <MenuItem value="Healthcare">Healthcare</MenuItem>
-                    <MenuItem value="Finance">Finance</MenuItem>
-                    <MenuItem value="Manufacturing">Manufacturing</MenuItem>
-                    <MenuItem value="Energy">Energy</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid
-                item
-                container
-                xs={4}
-                justifyContent="center"
-                alignContent="center"
-              >
-                <FormControl fullWidth>
-                  <InputLabel>Company</InputLabel>
-                  <Select
-                    value={company}
-                    label="Company"
-                    onChange={CompanyChange}
-                  >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid
-                item
-                container
-                xs={4}
-                justifyContent="center"
-                alignContent="center"
-              >
-                <ToggleButtonGroup
-                  color="primary"
-                  sx={{ bgcolor: "white" }}
-                  value={view}
-                  exclusive
-                  onChange={ViewChange}
-                  aria-label="View Selection"
+              <FormControl fullWidth>
+                <InputLabel>Industry</InputLabel>
+                <Select
+                  value={industry}
+                  label="Industry"
+                  onChange={IndustryChange}
                 >
-                  <ToggleButton value="single-company-view">
-                    Single Company View
-                  </ToggleButton>
-                  <ToggleButton value="comparison-view">
-                    Comparison View
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
+                  <MenuItem value="Technology">Technology</MenuItem>
+                  <MenuItem value="Healthcare">Healthcare</MenuItem>
+                  <MenuItem value="Finance">Finance</MenuItem>
+                  <MenuItem value="Manufacturing">Manufacturing</MenuItem>
+                  <MenuItem value="Energy">Energy</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
-
             <Grid
               item
               container
-              xs={1}
+              xs={4}
               justifyContent="center"
-              alignItems="center"
+              alignContent="center"
             >
-              <AvatarMenu />
+              <FormControl fullWidth>
+                <InputLabel>Company</InputLabel>
+                <Select
+                  value={company}
+                  label="Company"
+                  onChange={CompanyChange}
+                >
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid
+              item
+              container
+              xs={4}
+              justifyContent="center"
+              alignContent="center"
+            >
+              <ToggleButtonGroup
+                color="primary"
+                sx={{ bgcolor: "white" }}
+                value={view}
+                exclusive
+                onChange={ViewChange}
+                aria-label="View Selection"
+              >
+                <ToggleButton value="single-company-view">
+                  Single Company View
+                </ToggleButton>
+                <ToggleButton value="comparison-view">
+                  Comparison View
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Grid>
           </Grid>
-        </Toolbar>
-      </AppBar>
-    </Box>
+
+          <Grid
+            item
+            container
+            xs={1}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <AvatarMenu />
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </AppBar>
   );
 }

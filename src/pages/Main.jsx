@@ -22,12 +22,15 @@ export default function Main() {
     <ThemeProvider theme={themeMode === "light" ? lightTheme : darkTheme}>
       <Button onClick={toggleThemeMode}>change theme</Button>
       <Box>
-        <NavBar />
+        <Box sx={{ m: 1 }}>
+          <NavBar />
+        </Box>
+
         <Box sx={{ display: "flex" }}>
           <Box>
             <CollapseSiderMenu />
           </Box>
-          <Box flexGrow={1}>
+          <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
             <ViewTable />
             <ViewBarChart />
             <ViewLineChart />
