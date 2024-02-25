@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,12 +10,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import { Grid } from "@mui/material";
+import { Grid, FormControlLabel } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import AvatarMenu from "./AvatarMenu";
+import ModeSwitch from "./ModeSwitch"; // Import ModeSwitch component
 
-export default function NavBar() {
+export default function NavBar({ toggleThemeMode }) { // Receive toggleThemeMode as a prop
   const [industry, setIndustry] = React.useState("");
   const [company, setCompany] = React.useState("");
   const [view, setView] = React.useState("single-company-view");
@@ -125,6 +127,9 @@ export default function NavBar() {
             justifyContent="center"
             alignItems="center"
           >
+            <FormControlLabel
+              control={<ModeSwitch onChange={toggleThemeMode} />} // Pass toggleThemeMode to ModeSwitch
+            />
             <AvatarMenu />
           </Grid>
         </Grid>
@@ -132,3 +137,7 @@ export default function NavBar() {
     </AppBar>
   );
 }
+
+NavBar.propTypes = {
+  toggleThemeMode: PropTypes.func.isRequired
+};
