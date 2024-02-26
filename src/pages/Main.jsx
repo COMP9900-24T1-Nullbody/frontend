@@ -20,7 +20,13 @@ export default function Main() {
   };
 
   return (
-    <ThemeProvider theme={themeMode === "light" ? createTheme(Theme('light')) : createTheme(Theme('dark'))}>
+    <ThemeProvider
+      theme={
+        themeMode === "light"
+          ? createTheme(Theme("light"))
+          : createTheme(Theme("dark"))
+      }
+    >
       <Box>
         <Box sx={{ m: 1 }}>
           <NavBar toggleThemeMode={toggleThemeMode} />

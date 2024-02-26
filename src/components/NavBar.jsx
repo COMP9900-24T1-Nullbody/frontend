@@ -16,7 +16,8 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import AvatarMenu from "./AvatarMenu";
 import ModeSwitch from "./ModeSwitch"; // Import ModeSwitch component
 
-export default function NavBar({ toggleThemeMode }) { // Receive toggleThemeMode as a prop
+export default function NavBar({ toggleThemeMode }) {
+  // Receive toggleThemeMode as a prop
   const [industry, setIndustry] = React.useState("");
   const [company, setCompany] = React.useState("");
   const [view, setView] = React.useState("single-company-view");
@@ -139,5 +140,5 @@ export default function NavBar({ toggleThemeMode }) { // Receive toggleThemeMode
 }
 
 NavBar.propTypes = {
-  toggleThemeMode: PropTypes.func.isRequired
+  toggleThemeMode: PropTypes.func.isRequired,
 };
