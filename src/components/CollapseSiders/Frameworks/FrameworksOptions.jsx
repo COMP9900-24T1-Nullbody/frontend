@@ -4,20 +4,61 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
+import { IconButton, Tooltip } from "@mui/material";
+
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
 export default function FrameworkOptions() {
   return (
     <FormControl>
-      <RadioGroup defaultValue="esg" sx={{ pl: 4 }}>
+      <RadioGroup defaultValue="IFRS" sx={{ pl: 4 }}>
         <FormControlLabel
-          value="esg"
+          value="IFRS"
           control={<Radio />}
-          label="ESG Global Standard"
+          label={
+            <Tooltip title="International Financial Reporting Standards">
+              IFRS
+              <IconButton>
+                <ErrorOutlineOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          }
         />
         <FormControlLabel
-          value="dfp"
+          value="TCFD"
           control={<Radio />}
-          label="Digital Future Pathways"
+          label={
+            <Tooltip title="Task Force on Climate-related Financial Disclosures">
+              TCFD
+              <IconButton>
+                <ErrorOutlineOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          }
+        />
+        <FormControlLabel
+          value="TNFD"
+          control={<Radio />}
+          label={
+            <Tooltip title="Task Force on Nature-related Financial Disclosures">
+              TNFD
+              <IconButton>
+                <ErrorOutlineOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          }
+        />
+        <FormControlLabel
+          value="APRA-CPG"
+          control={<Radio />}
+          label={
+            <Tooltip title="Australian Prudential Regulation Authority - Corporate Governance Practice Guide">
+              APRA-CPG
+              <IconButton>
+                <ErrorOutlineOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          }
         />
       </RadioGroup>
     </FormControl>
