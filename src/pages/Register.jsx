@@ -1,8 +1,33 @@
-import React from "react";
-import { Grid, TextField, Button, Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Grid, TextField, Button, Box, Typography, Link } from "@mui/material";
 import CoverImage from "../img/cover.png";
+import config from "../config.json";
 
 function Register() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleRegister = async () => {
+    try {
+      const response = await fetch(
+        `${config.BACKEND_URL}:${config.BACKEND_PORT}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, email, password })
+        }
+      );
+      const data = await response.json();
+      console.log(data); // You can handle the response here
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <Grid container width={"100vw"} height={"100vh"}>
       {/* Cover Image */}
@@ -23,7 +48,7 @@ function Register() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -50,6 +75,8 @@ function Register() {
               id="register-name"
               label="Name"
               variant="standard"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
@@ -57,6 +84,8 @@ function Register() {
               id="register-email"
               label="Email Address"
               variant="standard"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
@@ -64,6 +93,9 @@ function Register() {
               id="register-password"
               label="Password"
               variant="standard"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
             <TextField
@@ -71,15 +103,27 @@ function Register() {
               id="register-confirm-password"
               label="Confirm Password"
               variant="standard"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
           </Grid>
 
-          {/* Login Button */}
+          {/* Sign Up Button */}
           <Grid item xs={12}>
-            <Button variant="contained" sx={{ width: "100%" }}>
+            <Button
+              variant="contained"
+              sx={{ width: "100%" }}
+              onClick={handleRegister}
+            >
               SIGN UP
             </Button>
+          </Grid>
+
+          {/* Already have an account */}
+          <Grid item xs={12} textAlign={"center"}>
+            Already have an account? <Link href="/login">Login here</Link>
           </Grid>
         </Grid>
       </Grid>
