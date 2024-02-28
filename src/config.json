@@ -1,4 +1,4 @@
 {
-  "BACKEND_URL": "https://comp9900-backend.onrender.com",
+  "BACKEND_URL": "http://localhost:5000",
   "GOOGLE_CLIENTID": "875692036072-58ljrgggvm5jtl2475kt455bi3g56tdr.apps.googleusercontent.com"
 }

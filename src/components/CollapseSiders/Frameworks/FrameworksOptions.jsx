@@ -17,10 +17,12 @@ export default function FrameworkOptions() {
           control={<Radio />}
           label={
             <Tooltip title="International Financial Reporting Standards">
-              IFRS
-              <IconButton>
-                <ErrorOutlineOutlinedIcon />
-              </IconButton>
+              <div>
+                IFRS
+                <IconButton>
+                  <ErrorOutlineOutlinedIcon />
+                </IconButton>
+              </div>
             </Tooltip>
           }
         />
@@ -29,10 +31,12 @@ export default function FrameworkOptions() {
           control={<Radio />}
           label={
             <Tooltip title="Task Force on Climate-related Financial Disclosures">
-              TCFD
-              <IconButton>
-                <ErrorOutlineOutlinedIcon />
-              </IconButton>
+              <div>
+                TCFD
+                <IconButton>
+                  <ErrorOutlineOutlinedIcon />
+                </IconButton>
+              </div>
             </Tooltip>
           }
         />
@@ -41,10 +45,12 @@ export default function FrameworkOptions() {
           control={<Radio />}
           label={
             <Tooltip title="Task Force on Nature-related Financial Disclosures">
-              TNFD
-              <IconButton>
-                <ErrorOutlineOutlinedIcon />
-              </IconButton>
+              <div>
+                TNFD
+                <IconButton>
+                  <ErrorOutlineOutlinedIcon />
+                </IconButton>
+              </div>
             </Tooltip>
           }
         />
@@ -53,10 +59,12 @@ export default function FrameworkOptions() {
           control={<Radio />}
           label={
             <Tooltip title="Australian Prudential Regulation Authority - Corporate Governance Practice Guide">
-              APRA-CPG
-              <IconButton>
-                <ErrorOutlineOutlinedIcon />
-              </IconButton>
+              <div>
+                APRA-CPG
+                <IconButton>
+                  <ErrorOutlineOutlinedIcon />
+                </IconButton>
+              </div>
             </Tooltip>
           }
         />
