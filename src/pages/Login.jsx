@@ -13,75 +13,79 @@ import {
   Divider,
 } from "@mui/material";
 
-import { GoogleLogin } from "react-google-login";
-import { gapi } from "gapi-script";
-
+import { useGoogleLogin } from "@react-oauth/google";
+import GoogleIcon from "@mui/icons-material/Google";
 import MicrosoftIcon from "@mui/icons-material/Microsoft";
 
 import CoverImage from "../img/cover.png";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 
+import axios from "axios";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
   const navigate = useNavigate();
 
   // Google OAuth
-  const [GoogleProfile, setGoogleProfile] = useState([]);
-  const clientId = config.GOOGLE_CLIENTID;
-  useEffect(() => {
-    const initClient = () => {
-      gapi.auth2.init({
-        clientId: clientId,
-        scope: "",
-      });
-    };
-    gapi.load("client:auth2", initClient);
+  const [GoogleId, setGoogleId] = useState("");
+  const GoogleLogin = useGoogleLogin({
+    onSuccess: (response) => GoogleonSuccess(response),
+    onError: (error) => GoogleonFailure(error),
   });
-  const GoogleonSuccess = async (res) => {
-    setGoogleProfile(res.profileObj);
+  const GoogleonSuccess = async (response) => {
+    console.log(response);
+    const userInfo = await axios
+      .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${response.access_token}` },
+      })
+      .then((res) => res.data);
 
-    fetch(`${config.BACKEND_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "",
-        password: "",
-        google_id: GoogleProfile.googleId,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          console.error("Network response was not ok");
-          return response.json();
-        }
-        return response.json(); // 这里移到下一个then中
-      })
-      .then((data) => {
-        if (data.error) {
-          // 检查是否有错误消息
-          setDialogContent(data.error);
-          setOpenDialog(true);
-        } else {
-          setDialogContent(data.message);
-          setOpenDialog(true);
-          setTimeout(() => {
-            navigate("/main");
-          }, 1500);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    console.log(userInfo);
+    setEmail(userInfo.email);
+    setGoogleId(userInfo.sub);
   };
-  const GoogleonFailure = (err) => {
-    console.log("failed", err);
+  const GoogleonFailure = (error) => {
+    console.log(error);
   };
+  useEffect(() => {
+    if (GoogleId != "") {
+      fetch(`${config.BACKEND_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password: "", google_id: GoogleId }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            console.error("Network response was not ok");
+            return response.json();
+          }
+          return response.json(); // 这里移到下一个then中
+        })
+        .then((data) => {
+          if (data.error) {
+            // 检查是否有错误消息
+            setDialogContent(data.error);
+            setOpenDialog(true);
+          } else {
+            setDialogContent(data.message);
+            setOpenDialog(true);
+            setTimeout(() => {
+              navigate("/main");
+            }, 1500);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [GoogleId]);
 
   const handleLogin = () => {
     fetch(`${config.BACKEND_URL}/login`, {
@@ -178,14 +182,14 @@ function Login() {
 
           {/* Login with Google account */}
           <Grid item xs={12}>
-            <GoogleLogin
-              clientId={clientId}
-              buttonText="Login with Google account"
-              onSuccess={GoogleonSuccess}
-              onFailure={GoogleonFailure}
-              cookiePolicy={"single_host_origin"}
-              isSignedIn={true}
-            />
+            <Button
+              variant="contained"
+              sx={{ width: "100%" }}
+              onClick={() => GoogleLogin()}
+              startIcon={<GoogleIcon />}
+            >
+              Login with Google account
+            </Button>
           </Grid>
 
           <Grid item xs={12}>
