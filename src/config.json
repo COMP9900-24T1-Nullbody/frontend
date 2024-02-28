@@ -1,4 +1,5 @@
 {
   "BACKEND_URL": "http://127.0.0.1",
-  "BACKEND_PORT": 5000
+  "BACKEND_PORT": 5000,
+  "GOOGLE_CLIENTID": "875692036072-58ljrgggvm5jtl2475kt455bi3g56tdr.apps.googleusercontent.com"
 }

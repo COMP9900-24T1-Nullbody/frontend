@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
@@ -9,8 +9,15 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  Divider,
 } from "@mui/material";
+
+import { GoogleLogin } from "react-google-login";
+import { gapi } from "gapi-script";
+
+import MicrosoftIcon from "@mui/icons-material/Microsoft";
+
 import CoverImage from "../img/cover.png";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
@@ -22,13 +29,67 @@ function Login() {
   const [dialogContent, setDialogContent] = useState("");
   const navigate = useNavigate();
 
+  // Google OAuth
+  const [GoogleProfile, setGoogleProfile] = useState([]);
+  const clientId = config.GOOGLE_CLIENTID;
+  useEffect(() => {
+    const initClient = () => {
+      gapi.auth2.init({
+        clientId: clientId,
+        scope: "",
+      });
+    };
+    gapi.load("client:auth2", initClient);
+  });
+  const GoogleonSuccess = async (res) => {
+    setGoogleProfile(res.profileObj);
+
+    fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "",
+        password: "",
+        google_id: GoogleProfile.googleId,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Network response was not ok");
+          return response.json();
+        }
+        return response.json(); // 这里移到下一个then中
+      })
+      .then((data) => {
+        if (data.error) {
+          // 检查是否有错误消息
+          setDialogContent(data.error);
+          setOpenDialog(true);
+        } else {
+          setDialogContent(data.message);
+          setOpenDialog(true);
+          setTimeout(() => {
+            navigate("/main");
+          }, 1500);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  const GoogleonFailure = (err) => {
+    console.log("failed", err);
+  };
+
   const handleLogin = () => {
     fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password, google_id: "" }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -80,7 +141,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -101,6 +162,36 @@ function Login() {
           id="form-inputs"
           sx={{ display: "flex", justifyContent: "center", width: "70%" }}
         >
+          {/* Login with Microsoft account */}
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              sx={{ width: "100%" }}
+              onClick={() => {
+                console.log("TODO: Login with Microsoft account");
+              }}
+              startIcon={<MicrosoftIcon />}
+            >
+              Login with Microsoft account
+            </Button>
+          </Grid>
+
+          {/* Login with Google account */}
+          <Grid item xs={12}>
+            <GoogleLogin
+              clientId={clientId}
+              buttonText="Login with Google account"
+              onSuccess={GoogleonSuccess}
+              onFailure={GoogleonFailure}
+              cookiePolicy={"single_host_origin"}
+              isSignedIn={true}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+
           {/* Login Form */}
           <Grid item xs={12}>
             <TextField

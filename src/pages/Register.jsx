@@ -1,5 +1,19 @@
-import React, { useState } from "react";
-import { Grid, TextField, Button, Box, Typography, Link } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Grid,
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Link,
+  Divider,
+} from "@mui/material";
+
+import { GoogleLogin } from "react-google-login";
+import { gapi } from "gapi-script";
+
+import MicrosoftIcon from "@mui/icons-material/Microsoft";
+
 import CoverImage from "../img/cover.png";
 import config from "../config.json";
 
@@ -9,20 +23,55 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Google OAuth
+  const [GoogleProfile, setGoogleProfile] = useState([]);
+  const clientId = config.GOOGLE_CLIENTID;
+  useEffect(() => {
+    const initClient = () => {
+      gapi.auth2.init({
+        clientId: clientId,
+        scope: "",
+      });
+    };
+    gapi.load("client:auth2", initClient);
+  });
+  const GoogleonSuccess = async (res) => {
+    setGoogleProfile(res.profileObj);
+    try {
+      await fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: GoogleProfile.name,
+          email: GoogleProfile.email,
+          password: "",
+          google_id: GoogleProfile.googleId,
+        }),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const GoogleonFailure = (err) => {
+    console.log("failed", err);
+  };
+
   const handleRegister = async () => {
     try {
-      const response = await fetch(
-        `${config.BACKEND_URL}:${config.BACKEND_PORT}/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ name, email, password })
-        }
-      );
-      const data = await response.json();
-      console.log(data); // You can handle the response here
+      await fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          google_id: GoogleProfile.googleId,
+        }),
+      });
     } catch (error) {
       console.error("Error:", error);
     }
@@ -41,6 +90,7 @@ function Register() {
 
       {/* Form */}
       <Grid
+        item
         container
         id="form-section"
         xs={4}
@@ -48,7 +98,7 @@ function Register() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -63,11 +113,44 @@ function Register() {
         </Grid>
 
         <Grid
+          item
           container
           rowSpacing={2}
           id="form-inputs"
           sx={{ display: "flex", justifyContent: "center", width: "70%" }}
         >
+          <Grid item container spacing={2}>
+            {/* Sign Up with Microsoft account */}
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                sx={{ width: "100%" }}
+                onClick={() => {
+                  console.log("TODO: sign up with Microsoft account");
+                }}
+                startIcon={<MicrosoftIcon />}
+              >
+                Sign up with Microsoft account
+              </Button>
+            </Grid>
+
+            {/* Sign Up with Google account */}
+            <Grid item xs={12}>
+              <GoogleLogin
+                clientId={clientId}
+                buttonText="Sign up with Google account"
+                onSuccess={GoogleonSuccess}
+                onFailure={GoogleonFailure}
+                cookiePolicy={"single_host_origin"}
+                isSignedIn={true}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+
           {/* Register Form */}
           <Grid item xs={12}>
             <TextField
