@@ -44,7 +44,7 @@ function Login() {
   const GoogleonSuccess = async (res) => {
     setGoogleProfile(res.profileObj);
 
-    fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/login`, {
+    fetch(`${config.BACKEND_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ function Login() {
   };
 
   const handleLogin = () => {
-    fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/login`, {
+    fetch(`${config.BACKEND_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

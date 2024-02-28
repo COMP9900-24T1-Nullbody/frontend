@@ -38,7 +38,7 @@ function Register() {
   const GoogleonSuccess = async (res) => {
     setGoogleProfile(res.profileObj);
     try {
-      await fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/register`, {
+      await fetch(`${config.BACKEND_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function Register() {
 
   const handleRegister = async () => {
     try {
-      await fetch(`${config.BACKEND_URL}:${config.BACKEND_PORT}/register`, {
+      await fetch(`${config.BACKEND_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
