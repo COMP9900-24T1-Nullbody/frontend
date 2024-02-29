@@ -10,18 +10,18 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Divider,
+  Divider
 } from "@mui/material";
 
-import { useGoogleLogin } from "@react-oauth/google";
-import GoogleIcon from "@mui/icons-material/Google";
-import MicrosoftIcon from "@mui/icons-material/Microsoft";
+import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
+import {
+  GoogleLoginButton,
+  MicrosoftLoginButton
+} from "react-social-login-buttons";
 
 import CoverImage from "../img/cover.png";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
-
-import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -32,34 +32,57 @@ function Login() {
   const navigate = useNavigate();
 
   // Google OAuth
-  const [GoogleId, setGoogleId] = useState("");
-  const GoogleLogin = useGoogleLogin({
-    onSuccess: (response) => GoogleonSuccess(response),
-    onError: (error) => GoogleonFailure(error),
-  });
-  const GoogleonSuccess = async (response) => {
-    console.log(response);
-    const userInfo = await axios
-      .get("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: { Authorization: `Bearer ${response.access_token}` },
-      })
-      .then((res) => res.data);
-
-    console.log(userInfo);
-    setEmail(userInfo.email);
-    setGoogleId(userInfo.sub);
-  };
-  const GoogleonFailure = (error) => {
-    console.log(error);
-  };
+  const [GoogleProfile, setGoogleProfile] = useState([]);
+  const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
-    if (GoogleId != "") {
+    if (GoogleProfile.length !== 0) {
       fetch(`${config.BACKEND_URL}/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, password: "", google_id: GoogleId }),
+        body: JSON.stringify({
+          email: GoogleProfile.email,
+          password: "",
+          google_id: GoogleProfile.sub,
+          microsoft_id: ""
+        })
+      })
+        .then((response) => {
+          if (!response.ok) {
+            console.error("Network response was not ok");
+            return response.json();
+          }
+          return response.json(); // 这里移到下一个then中
+        })
+        .then((data) => {
+          if (data.error) {
+            // 检查是否有错误消息
+            setDialogContent(data.error);
+            setOpenDialog(true);
+          } else {
+            setDialogContent(data.message);
+            setOpenDialog(true);
+            setTimeout(() => {
+              navigate("/main");
+            }, 1500);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else if (MicrosoftProfile.length !== 0) {
+      fetch(`${config.BACKEND_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: MicrosoftProfile.mail,
+          password: "",
+          google_id: "",
+          microsoft_id: MicrosoftProfile.id
+        })
       })
         .then((response) => {
           if (!response.ok) {
@@ -85,15 +108,15 @@ function Login() {
           console.error("Error:", error);
         });
     }
-  }, [GoogleId]);
+  }, [GoogleProfile, MicrosoftProfile]);
 
   const handleLogin = () => {
     fetch(`${config.BACKEND_URL}/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password, google_id: "" }),
+      body: JSON.stringify({ email, password, google_id: "", microsoft_id: "" })
     })
       .then((response) => {
         if (!response.ok) {
@@ -120,10 +143,6 @@ function Login() {
       });
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
   return (
     <Grid container width={"100vw"} height={"100vh"}>
       {/* Cover Image */}
@@ -145,7 +164,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -168,28 +187,40 @@ function Login() {
         >
           {/* Login with Microsoft account */}
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              sx={{ width: "100%" }}
-              onClick={() => {
-                console.log("TODO: Login with Microsoft account");
+            <LoginSocialMicrosoft
+              client_id={config.MICROSOFT_CLIENTID}
+              redirect_uri={window.location.href}
+              scope={"openid profile User.Read email"}
+              onResolve={({ provider, data }) => {
+                console.log(provider);
+                console.log(data);
+                setMicrosoftProfile(data);
               }}
-              startIcon={<MicrosoftIcon />}
+              onReject={(err) => {
+                console.log(err);
+              }}
             >
-              Login with Microsoft account
-            </Button>
+              <MicrosoftLoginButton>
+                Login with Microsoft account
+              </MicrosoftLoginButton>
+            </LoginSocialMicrosoft>
           </Grid>
 
           {/* Login with Google account */}
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              sx={{ width: "100%" }}
-              onClick={() => GoogleLogin()}
-              startIcon={<GoogleIcon />}
+            <LoginSocialGoogle
+              client_id={config.GOOGLE_CLIENTID}
+              onResolve={({ provider, data }) => {
+                console.log(provider);
+                console.log(data);
+                setGoogleProfile(data);
+              }}
+              onReject={(err) => {
+                console.log(err);
+              }}
             >
-              Login with Google account
-            </Button>
+              <GoogleLoginButton>Login with Google account</GoogleLoginButton>
+            </LoginSocialGoogle>
           </Grid>
 
           <Grid item xs={12}>
@@ -244,11 +275,11 @@ function Login() {
       </Grid>
 
       {/* Dialog for displaying login result */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Login Result</DialogTitle>
         <DialogContent>{dialogContent}</DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
+          <Button onClick={() => setOpenDialog(false)}>Close</Button>
         </DialogActions>
       </Dialog>
     </Grid>
