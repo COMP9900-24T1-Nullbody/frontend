@@ -174,7 +174,7 @@ function Register() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -221,6 +221,7 @@ function Register() {
             <Grid item xs={12}>
               <LoginSocialGoogle
                 client_id={config.GOOGLE_CLIENTID}
+                redirect_uri={window.location.href}
                 onResolve={({ provider, data }) => {
                   console.log(provider);
                   console.log(data);

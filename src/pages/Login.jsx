@@ -10,13 +10,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Divider
+  Divider,
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton
+  MicrosoftLoginButton,
 } from "react-social-login-buttons";
 
 import CoverImage from "../img/cover.png";
@@ -39,14 +39,14 @@ function Login() {
       fetch(`${config.BACKEND_URL}/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: GoogleProfile.email,
           password: "",
           google_id: GoogleProfile.sub,
-          microsoft_id: ""
-        })
+          microsoft_id: "",
+        }),
       })
         .then((response) => {
           if (!response.ok) {
@@ -75,14 +75,14 @@ function Login() {
       fetch(`${config.BACKEND_URL}/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: MicrosoftProfile.mail,
           password: "",
           google_id: "",
-          microsoft_id: MicrosoftProfile.id
-        })
+          microsoft_id: MicrosoftProfile.id,
+        }),
       })
         .then((response) => {
           if (!response.ok) {
@@ -114,9 +114,14 @@ function Login() {
     fetch(`${config.BACKEND_URL}/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, google_id: "", microsoft_id: "" })
+      body: JSON.stringify({
+        email,
+        password,
+        google_id: "",
+        microsoft_id: "",
+      }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -164,7 +169,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -210,6 +215,7 @@ function Login() {
           <Grid item xs={12}>
             <LoginSocialGoogle
               client_id={config.GOOGLE_CLIENTID}
+              redirect_uri={window.location.href}
               onResolve={({ provider, data }) => {
                 console.log(provider);
                 console.log(data);
