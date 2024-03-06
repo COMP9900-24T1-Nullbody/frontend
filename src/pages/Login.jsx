@@ -10,13 +10,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Divider,
+  Divider
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton,
+  MicrosoftLoginButton
 } from "react-social-login-buttons";
 
 import CoverImage from "../img/cover.png";
@@ -31,98 +31,83 @@ function Login() {
   const [dialogContent, setDialogContent] = useState("");
   const navigate = useNavigate();
 
+  // auto-login with token only
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: "",
+          password: "",
+          google_id: "",
+          microsoft_id: "",
+          token: token
+        })
+      };
+      handleLogin(request);
+    }
+  }, []);
+
   // Google OAuth
   const [GoogleProfile, setGoogleProfile] = useState([]);
   const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
     if (GoogleProfile.length !== 0) {
-      fetch(`${config.BACKEND_URL}/login`, {
+      const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: GoogleProfile.email,
           password: "",
           google_id: GoogleProfile.sub,
           microsoft_id: "",
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Network response was not ok");
-            return response.json();
-          }
-          return response.json(); // 这里移到下一个then中
+          token: ""
         })
-        .then((data) => {
-          if (data.error) {
-            // 检查是否有错误消息
-            setDialogContent(data.error);
-            setOpenDialog(true);
-          } else {
-            setDialogContent(data.message);
-            setOpenDialog(true);
-            setTimeout(() => {
-              navigate("/main");
-            }, 1500);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      };
+      handleLogin(request);
     } else if (MicrosoftProfile.length !== 0) {
-      fetch(`${config.BACKEND_URL}/login`, {
+      const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: MicrosoftProfile.mail,
           password: "",
           google_id: "",
           microsoft_id: MicrosoftProfile.id,
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Network response was not ok");
-            return response.json();
-          }
-          return response.json(); // 这里移到下一个then中
+          token: ""
         })
-        .then((data) => {
-          if (data.error) {
-            // 检查是否有错误消息
-            setDialogContent(data.error);
-            setOpenDialog(true);
-          } else {
-            setDialogContent(data.message);
-            setOpenDialog(true);
-            setTimeout(() => {
-              navigate("/main");
-            }, 1500);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      };
+      handleLogin(request);
     }
   }, [GoogleProfile, MicrosoftProfile]);
 
-  const handleLogin = () => {
-    fetch(`${config.BACKEND_URL}/login`, {
+  const handleNormalLogin = () => {
+    const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         email,
         password,
         google_id: "",
         microsoft_id: "",
-      }),
-    })
+        token: ""
+      })
+    };
+    handleLogin(request);
+  };
+
+  const handleLogin = (request) => {
+    fetch(`${config.BACKEND_URL}/login`, request)
       .then((response) => {
         if (!response.ok) {
           console.error("Network response was not ok");
@@ -136,6 +121,9 @@ function Login() {
           setDialogContent(data.error);
           setOpenDialog(true);
         } else {
+          localStorage.setItem("token", data.token);
+          console.log(data.token);
+
           setDialogContent(data.message);
           setOpenDialog(true);
           setTimeout(() => {
@@ -169,7 +157,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -266,7 +254,7 @@ function Login() {
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              onClick={handleLogin}
+              onClick={handleNormalLogin}
             >
               LOG IN
             </Button>
