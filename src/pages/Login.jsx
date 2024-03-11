@@ -31,12 +31,33 @@ function Login() {
   const [dialogContent, setDialogContent] = useState("");
   const navigate = useNavigate();
 
+  // auto-login with token only
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: "",
+          password: "",
+          google_id: "",
+          microsoft_id: "",
+          token: token
+        })
+      };
+      handleLogin(request);
+    }
+  }, []);
+
   // Google OAuth
   const [GoogleProfile, setGoogleProfile] = useState([]);
   const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
     if (GoogleProfile.length !== 0) {
-      fetch(`${config.BACKEND_URL}/login`, {
+      const request = {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -45,34 +66,13 @@ function Login() {
           email: GoogleProfile.email,
           password: "",
           google_id: GoogleProfile.sub,
-          microsoft_id: ""
+          microsoft_id: "",
+          token: ""
         })
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Network response was not ok");
-            return response.json();
-          }
-          return response.json(); // 这里移到下一个then中
-        })
-        .then((data) => {
-          if (data.error) {
-            // 检查是否有错误消息
-            setDialogContent(data.error);
-            setOpenDialog(true);
-          } else {
-            setDialogContent(data.message);
-            setOpenDialog(true);
-            setTimeout(() => {
-              navigate("/main");
-            }, 1500);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      };
+      handleLogin(request);
     } else if (MicrosoftProfile.length !== 0) {
-      fetch(`${config.BACKEND_URL}/login`, {
+      const request = {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -81,43 +81,33 @@ function Login() {
           email: MicrosoftProfile.mail,
           password: "",
           google_id: "",
-          microsoft_id: MicrosoftProfile.id
+          microsoft_id: MicrosoftProfile.id,
+          token: ""
         })
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Network response was not ok");
-            return response.json();
-          }
-          return response.json(); // 这里移到下一个then中
-        })
-        .then((data) => {
-          if (data.error) {
-            // 检查是否有错误消息
-            setDialogContent(data.error);
-            setOpenDialog(true);
-          } else {
-            setDialogContent(data.message);
-            setOpenDialog(true);
-            setTimeout(() => {
-              navigate("/main");
-            }, 1500);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      };
+      handleLogin(request);
     }
   }, [GoogleProfile, MicrosoftProfile]);
 
-  const handleLogin = () => {
-    fetch(`${config.BACKEND_URL}/login`, {
+  const handleNormalLogin = () => {
+    const request = {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password, google_id: "", microsoft_id: "" })
-    })
+      body: JSON.stringify({
+        email,
+        password,
+        google_id: "",
+        microsoft_id: "",
+        token: ""
+      })
+    };
+    handleLogin(request);
+  };
+
+  const handleLogin = (request) => {
+    fetch(`${config.BACKEND_URL}/login`, request)
       .then((response) => {
         if (!response.ok) {
           console.error("Network response was not ok");
@@ -131,6 +121,9 @@ function Login() {
           setDialogContent(data.error);
           setOpenDialog(true);
         } else {
+          localStorage.setItem("token", data.token);
+          console.log(data.token);
+
           setDialogContent(data.message);
           setOpenDialog(true);
           setTimeout(() => {
@@ -210,6 +203,7 @@ function Login() {
           <Grid item xs={12}>
             <LoginSocialGoogle
               client_id={config.GOOGLE_CLIENTID}
+              redirect_uri={window.location.href}
               onResolve={({ provider, data }) => {
                 console.log(provider);
                 console.log(data);
@@ -260,7 +254,7 @@ function Login() {
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              onClick={handleLogin}
+              onClick={handleNormalLogin}
             >
               LOG IN
             </Button>

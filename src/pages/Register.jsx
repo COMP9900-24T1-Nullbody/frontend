@@ -38,7 +38,7 @@ function Register() {
   const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
     if (GoogleProfile.length !== 0) {
-      fetch(`${config.BACKEND_URL}/register`, {
+      const request = {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -48,34 +48,13 @@ function Register() {
           email: GoogleProfile.email,
           password: "",
           google_id: GoogleProfile.sub,
-          microsoft_id: ""
+          microsoft_id: "",
+          token: ""
         })
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Network response was not ok");
-            return response.json();
-          }
-          return response.json(); // 这里移到下一个then中
-        })
-        .then((data) => {
-          if (data.error) {
-            // 检查是否有错误消息
-            setDialogContent(data.error);
-            setOpenDialog(true);
-          } else {
-            setDialogContent(data.message);
-            setOpenDialog(true);
-            setTimeout(() => {
-              navigate("/main");
-            }, 1500);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      };
+      handleRegister(request);
     } else if (MicrosoftProfile.length !== 0) {
-      fetch(`${config.BACKEND_URL}/register`, {
+      const request = {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -85,37 +64,16 @@ function Register() {
           email: MicrosoftProfile.mail,
           password: "",
           google_id: "",
-          microsoft_id: MicrosoftProfile.id
+          microsoft_id: MicrosoftProfile.id,
+          token: ""
         })
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Network response was not ok");
-            return response.json();
-          }
-          return response.json(); // 这里移到下一个then中
-        })
-        .then((data) => {
-          if (data.error) {
-            // 检查是否有错误消息
-            setDialogContent(data.error);
-            setOpenDialog(true);
-          } else {
-            setDialogContent(data.message);
-            setOpenDialog(true);
-            setTimeout(() => {
-              navigate("/main");
-            }, 1500);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      };
+      handleRegister(request);
     }
   }, [GoogleProfile, MicrosoftProfile]);
 
-  const handleRegister = async () => {
-    fetch(`${config.BACKEND_URL}/register`, {
+  const handleNormalRegister = () => {
+    const request = {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -125,9 +83,15 @@ function Register() {
         email,
         password,
         google_id: "",
-        microsoft_id: ""
+        microsoft_id: "",
+        token: ""
       })
-    })
+    };
+    handleRegister(request);
+  };
+
+  const handleRegister = (request) => {
+    fetch(`${config.BACKEND_URL}/register`, request)
       .then((response) => {
         if (!response.ok) {
           console.error("Network response was not ok");
@@ -141,6 +105,9 @@ function Register() {
           setDialogContent(data.error);
           setOpenDialog(true);
         } else {
+          localStorage.setItem("token", data.token);
+          console.log(data.token);
+
           setDialogContent(data.message);
           setOpenDialog(true);
           setTimeout(() => {
@@ -221,6 +188,7 @@ function Register() {
             <Grid item xs={12}>
               <LoginSocialGoogle
                 client_id={config.GOOGLE_CLIENTID}
+                redirect_uri={window.location.href}
                 onResolve={({ provider, data }) => {
                   console.log(provider);
                   console.log(data);
@@ -288,7 +256,7 @@ function Register() {
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              onClick={handleRegister}
+              onClick={handleNormalRegister}
             >
               SIGN UP
             </Button>
