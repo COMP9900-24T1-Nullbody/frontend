@@ -10,16 +10,16 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton
+  MicrosoftLoginButton,
 } from "react-social-login-buttons";
 
-import CoverImage from "../img/cover.png";
+import CoverImage from "../img/cover.webp";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +41,7 @@ function Register() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: GoogleProfile.name,
@@ -49,15 +49,15 @@ function Register() {
           password: "",
           google_id: GoogleProfile.sub,
           microsoft_id: "",
-          token: ""
-        })
+          token: "",
+        }),
       };
       handleRegister(request);
     } else if (MicrosoftProfile.length !== 0) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: MicrosoftProfile.displayName,
@@ -65,8 +65,8 @@ function Register() {
           password: "",
           google_id: "",
           microsoft_id: MicrosoftProfile.id,
-          token: ""
-        })
+          token: "",
+        }),
       };
       handleRegister(request);
     }
@@ -76,7 +76,7 @@ function Register() {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name,
@@ -84,8 +84,8 @@ function Register() {
         password,
         google_id: "",
         microsoft_id: "",
-        token: ""
-      })
+        token: "",
+      }),
     };
     handleRegister(request);
   };
@@ -141,7 +141,7 @@ function Register() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>

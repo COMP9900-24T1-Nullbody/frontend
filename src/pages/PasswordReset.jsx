@@ -14,7 +14,7 @@ import {
 import { MuiOtpInput } from "mui-one-time-password-input";
 
 import config from "../config.json";
-import CoverImage from "../img/cover.png";
+import CoverImage from "../img/cover.webp";
 import { useNavigate } from "react-router-dom";
 
 function PasswordReset() {

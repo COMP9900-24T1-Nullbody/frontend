@@ -10,16 +10,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Divider
+  Divider,
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton
+  MicrosoftLoginButton,
 } from "react-social-login-buttons";
 
-import CoverImage from "../img/cover.png";
+import CoverImage from "../img/cover.webp";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
 
@@ -38,17 +38,17 @@ function Login() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: "",
           password: "",
           google_id: "",
           microsoft_id: "",
-          token: token
-        })
+          token: token,
+        }),
       };
-      handleLogin(request);
+      handleLogin(request, false);
     }
   }, []);
 
@@ -60,32 +60,32 @@ function Login() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: GoogleProfile.email,
           password: "",
           google_id: GoogleProfile.sub,
           microsoft_id: "",
-          token: ""
-        })
+          token: "",
+        }),
       };
-      handleLogin(request);
+      handleLogin(request, true);
     } else if (MicrosoftProfile.length !== 0) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: MicrosoftProfile.mail,
           password: "",
           google_id: "",
           microsoft_id: MicrosoftProfile.id,
-          token: ""
-        })
+          token: "",
+        }),
       };
-      handleLogin(request);
+      handleLogin(request, true);
     }
   }, [GoogleProfile, MicrosoftProfile]);
 
@@ -93,20 +93,20 @@ function Login() {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email,
         password,
         google_id: "",
         microsoft_id: "",
-        token: ""
-      })
+        token: "",
+      }),
     };
-    handleLogin(request);
+    handleLogin(request, true);
   };
 
-  const handleLogin = (request) => {
+  const handleLogin = (request, error_print = true) => {
     fetch(`${config.BACKEND_URL}/login`, request)
       .then((response) => {
         if (!response.ok) {
@@ -117,9 +117,11 @@ function Login() {
       })
       .then((data) => {
         if (data.error) {
-          // 检查是否有错误消息
-          setDialogContent(data.error);
-          setOpenDialog(true);
+          if (error_print) {
+            // 检查是否有错误消息
+            setDialogContent(data.error);
+            setOpenDialog(true);
+          }
         } else {
           localStorage.setItem("token", data.token);
           console.log(data.token);
@@ -157,7 +159,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
