@@ -9,10 +9,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import { MuiOtpInput } from "mui-one-time-password-input";
 
+import config from "../config.json";
 import CoverImage from "../img/cover.png";
 
 function PasswordReset() {
@@ -20,6 +21,7 @@ function PasswordReset() {
 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [newpassword, setNewPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -27,6 +29,8 @@ function PasswordReset() {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
   const [emailDisabled, setEmailDisabled] = useState(false);
+
+  const [passwordshow, setPasswordShow] = useState(false);
 
   const handleChange = (newValue) => {
     setOtp(newValue);
@@ -47,11 +51,83 @@ function PasswordReset() {
     }
   }, [timer]);
 
-  const handleSendVerificationCode = () => {
-    setEmailDisabled(true);
+  useEffect(() => {
+    console.log(otp);
+    if (otp.length === 6) {
+      handleOTPSubmit();
+    }
+  }, [otp]);
 
-    setTimer(initial_timer);
-    setLoading(true);
+  const handleOTPSubmit = () => {
+    fetch(`${config.BACKEND_URL}/reset_password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: parseInt(otp),
+        email,
+        new_password: newpassword,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Network response was not ok");
+          return response.json();
+        }
+        return response.json(); // 这里移到下一个then中
+      })
+      .then((data) => {
+        if (data.error) {
+          // 检查是否有错误消息
+          setDialogContent(data.error);
+          setOpenDialog(true);
+        } else {
+          setDialogContent(data.message);
+          setOpenDialog(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const handleSendVerificationCode = () => {
+    fetch(`${config.BACKEND_URL}/request_reset_password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Network response was not ok");
+          return response.json();
+        }
+        return response.json(); // 这里移到下一个then中
+      })
+      .then((data) => {
+        if (data.error) {
+          // 检查是否有错误消息
+          setDialogContent(data.error);
+          setOpenDialog(true);
+        } else {
+          setDialogContent(data.message);
+          setOpenDialog(true);
+
+          setEmailDisabled(true);
+          setPasswordShow(true);
+
+          setTimer(initial_timer);
+          setLoading(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -75,7 +151,7 @@ function PasswordReset() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -115,12 +191,25 @@ function PasswordReset() {
             <Grid item xs={12}>
               <MuiOtpInput
                 value={otp}
+                TextFieldsProps={{ placeholder: "-" }}
                 onChange={handleChange}
                 length={6}
-                onComplete={() => {
-                  setDialogContent("You just type in the verification code!");
-                  setOpenDialog(true);
-                }}
+              />
+            </Grid>
+          )}
+
+          {/* Password Reset Form */}
+          {passwordshow && (
+            <Grid item xs={12}>
+              <TextField
+                required
+                id="new-password"
+                label="New Password"
+                variant="standard"
+                type="password"
+                value={newpassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                sx={{ width: "100%", marginBottom: "10px" }}
               />
             </Grid>
           )}
