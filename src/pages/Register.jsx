@@ -254,11 +254,12 @@ function Register() {
           {/* Sign Up Button */}
           <Grid item xs={12}>
             <Button
+              style={{ textTransform: "none" }}
               variant="contained"
               sx={{ width: "100%" }}
               onClick={handleNormalRegister}
             >
-              SIGN UP
+              Sign Up
             </Button>
           </Grid>
 

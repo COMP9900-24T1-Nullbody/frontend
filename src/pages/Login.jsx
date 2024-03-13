@@ -246,17 +246,18 @@ function Login() {
 
           {/* Forgot Password Link */}
           <Grid item xs={12}>
-            <Link href="#">Forgot password?</Link>
+            <Link href="/reset">Forgot password?</Link>
           </Grid>
 
           {/* Login Button */}
           <Grid item xs={12}>
             <Button
+              style={{ textTransform: "none" }}
               variant="contained"
               sx={{ width: "100%" }}
               onClick={handleNormalLogin}
             >
-              LOG IN
+              Login
             </Button>
           </Grid>
 
