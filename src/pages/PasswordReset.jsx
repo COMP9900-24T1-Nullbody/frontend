@@ -15,6 +15,7 @@ import { MuiOtpInput } from "mui-one-time-password-input";
 
 import config from "../config.json";
 import CoverImage from "../img/cover.png";
+import { useNavigate } from "react-router-dom";
 
 function PasswordReset() {
   const initial_timer = 10;
@@ -31,6 +32,8 @@ function PasswordReset() {
   const [emailDisabled, setEmailDisabled] = useState(false);
 
   const [passwordshow, setPasswordShow] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (newValue) => {
     setOtp(newValue);
@@ -85,6 +88,10 @@ function PasswordReset() {
         } else {
           setDialogContent(data.message);
           setOpenDialog(true);
+
+          setTimeout(() => {
+            navigate("/main");
+          }, 1500);
         }
       })
       .catch((error) => {
