@@ -27,9 +27,14 @@ import {
   MicrosoftLoginButton,
 } from "react-social-login-buttons";
 
+ProfileAvatar.propTypes = {
+  imageSrc: PropTypes.string.isRequired,
+  setImageSrc: PropTypes.func.isRequired,
+};
+
 export default function UserProfile() {
   const [themeMode, setThemeMode] = useState("light");
-
+  const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
     Name: "Sample Name",
     Email: "Sample@Email.com",
@@ -43,7 +48,7 @@ export default function UserProfile() {
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
-
+  
   return (
     <ThemeProvider
       theme={
@@ -51,7 +56,7 @@ export default function UserProfile() {
           ? createTheme(Theme("light"))
           : createTheme(Theme("dark"))
       }
-    >
+    >     
       <Box>
         <Box sx={{ m: 1 }}>
           <NavBar toggleThemeMode={toggleThemeMode} />
@@ -78,7 +83,7 @@ export default function UserProfile() {
               height: "100vh",
             }}
           >
-            <ProfileAvatar />
+            <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
             <ProfileForm userInfo={userInfo} setUserInfo={setUserInfo} />
           </Box>
         </Box>
@@ -86,19 +91,41 @@ export default function UserProfile() {
     </ThemeProvider>
   );
 }
+function ProfileAvatar({ imageSrc, setImageSrc }) { // 接收新的props
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageSrc(reader.result); // 使用setImageSrc来更新图片源
+    };
+    reader.readAsDataURL(file);
+  };
 
-function ProfileAvatar() {
   return (
-    <Avatar
-      alt="Remy Sharp"
-      src={Image01}
-      sx={{
-        minWidth: "250px",
-        minHeight: "250px",
-      }}
-    />
+    <Box>
+      <input
+        accept="image/*"
+        type="file"
+        onChange={handleImageChange}
+        style={{ display: 'none' }}
+        id="raised-button-file"
+      />
+      <label htmlFor="raised-button-file">
+        <IconButton component="span">
+          <Avatar
+            alt="User Avatar"
+            src={imageSrc} // 使用传递来的imageSrc作为图片源
+            sx={{
+              minWidth: "250px",
+              minHeight: "250px",
+            }}
+          />
+        </IconButton>
+      </label>
+    </Box>
   );
 }
+
 
 function ProfileForm({ userInfo, setUserInfo }) {
   const [editName, setEditName] = React.useState(false);
@@ -281,3 +308,4 @@ ProfileForm.propTypes = {
   userInfo: PropTypes.object.isRequired,
   setUserInfo: PropTypes.func.isRequired,
 };
+
