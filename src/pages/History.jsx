@@ -12,7 +12,7 @@ export default function UserHistory() {
   const [themeMode, setThemeMode] = useState('light');
   const [selectedCompany, setSelectedCompany] = useState('');
 
-  const companies = ['Company_01', 'Company_02', 'Company_03']; // 示例公司列表
+  const companies = ['Company_01', 'Company_02', 'Company_03']; 
 
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -23,18 +23,27 @@ export default function UserHistory() {
       theme={themeMode === 'light' ? createTheme(Theme('light')) : createTheme(Theme('dark'))}
     >
       <NavBar toggleThemeMode={toggleThemeMode} />
-      <Box display="flex">
-        <List component="nav" aria-label="mailbox folders">
-          {companies.map((company, index) => (
-            <React.Fragment key={company}>
-              {index > 0 && <Divider />}
-              <ListItem button selected={selectedCompany === company} onClick={() => setSelectedCompany(company)}>
-                <ListItemText primary={company} />
-              </ListItem>
-            </React.Fragment>
-          ))}
-        </List>
-        <Box flex={1} p={3}>
+      <Box display="flex" sx={{ m: 1 }}>
+        {/* 侧边栏 */}
+        <Box sx={{ width: 250, borderRadius: 2, boxShadow: 3, m: 1 }}>
+          <List component="nav" aria-label="mailbox folders">
+            {companies.map((company, index) => (
+              <React.Fragment key={company}>
+                {index > 0 && <Divider />}
+                <ListItem 
+                  button 
+                  selected={selectedCompany === company} 
+                  onClick={() => setSelectedCompany(company)}
+                  sx={{ borderBottom: selectedCompany === company && '1.5px solid black' }}
+                >
+                  <ListItemText primary={company} />
+                </ListItem>
+              </React.Fragment>
+            ))}
+          </List>
+        </Box>
+        {/* 主内容区 */}
+        <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
           {selectedCompany && (
             <>
               <ViewTable company={selectedCompany} />

@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Home from "./pages/Home";
 import UserProfile from "./pages/UserProfile";
+import UserHistory from "./pages/History";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />} />
         <Route path="/user/profile" element={<UserProfile />} />
+        <Route path="/user/history" element={<UserHistory />} />
       </Routes>
     </Router>
   );
