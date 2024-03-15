@@ -11,13 +11,21 @@ import {
   DialogContent,
   DialogActions,
   Divider,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  IconButton,
+  OutlinedInput
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton,
+  MicrosoftLoginButton
 } from "react-social-login-buttons";
+
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import CoverImage from "../img/cover.webp";
 import config from "../config.json";
@@ -27,9 +35,32 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // navigate config
+  const navigate = useNavigate();
+
+  // dialog config
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
-  const navigate = useNavigate();
+
+  // password visibility config
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  // error/helperText config
+  const [EmailError, setEmailError] = useState(false);
+  const [EmailErrorMessage, setEmailErrorMessage] = useState("");
+  useEffect(() => {
+    if (validateEmail(email)) {
+      setEmailError(false);
+      setEmailErrorMessage("");
+    } else {
+      setEmailError(true);
+      setEmailErrorMessage("Invalid Email format!");
+    }
+  }, [email]);
 
   // auto-login with token only
   useEffect(() => {
@@ -38,15 +69,15 @@ function Login() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: "",
           password: "",
           google_id: "",
           microsoft_id: "",
-          token: token,
-        }),
+          token: token
+        })
       };
       handleLogin(request, false);
     }
@@ -60,30 +91,30 @@ function Login() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: GoogleProfile.email,
           password: "",
           google_id: GoogleProfile.sub,
           microsoft_id: "",
-          token: "",
-        }),
+          token: ""
+        })
       };
       handleLogin(request, true);
     } else if (MicrosoftProfile.length !== 0) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: MicrosoftProfile.mail,
           password: "",
           google_id: "",
           microsoft_id: MicrosoftProfile.id,
-          token: "",
-        }),
+          token: ""
+        })
       };
       handleLogin(request, true);
     }
@@ -93,17 +124,23 @@ function Login() {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         email,
         password,
         google_id: "",
         microsoft_id: "",
-        token: "",
-      }),
+        token: ""
+      })
     };
-    handleLogin(request, true);
+
+    if (!EmailError) {
+      handleLogin(request);
+    } else {
+      setDialogContent("Check your login form if there is any error message.");
+      setOpenDialog(true);
+    }
   };
 
   const handleLogin = (request, error_print = true) => {
@@ -159,7 +196,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -229,21 +266,39 @@ function Login() {
               required
               id="login-email"
               label="Email Address"
-              variant="standard"
+              variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={EmailError}
+              helperText={EmailErrorMessage}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
-            <TextField
-              required
-              id="login-password"
-              label="Password"
-              variant="standard"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <FormControl
+              variant="outlined"
               sx={{ width: "100%", marginBottom: "10px" }}
-            />
+            >
+              <InputLabel htmlFor="standard-adornment-password">
+                Password *
+              </InputLabel>
+              <OutlinedInput
+                id="standard-adornment-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password *"
+              />
+            </FormControl>
           </Grid>
 
           {/* Forgot Password Link */}
@@ -281,6 +336,16 @@ function Login() {
       </Dialog>
     </Grid>
   );
+}
+
+// Validate Email
+function validateEmail(email) {
+  if (email === "") {
+    return true;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
 export default Login;

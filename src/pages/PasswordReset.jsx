@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
+  Link
 } from "@mui/material";
 import { MuiOtpInput } from "mui-one-time-password-input";
 
@@ -24,14 +25,18 @@ function PasswordReset() {
   const [otp, setOtp] = useState("");
   const [newpassword, setNewPassword] = useState("");
 
+  // loading and timer for resend
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
 
+  // dialog config
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
-  const [emailDisabled, setEmailDisabled] = useState(false);
 
+  // visibility config
+  const [emailDisabled, setEmailDisabled] = useState(false);
   const [passwordshow, setPasswordShow] = useState(false);
+  const [submitshow, setSubmitShow] = useState(false);
 
   const navigate = useNavigate();
 
@@ -55,9 +60,10 @@ function PasswordReset() {
   }, [timer]);
 
   useEffect(() => {
-    console.log(otp);
     if (otp.length === 6) {
-      handleOTPSubmit();
+      setSubmitShow(true);
+    } else {
+      setSubmitShow(false);
     }
   }, [otp]);
 
@@ -65,13 +71,13 @@ function PasswordReset() {
     fetch(`${config.BACKEND_URL}/reset_password`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         code: parseInt(otp),
         email,
-        new_password: newpassword,
-      }),
+        new_password: newpassword
+      })
     })
       .then((response) => {
         if (!response.ok) {
@@ -103,11 +109,11 @@ function PasswordReset() {
     fetch(`${config.BACKEND_URL}/request_reset_password`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email,
-      }),
+        email
+      })
     })
       .then((response) => {
         if (!response.ok) {
@@ -158,7 +164,7 @@ function PasswordReset() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -185,12 +191,23 @@ function PasswordReset() {
               required
               id="reset-email"
               label="Email Address"
-              variant="standard"
+              variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={emailDisabled}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
+            {!emailDisabled && (
+              <Typography variant="body2">
+                Remember your password? <Link href="/login">Login here</Link>
+              </Typography>
+            )}
+            {!emailDisabled && (
+              <Typography variant="body2">
+                Don&apos;t have an account?{" "}
+                <Link href="/register">Register here</Link>
+              </Typography>
+            )}
           </Grid>
 
           {/* Show verification code TextField only when email is disabled */}
@@ -212,7 +229,7 @@ function PasswordReset() {
                 required
                 id="new-password"
                 label="New Password"
-                variant="standard"
+                variant="outlined"
                 type="password"
                 value={newpassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -223,26 +240,38 @@ function PasswordReset() {
 
           {/* Send Verification Code Button */}
           <Grid item xs={12}>
-            <Button
-              style={{ textTransform: "none" }}
-              variant="contained"
-              sx={{ width: "100%" }}
-              disabled={loading || timer > 0}
-              onClick={handleSendVerificationCode}
-            >
-              {loading ? (
-                <>
-                  <CircularProgress
-                    size={24}
-                    variant="determinate"
-                    value={((initial_timer - timer) / initial_timer) * 100}
-                  />
-                  `Resend in {timer}s`
-                </>
-              ) : (
-                "Send Verification Code"
-              )}
-            </Button>
+            {!submitshow && (
+              <Button
+                style={{ textTransform: "none" }}
+                variant="contained"
+                sx={{ width: "100%" }}
+                disabled={loading || timer > 0}
+                onClick={handleSendVerificationCode}
+              >
+                {loading ? (
+                  <>
+                    <CircularProgress
+                      size={24}
+                      variant="determinate"
+                      value={((initial_timer - timer) / initial_timer) * 100}
+                    />
+                    `Resend in {timer}s`
+                  </>
+                ) : (
+                  "Send Verification Code"
+                )}
+              </Button>
+            )}
+
+            {submitshow && (
+              <Button
+                color="success"
+                style={{ textTransform: "none" }}
+                variant="contained"
+                sx={{ width: "100%" }}
+                onClick={handleOTPSubmit}
+              >Submit && Reset</Button>
+            )}
           </Grid>
         </Grid>
       </Grid>

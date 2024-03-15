@@ -11,13 +11,24 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  IconButton,
+  FormHelperText,
+  OutlinedInput
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton,
+  MicrosoftLoginButton
 } from "react-social-login-buttons";
+
+import PasswordStrengthBar from "react-password-strength-bar";
+
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import CoverImage from "../img/cover.webp";
 import config from "../config.json";
@@ -29,9 +40,41 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // navigate config
+  const navigate = useNavigate();
+
+  // dialog config
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
-  const navigate = useNavigate();
+
+  // password visibility config
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  // error/helperText config
+  const [EmailError, setEmailError] = useState(false);
+  const [ConfirmPasswordError, setConfirmPasswordError] = useState(false);
+  useEffect(() => {
+    if (validateEmail(email)) {
+      setEmailError(false);
+    } else {
+      setEmailError(true);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (validateConfirmPassword(password, confirmPassword)) {
+      setConfirmPasswordError(false);
+    } else {
+      setConfirmPasswordError(true);
+    }
+  }, [password, confirmPassword]);
 
   // Google OAuth
   const [GoogleProfile, setGoogleProfile] = useState([]);
@@ -41,7 +84,7 @@ function Register() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           name: GoogleProfile.name,
@@ -49,15 +92,15 @@ function Register() {
           password: "",
           google_id: GoogleProfile.sub,
           microsoft_id: "",
-          token: "",
-        }),
+          token: ""
+        })
       };
       handleRegister(request);
     } else if (MicrosoftProfile.length !== 0) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           name: MicrosoftProfile.displayName,
@@ -65,8 +108,8 @@ function Register() {
           password: "",
           google_id: "",
           microsoft_id: MicrosoftProfile.id,
-          token: "",
-        }),
+          token: ""
+        })
       };
       handleRegister(request);
     }
@@ -76,7 +119,7 @@ function Register() {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         name,
@@ -84,10 +127,18 @@ function Register() {
         password,
         google_id: "",
         microsoft_id: "",
-        token: "",
-      }),
+        token: ""
+      })
     };
-    handleRegister(request);
+
+    if (!EmailError && !ConfirmPasswordError) {
+      handleRegister(request);
+    } else {
+      setDialogContent(
+        "Check your register form if there is any error message."
+      );
+      setOpenDialog(true);
+    }
   };
 
   const handleRegister = (request) => {
@@ -141,7 +192,7 @@ function Register() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Grid item id="form-title" marginBottom={4}>
@@ -215,7 +266,7 @@ function Register() {
               required
               id="register-name"
               label="Name"
-              variant="standard"
+              variant="outlined"
               value={name}
               onChange={(e) => setName(e.target.value)}
               sx={{ width: "100%", marginBottom: "10px" }}
@@ -224,31 +275,74 @@ function Register() {
               required
               id="register-email"
               label="Email Address"
-              variant="standard"
+              variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={EmailError}
+              helperText={EmailError ? "Invalid Email format!" : ""}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
-            <TextField
-              required
-              id="register-password"
-              label="Password"
-              variant="standard"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+
+            <FormControl
+              variant="outlined"
               sx={{ width: "100%", marginBottom: "10px" }}
-            />
-            <TextField
-              required
-              id="register-confirm-password"
-              label="Confirm Password"
-              variant="standard"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+            >
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password *
+              </InputLabel>
+              <OutlinedInput
+                id="register-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password *"
+              />
+            </FormControl>
+
+            {password !== "" && <PasswordStrengthBar password={password} />}
+
+            <FormControl
+              variant="outlined"
               sx={{ width: "100%", marginBottom: "10px" }}
-            />
+            >
+              <InputLabel htmlFor="outlined-adornment-confirm-password">
+                Confirm Password *
+              </InputLabel>
+              <OutlinedInput
+                id="register-confirm-password"
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={ConfirmPasswordError}
+                helperText={ConfirmPasswordError ? "Password mismatch!" : ""}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle confirm password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Confirm Password *"
+              />
+              <FormHelperText error={ConfirmPasswordError}>
+                {ConfirmPasswordError ? "Password mismatch!" : ""}
+              </FormHelperText>
+            </FormControl>
           </Grid>
 
           {/* Sign Up Button */}
@@ -280,6 +374,25 @@ function Register() {
       </Dialog>
     </Grid>
   );
+}
+
+// Validate Email
+function validateEmail(email) {
+  if (email === "") {
+    return true;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Validate Confirm Password
+function validateConfirmPassword(password, confirmPassword) {
+  if (password === confirmPassword) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export default Register;
