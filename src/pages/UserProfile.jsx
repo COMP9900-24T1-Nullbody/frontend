@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { jwtDecode } from "jwt-decode";
 import {
   Box,
   createTheme,
@@ -12,10 +13,12 @@ import {
   InputAdornment,
   IconButton,
   Typography,
+  FormHelperText
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
 import { Edit, Save } from "@mui/icons-material";
+import UploadIcon from "@mui/icons-material/Upload";
 
 import { Theme } from "../theme/main";
 import Image01 from "../img/1.jpg";
@@ -24,21 +27,45 @@ import config from "../config.json";
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton,
+  MicrosoftLoginButton
 } from "react-social-login-buttons";
 
 export default function UserProfile() {
   const [themeMode, setThemeMode] = useState("light");
 
+  const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
-    Name: "Sample Name",
-    Email: "Sample@Email.com",
-    Password: "Sample Password",
+    Name: "-- Error: Token Decode Error, Please Re-Login --",
+    Email: "-- Error: Token Decode Error, Please Re-Login --",
+    Password: "-- Error: Token Decode Error, Please Re-Login --",
     Linked_Account: {
       Google: "",
-      Microsoft: "",
-    },
+      Microsoft: ""
+    }
   });
+
+  // 添加解密逻辑
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // 从localStorage获取token
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
+        // 更新user_info中的数据
+        setUserInfo({
+          Name: decodedToken.name,
+          Email: decodedToken.email,
+          Password: decodedToken.password,
+          Linked_Account: {
+            Google: decodedToken.google_id,
+            Microsoft: decodedToken.microsoft_id
+          }
+        });
+        setImageSrc(decodedToken.avatar_url);
+      } catch (error) {
+        console.error("Token Decode Error：", error);
+      }
+    }
+  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
 
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
@@ -62,7 +89,7 @@ export default function UserProfile() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "center"
           }}
         >
           <Box
@@ -75,10 +102,10 @@ export default function UserProfile() {
               m: 1,
               p: 1,
               width: "50%",
-              height: "100vh",
+              height: "100vh"
             }}
           >
-            <ProfileAvatar />
+            <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
             <ProfileForm userInfo={userInfo} setUserInfo={setUserInfo} />
           </Box>
         </Box>
@@ -87,16 +114,106 @@ export default function UserProfile() {
   );
 }
 
-function ProfileAvatar() {
+function ProfileAvatar({ imageSrc, setImageSrc }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    // 将图片显示在页面上
+    reader.onloadend = () => {
+      // 将图片传到后端
+      handleImageUpload(reader.result);
+
+      setImageSrc(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageUpload = (ImageData) => {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        image: ImageData,
+        token: localStorage.getItem("token")
+      })
+    };
+
+    fetch(`${config.BACKEND_URL}/upload_avatar`, request)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(data.message);
+          localStorage.setItem("token", data.token);
+          window.location.reload(); // 刷新页面
+        }
+      });
+  };
+
   return (
-    <Avatar
-      alt="Remy Sharp"
-      src={Image01}
-      sx={{
-        minWidth: "250px",
-        minHeight: "250px",
-      }}
-    />
+    <Box sx={{ position: "relative" }}>
+      <input
+        accept="image/png, image/jpeg, image/jpg"
+        type="file"
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+        id="raised-button-file"
+      />
+      <label htmlFor="raised-button-file">
+        <IconButton
+          component="span"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Avatar
+            alt="User Avatar"
+            src={imageSrc}
+            sx={{
+              minWidth: "250px",
+              minHeight: "250px",
+              filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
+              transition: "filter 0.3s ease-in-out"
+            }}
+          />
+          {isHovered && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                borderRadius: 2,
+                backgroundColor: "black",
+                color: "#fff",
+                padding: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <UploadIcon fontSize="large" />
+              <Typography variant="h5" sx={{ marginLeft: "4px" }}>
+                Upload
+              </Typography>
+            </Box>
+          )}
+        </IconButton>
+      </label>
+    </Box>
   );
 }
 
@@ -112,10 +229,6 @@ function ProfileForm({ userInfo, setUserInfo }) {
   const handleMouseDown = (event) => {
     event.preventDefault();
   };
-
-  useEffect(() => {
-    console.log(userInfo);
-  }, [userInfo]);
 
   // 更改姓名
   const handleNameChange = (event) => {
@@ -139,8 +252,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Google: email,
-      },
+        Google: email
+      }
     };
     setUserInfo(updatedUserInfo);
   };
@@ -151,8 +264,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Microsoft: email,
-      },
+        Microsoft: email
+      }
     };
     setUserInfo(updatedUserInfo);
   };
@@ -206,7 +319,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
       </FormControl>
 
       {/* Password */}
-      <FormControl variant="outlined">
+      <FormControl variant="outlined" error={userInfo.Password === ""}>
         <InputLabel>Password</InputLabel>
         <OutlinedInput
           id="password"
@@ -227,6 +340,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
             </InputAdornment>
           }
         />
+        {userInfo.Password === "" && (
+          <FormHelperText id="component-error-text">
+            Empty password if you sign-up with google or microsoft account.
+            Please change it as soon as possible.
+          </FormHelperText>
+        )}
       </FormControl>
 
       {/* Google Link */}
@@ -277,7 +396,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
   );
 }
 
+ProfileAvatar.propTypes = {
+  imageSrc: PropTypes.string.isRequired,
+  setImageSrc: PropTypes.func.isRequired
+};
+
 ProfileForm.propTypes = {
   userInfo: PropTypes.object.isRequired,
-  setUserInfo: PropTypes.func.isRequired,
+  setUserInfo: PropTypes.func.isRequired
 };
