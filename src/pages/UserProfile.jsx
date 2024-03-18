@@ -163,8 +163,8 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
         } else {
           alert(data.message);
           localStorage.setItem("token", data.token);
-          setIsUploading(false);
         }
+        setIsUploading(false);
       }).catch((error) => {
         alert("Error: Upload avatar to server failed, Please check server status.");
         console.error("Error:", error);
@@ -178,7 +178,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
       ) : (
         <>
           <input
-            accept="image/png, image/jpeg, image/jpg"
+            accept=".jpg,.jpeg,.png,.gif,.bmp"
             type="file"
             onChange={handleImageChange}
             style={{ display: "none" }}
