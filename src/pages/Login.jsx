@@ -171,6 +171,7 @@ function Login() {
         }
       })
       .catch((error) => {
+        alert("Error: Login to server failed, Please check server status.");
         console.error("Error:", error);
       });
   };

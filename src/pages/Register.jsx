@@ -167,6 +167,7 @@ function Register() {
         }
       })
       .catch((error) => {
+        alert("Error: Register to server failed, Please check server status.");
         console.error("Error:", error);
       });
   };

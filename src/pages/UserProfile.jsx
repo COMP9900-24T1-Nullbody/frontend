@@ -13,7 +13,8 @@ import {
   InputAdornment,
   IconButton,
   Typography,
-  FormHelperText
+  FormHelperText,
+  CircularProgress
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -81,7 +82,7 @@ export default function UserProfile() {
     >
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar toggleThemeMode={toggleThemeMode} />
+          <NavBar toggleThemeMode={toggleThemeMode} avatarImage={imageSrc} />
         </Box>
 
         <Box
@@ -116,6 +117,7 @@ export default function UserProfile() {
 
 function ProfileAvatar({ imageSrc, setImageSrc }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -129,14 +131,16 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
     const file = e.target.files[0];
     const reader = new FileReader();
 
+    reader.readAsDataURL(file);
+
     // 将图片显示在页面上
     reader.onloadend = () => {
       // 将图片传到后端
+      setIsUploading(true);
       handleImageUpload(reader.result);
 
       setImageSrc(reader.result);
     };
-    reader.readAsDataURL(file);
   };
 
   const handleImageUpload = (ImageData) => {
@@ -159,60 +163,69 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
         } else {
           alert(data.message);
           localStorage.setItem("token", data.token);
-          window.location.reload(); // 刷新页面
+          setIsUploading(false);
         }
+      }).catch((error) => {
+        alert("Error: Upload avatar to server failed, Please check server status.");
+        console.error("Error:", error);
       });
   };
 
   return (
     <Box sx={{ position: "relative" }}>
-      <input
-        accept="image/png, image/jpeg, image/jpg"
-        type="file"
-        onChange={handleImageChange}
-        style={{ display: "none" }}
-        id="raised-button-file"
-      />
-      <label htmlFor="raised-button-file">
-        <IconButton
-          component="span"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <Avatar
-            alt="User Avatar"
-            src={imageSrc}
-            sx={{
-              minWidth: "250px",
-              minHeight: "250px",
-              filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
-              transition: "filter 0.3s ease-in-out"
-            }}
+      {isUploading ? (
+        <CircularProgress size="10rem"/> // 上传中
+      ) : (
+        <>
+          <input
+            accept="image/png, image/jpeg, image/jpg"
+            type="file"
+            onChange={handleImageChange}
+            style={{ display: "none" }}
+            id="raised-button-file"
           />
-          {isHovered && (
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                borderRadius: 2,
-                backgroundColor: "black",
-                color: "#fff",
-                padding: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
+          <label htmlFor="raised-button-file">
+            <IconButton
+              component="span"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
-              <UploadIcon fontSize="large" />
-              <Typography variant="h5" sx={{ marginLeft: "4px" }}>
-                Upload
-              </Typography>
-            </Box>
-          )}
-        </IconButton>
-      </label>
+              <Avatar
+                alt="User Avatar"
+                src={imageSrc}
+                sx={{
+                  minWidth: "250px",
+                  minHeight: "250px",
+                  filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
+                  transition: "filter 0.3s ease-in-out"
+                }}
+              />
+              {isHovered && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    borderRadius: 2,
+                    backgroundColor: "black",
+                    color: "#fff",
+                    padding: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  <UploadIcon fontSize="large" />
+                  <Typography variant="h5" sx={{ marginLeft: "4px" }}>
+                    Upload
+                  </Typography>
+                </Box>
+              )}
+            </IconButton>
+          </label>
+        </>
+      )}
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import NavBar from "../components/NavBar";
 import CollapseSiderMenu from "../components/CollapseSideMenu";
@@ -11,8 +11,35 @@ import ViewPieChart from "../components/Views/ViewPieChart";
 
 import { Theme } from "../theme/main";
 
+import Image01 from "../img/1.jpg";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+
 export default function Main() {
   const [themeMode, setThemeMode] = useState("light");
+
+  const [imageSrc, setImageSrc] = useState(Image01);
+
+  const navigate = useNavigate();
+
+  // 添加解密逻辑
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // 从localStorage获取token
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
+        setImageSrc(decodedToken.avatar_url);
+      } catch (error) {
+        alert("Error: Token may be expired, Please Re-Login.");
+        console.error("Token Decode Error：", error);
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } else {
+      alert("Error: Token not found, Please Re-Login.");
+      navigate("/login");
+    }
+  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
 
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
@@ -28,7 +55,7 @@ export default function Main() {
     >
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar toggleThemeMode={toggleThemeMode} />
+          <NavBar toggleThemeMode={toggleThemeMode} avatarImage={imageSrc} />
         </Box>
 
         <Box sx={{ display: "flex" }}>

@@ -101,6 +101,7 @@ function PasswordReset() {
         }
       })
       .catch((error) => {
+        alert("Error: OTP submit to server failed, Please check server status.");
         console.error("Error:", error);
       });
   };
@@ -139,6 +140,7 @@ function PasswordReset() {
         }
       })
       .catch((error) => {
+        alert("Error: Send verification code to server failed, Please check server status.");
         console.error("Error:", error);
       });
   };
