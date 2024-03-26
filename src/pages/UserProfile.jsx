@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import "../App.css"; // 确保引入了CSS文件
 import {
   Box,
   createTheme,
@@ -58,11 +59,12 @@ export default function UserProfile() {
       }
     >     
       <Box>
-        <Box sx={{ m: 1 }}>
+        <Box sx={{ m: 1 }} className="hide-on-narrow">
           <NavBar toggleThemeMode={toggleThemeMode} />
         </Box>
 
         <Box
+          className="full-screen-on-narrow"
           sx={{
             display: "flex",
             flexDirection: "column",

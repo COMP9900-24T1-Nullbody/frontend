@@ -138,28 +138,28 @@ function Login() {
 
   return (
     <Grid container width={"100vw"} height={"100vh"}>
-      {/* Cover Image */}
-      <Grid item id="cover-img" xs={8}>
-        <img
-          src={CoverImage}
-          alt="Login"
-          style={{ width: "100%", height: "100%", display: "block" }}
-        />
-      </Grid>
+    {/* 封面图片，使用sx属性添加媒体查询来控制显示/隐藏 */}
+    <Grid item sm={8} md={8} sx={{ display: { md: 'block', xs: 'none' } }}>
+      <img
+        src={CoverImage}
+        alt="Login"
+        style={{ width: "100%", height: "100%", display: "block" }}
+      />
+    </Grid>
 
-      {/* Form */}
-      <Grid
-        item
-        container
-        id="form-section"
-        xs={4}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column"
-        }}
-      >
+    {/* 表单 */}
+    <Grid
+      item
+      xs={12} // 当封面图片隐藏时占满所有可用空间
+      md={4} // 默认情况下占据部分空间
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        width: '100%', // 确保在封面图片隐藏时此项占满所有可用空间
+      }}
+    >
         <Grid item id="form-title" marginBottom={4}>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
