@@ -16,7 +16,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import AvatarMenu from "./AvatarMenu";
 import ModeSwitch from "./ModeSwitch"; // Import ModeSwitch component
 
-export default function NavBar({ toggleThemeMode }) {
+export default function NavBar({ toggleThemeMode, avatarImage }) {
   // Receive toggleThemeMode as a prop
   const [industry, setIndustry] = React.useState("");
   const [company, setCompany] = React.useState("");
@@ -131,7 +131,7 @@ export default function NavBar({ toggleThemeMode }) {
             <FormControlLabel
               control={<ModeSwitch onChange={toggleThemeMode} />} // Pass toggleThemeMode to ModeSwitch
             />
-            <AvatarMenu />
+            <AvatarMenu avatarImage={avatarImage} />
           </Grid>
         </Grid>
       </Toolbar>
@@ -141,4 +141,5 @@ export default function NavBar({ toggleThemeMode }) {
 
 NavBar.propTypes = {
   toggleThemeMode: PropTypes.func.isRequired,
+  avatarImage: PropTypes.string.isRequired
 };

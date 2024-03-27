@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import "../App.css"; // 确保引入了CSS文件
+import { jwtDecode } from "jwt-decode";
 import {
   Box,
   createTheme,
@@ -13,10 +13,13 @@ import {
   InputAdornment,
   IconButton,
   Typography,
+  FormHelperText,
+  CircularProgress
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
 import { Edit, Save } from "@mui/icons-material";
+import UploadIcon from "@mui/icons-material/Upload";
 
 import { Theme } from "../theme/main";
 import Image01 from "../img/1.jpg";
@@ -25,7 +28,7 @@ import config from "../config.json";
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton,
+  MicrosoftLoginButton
 } from "react-social-login-buttons";
 
 ProfileAvatar.propTypes = {
@@ -37,14 +40,37 @@ export default function UserProfile() {
   const [themeMode, setThemeMode] = useState("light");
   const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
-    Name: "Sample Name",
-    Email: "Sample@Email.com",
-    Password: "Sample Password",
+    Name: "-- Error: Token Decode Error, Please Re-Login --",
+    Email: "-- Error: Token Decode Error, Please Re-Login --",
+    Password: "-- Error: Token Decode Error, Please Re-Login --",
     Linked_Account: {
       Google: "",
-      Microsoft: "",
-    },
+      Microsoft: ""
+    }
   });
+
+  // 添加解密逻辑
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // 从localStorage获取token
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
+        // 更新user_info中的数据
+        setUserInfo({
+          Name: decodedToken.name,
+          Email: decodedToken.email,
+          Password: decodedToken.password,
+          Linked_Account: {
+            Google: decodedToken.google_id,
+            Microsoft: decodedToken.microsoft_id
+          }
+        });
+        setImageSrc(decodedToken.avatar_url);
+      } catch (error) {
+        console.error("Token Decode Error：", error);
+      }
+    }
+  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
 
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
@@ -59,8 +85,8 @@ export default function UserProfile() {
       }
     >     
       <Box>
-        <Box sx={{ m: 1 }} className="hide-on-narrow">
-          <NavBar toggleThemeMode={toggleThemeMode} />
+        <Box sx={{ m: 1 }}>
+          <NavBar toggleThemeMode={toggleThemeMode} avatarImage={imageSrc} />
         </Box>
 
         <Box
@@ -69,7 +95,7 @@ export default function UserProfile() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "center"
           }}
         >
           <Box
@@ -82,7 +108,7 @@ export default function UserProfile() {
               m: 1,
               p: 1,
               width: "50%",
-              height: "100vh",
+              height: "100vh"
             }}
           >
             <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
@@ -93,37 +119,118 @@ export default function UserProfile() {
     </ThemeProvider>
   );
 }
-function ProfileAvatar({ imageSrc, setImageSrc }) { // 接收新的props
+
+function ProfileAvatar({ imageSrc, setImageSrc }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageSrc(reader.result); // 使用setImageSrc来更新图片源
-    };
+
     reader.readAsDataURL(file);
+
+    // 将图片显示在页面上
+    reader.onloadend = () => {
+      // 将图片传到后端
+      setIsUploading(true);
+      handleImageUpload(reader.result);
+
+      setImageSrc(reader.result);
+    };
+  };
+
+  const handleImageUpload = (ImageData) => {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        image: ImageData,
+        token: localStorage.getItem("token")
+      })
+    };
+
+    fetch(`${config.BACKEND_URL}/upload_avatar`, request)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(data.message);
+          localStorage.setItem("token", data.token);
+        }
+        setIsUploading(false);
+      }).catch((error) => {
+        alert("Error: Upload avatar to server failed, Please check server status.");
+        console.error("Error:", error);
+      });
   };
 
   return (
-    <Box>
-      <input
-        accept="image/*"
-        type="file"
-        onChange={handleImageChange}
-        style={{ display: 'none' }}
-        id="raised-button-file"
-      />
-      <label htmlFor="raised-button-file">
-        <IconButton component="span">
-          <Avatar
-            alt="User Avatar"
-            src={imageSrc} // 使用传递来的imageSrc作为图片源
-            sx={{
-              minWidth: "250px",
-              minHeight: "250px",
-            }}
+    <Box sx={{ position: "relative" }}>
+      {isUploading ? (
+        <CircularProgress size="10rem"/> // 上传中
+      ) : (
+        <>
+          <input
+            accept=".jpg,.jpeg,.png,.gif,.bmp"
+            type="file"
+            onChange={handleImageChange}
+            style={{ display: "none" }}
+            id="raised-button-file"
           />
-        </IconButton>
-      </label>
+          <label htmlFor="raised-button-file">
+            <IconButton
+              component="span"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Avatar
+                alt="User Avatar"
+                src={imageSrc}
+                sx={{
+                  minWidth: "250px",
+                  minHeight: "250px",
+                  filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
+                  transition: "filter 0.3s ease-in-out"
+                }}
+              />
+              {isHovered && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    borderRadius: 2,
+                    backgroundColor: "black",
+                    color: "#fff",
+                    padding: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  <UploadIcon fontSize="large" />
+                  <Typography variant="h5" sx={{ marginLeft: "4px" }}>
+                    Upload
+                  </Typography>
+                </Box>
+              )}
+            </IconButton>
+          </label>
+        </>
+      )}
     </Box>
   );
 }
@@ -141,10 +248,6 @@ function ProfileForm({ userInfo, setUserInfo }) {
   const handleMouseDown = (event) => {
     event.preventDefault();
   };
-
-  useEffect(() => {
-    console.log(userInfo);
-  }, [userInfo]);
 
   // 更改姓名
   const handleNameChange = (event) => {
@@ -168,8 +271,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Google: email,
-      },
+        Google: email
+      }
     };
     setUserInfo(updatedUserInfo);
   };
@@ -180,8 +283,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Microsoft: email,
-      },
+        Microsoft: email
+      }
     };
     setUserInfo(updatedUserInfo);
   };
@@ -235,7 +338,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
       </FormControl>
 
       {/* Password */}
-      <FormControl variant="outlined">
+      <FormControl variant="outlined" error={userInfo.Password === ""}>
         <InputLabel>Password</InputLabel>
         <OutlinedInput
           id="password"
@@ -256,6 +359,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
             </InputAdornment>
           }
         />
+        {userInfo.Password === "" && (
+          <FormHelperText id="component-error-text">
+            Empty password if you sign-up with google or microsoft account.
+            Please change it as soon as possible.
+          </FormHelperText>
+        )}
       </FormControl>
 
       {/* Google Link */}
@@ -306,8 +415,13 @@ function ProfileForm({ userInfo, setUserInfo }) {
   );
 }
 
+ProfileAvatar.propTypes = {
+  imageSrc: PropTypes.string.isRequired,
+  setImageSrc: PropTypes.func.isRequired
+};
+
 ProfileForm.propTypes = {
   userInfo: PropTypes.object.isRequired,
-  setUserInfo: PropTypes.func.isRequired,
+  setUserInfo: PropTypes.func.isRequired
 };
 

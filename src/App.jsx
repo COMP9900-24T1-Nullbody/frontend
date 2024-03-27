@@ -7,13 +7,15 @@ import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Home from "./pages/Home";
 import UserProfile from "./pages/UserProfile";
-import UserHistory from "./pages/History";
+import UserHistory from "./pages/UserHistory";
+import PasswordReset from "./pages/PasswordReset";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/reset" element={<PasswordReset />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />} />
