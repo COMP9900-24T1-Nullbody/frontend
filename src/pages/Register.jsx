@@ -16,7 +16,8 @@ import {
   InputAdornment,
   IconButton,
   FormHelperText,
-  OutlinedInput
+  OutlinedInput,
+  Paper // 添加 Paper 组件
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
@@ -174,48 +175,47 @@ function Register() {
 
   return (
     <Grid container width={"100vw"} height={"100vh"}>
-    {/* 封面图片，使用sx属性添加媒体查询来控制显示/隐藏 */}
-    <Grid item sm={8} md={8} sx={{ display: { md: 'block', xs: 'none' } }}>
-      <img
-        src={CoverImage}
-        alt="Login"
-        style={{ width: "100%", height: "100%", display: "block" }}
-      />
-    </Grid>
+      {/* 封面图片，使用sx属性添加媒体查询来控制显示/隐藏 */}
+      <Grid item sm={8} md={8} sx={{ display: { md: 'block', xs: 'none' } }}>
+        <img
+          src={CoverImage}
+          alt="Login"
+          style={{ width: "100%", height: "100%", display: "block" }}
+        />
+      </Grid>
 
-    {/* 表单 */}
-    <Grid
-      item
-      xs={12} // 当封面图片隐藏时占满所有可用空间
-      md={4} // 默认情况下占据部分空间
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        width: '100%', // 确保在封面图片隐藏时此项占满所有可用空间
-      }}
-    >
-        <Grid item id="form-title" marginBottom={4}>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
-              Welcome!
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
-              Sign up to access your dashboard
-            </Typography>
-          </Box>
-        </Grid>
+      {/* 表单 */}
+      <Grid
+        item
+        xs={12} // 当封面图片隐藏时占满所有可用空间
+        md={4} // 默认情况下占据部分空间
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          width: '100%', // 确保在封面图片隐藏时此项占满所有可用空间
+        }}
+      >
+        <Paper sx={{ padding: "20px", width: "70%" }}>
+          <Grid item id="form-title" marginBottom={4}>
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
+                Welcome!
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
+                Sign up to access your dashboard
+              </Typography>
+            </Box>
+          </Grid>
 
-        <Grid
-          item
-          container
-          rowSpacing={2}
-          id="form-inputs"
-          sx={{ display: "flex", justifyContent: "center", width: "70%" }}
-        >
-          <Grid item container spacing={2}>
-            {/* Sign Up with Microsoft account */}
+          <Grid
+            item
+            container
+            rowSpacing={2}
+            id="form-inputs"
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
             <Grid item xs={12}>
               <LoginSocialMicrosoft
                 client_id={config.MICROSOFT_CLIENTID}
@@ -236,7 +236,6 @@ function Register() {
               </LoginSocialMicrosoft>
             </Grid>
 
-            {/* Sign Up with Google account */}
             <Grid item xs={12}>
               <LoginSocialGoogle
                 client_id={config.GOOGLE_CLIENTID}
@@ -255,114 +254,111 @@ function Register() {
                 </GoogleLoginButton>
               </LoginSocialGoogle>
             </Grid>
-          </Grid>
 
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
 
-          {/* Register Form */}
-          <Grid item xs={12}>
-            <TextField
-              required
-              id="register-name"
-              label="Name"
-              variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              sx={{ width: "100%", marginBottom: "10px" }}
-            />
-            <TextField
-              required
-              id="register-email"
-              label="Email Address"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={EmailError}
-              helperText={EmailError ? "Invalid Email format!" : ""}
-              sx={{ width: "100%", marginBottom: "10px" }}
-            />
-
-            <FormControl
-              variant="outlined"
-              sx={{ width: "100%", marginBottom: "10px" }}
-            >
-              <InputLabel htmlFor="outlined-adornment-password">
-                Password *
-              </InputLabel>
-              <OutlinedInput
-                id="register-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password *"
+            <Grid item xs={12}>
+              <TextField
+                required
+                id="register-name"
+                label="Name"
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                sx={{ width: "100%", marginBottom: "10px" }}
               />
-            </FormControl>
-
-            {password !== "" && <PasswordStrengthBar password={password} />}
-
-            <FormControl
-              variant="outlined"
-              sx={{ width: "100%", marginBottom: "10px" }}
-            >
-              <InputLabel htmlFor="outlined-adornment-confirm-password">
-                Confirm Password *
-              </InputLabel>
-              <OutlinedInput
-                id="register-confirm-password"
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                error={ConfirmPasswordError}
-                helperText={ConfirmPasswordError ? "Password mismatch!" : ""}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle confirm password visibility"
-                      onClick={handleClickShowConfirmPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Confirm Password *"
+              <TextField
+                required
+                id="register-email"
+                label="Email Address"
+                variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={EmailError}
+                helperText={EmailError ? "Invalid Email format!" : ""}
+                sx={{ width: "100%", marginBottom: "10px" }}
               />
-              <FormHelperText error={ConfirmPasswordError}>
-                {ConfirmPasswordError ? "Password mismatch!" : ""}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
 
-          {/* Sign Up Button */}
-          <Grid item xs={12}>
-            <Button
-              style={{ textTransform: "none" }}
-              variant="contained"
-              sx={{ width: "100%" }}
-              onClick={handleNormalRegister}
-            >
-              Sign Up
-            </Button>
-          </Grid>
+              <FormControl
+                variant="outlined"
+                sx={{ width: "100%", marginBottom: "10px" }}
+              >
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password *
+                </InputLabel>
+                <OutlinedInput
+                  id="register-password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password *"
+                />
+              </FormControl>
 
-          {/* Already have an account */}
-          <Grid item xs={12} textAlign={"center"}>
-            Already have an account? <Link href="/login">Login here</Link>
+              {password !== "" && <PasswordStrengthBar password={password} />}
+
+              <FormControl
+                variant="outlined"
+                sx={{ width: "100%", marginBottom: "10px" }}
+              >
+                <InputLabel htmlFor="outlined-adornment-confirm-password">
+                  Confirm Password *
+                </InputLabel>
+                <OutlinedInput
+                  id="register-confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  error={ConfirmPasswordError}
+                  helperText={ConfirmPasswordError ? "Password mismatch!" : ""}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle confirm password visibility"
+                        onClick={handleClickShowConfirmPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Confirm Password *"
+                />
+                <FormHelperText error={ConfirmPasswordError}>
+                  {ConfirmPasswordError ? "Password mismatch!" : ""}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                style={{ textTransform: "none" }}
+                variant="contained"
+                sx={{ width: "100%" }}
+                onClick={handleNormalRegister}
+              >
+                Sign Up
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} textAlign={"center"}>
+              Already have an account? <Link href="/login">Login here</Link>
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
       </Grid>
 
       {/* Dialog for displaying login result */}
