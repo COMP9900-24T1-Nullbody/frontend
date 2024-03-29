@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import { Grid, FormControlLabel } from "@mui/material";
+import { Grid, FormControlLabel, useTheme } from "@mui/material"; // Import useTheme hook
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import AvatarMenu from "./AvatarMenu";
@@ -21,6 +21,8 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
   const [industry, setIndustry] = React.useState("");
   const [company, setCompany] = React.useState("");
   const [view, setView] = React.useState("single-company-view");
+  
+  const theme = useTheme(); // Access the current theme
 
   const IndustryChange = (event) => {
     setIndustry(event.target.value);
@@ -67,6 +69,7 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
                   value={industry}
                   label="Industry"
                   onChange={IndustryChange}
+                  sx={{ color: theme.palette.mode === 'dark' ? 'white' : 'black' }} // Conditional styling based on theme mode
                 >
                   <MenuItem value="Technology">Technology</MenuItem>
                   <MenuItem value="Healthcare">Healthcare</MenuItem>
@@ -89,6 +92,7 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
                   value={company}
                   label="Company"
                   onChange={CompanyChange}
+                  sx={{ color: theme.palette.mode === 'dark' ? 'white' : 'black' }} // Conditional styling based on theme mode
                 >
                   <MenuItem value={10}>Ten</MenuItem>
                   <MenuItem value={20}>Twenty</MenuItem>
@@ -104,8 +108,8 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
               alignContent="center"
             >
               <ToggleButtonGroup
-                color="primary"
-                sx={{ bgcolor: "white" }}
+                color={theme.palette.mode === 'dark' ? 'secondary' : 'primary'} // Adjust color based on theme mode
+                sx={{ bgcolor: theme.palette.mode === 'dark' ? 'black' : 'white' }} // Adjust background color based on theme mode
                 value={view}
                 exclusive
                 onChange={ViewChange}
