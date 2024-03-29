@@ -31,7 +31,7 @@ export default function Main() {
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
         alert("Error: Token may be expired, Please Re-Login.");
-        console.error("Token Decode Error：", error);
+        console.error("Token Decode Error:", error);
         localStorage.removeItem("token");
         navigate("/login");
       }

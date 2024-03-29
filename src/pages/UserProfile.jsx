@@ -31,13 +31,10 @@ import {
   MicrosoftLoginButton
 } from "react-social-login-buttons";
 
-ProfileAvatar.propTypes = {
-  imageSrc: PropTypes.string.isRequired,
-  setImageSrc: PropTypes.func.isRequired,
-};
-
 export default function UserProfile() {
   const [themeMode, setThemeMode] = useState("light");
+  const [mode, setMode] = useState("light"); // 定义 mode 变量并初始化为 "light"
+
   const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
     Name: "-- Error: Token Decode Error, Please Re-Login --",
@@ -74,8 +71,9 @@ export default function UserProfile() {
 
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+    setMode((prevMode) => (prevMode === "light" ? "dark" : "light")); // 更新 mode 变量
   };
-  
+
   return (
     <ThemeProvider
       theme={
@@ -83,14 +81,13 @@ export default function UserProfile() {
           ? createTheme(Theme("light"))
           : createTheme(Theme("dark"))
       }
-    >     
+    >
       <Box>
         <Box sx={{ m: 1 }}>
           <NavBar toggleThemeMode={toggleThemeMode} avatarImage={imageSrc} />
         </Box>
 
         <Box
-          className="full-screen-on-narrow"
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -112,7 +109,7 @@ export default function UserProfile() {
             }}
           >
             <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
-            <ProfileForm userInfo={userInfo} setUserInfo={setUserInfo} />
+            <ProfileForm userInfo={userInfo} setUserInfo={setUserInfo} mode={mode} /> {/* 传递 mode 变量 */}
           </Box>
         </Box>
       </Box>
@@ -234,9 +231,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
     </Box>
   );
 }
-
-
-function ProfileForm({ userInfo, setUserInfo }) {
+function ProfileForm({ userInfo, setUserInfo, mode }) {
   const [editName, setEditName] = React.useState(false);
   const [editEmail, setEditEmail] = React.useState(false);
   const [editPassword, setEditPassword] = React.useState(false);
@@ -292,8 +287,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
   return (
     <Stack spacing={2} sx={{ marginTop: 2, width: "70%" }}>
       {/* Name */}
-      <FormControl variant="outlined">
-        <InputLabel>Name</InputLabel>
+      <FormControl variant="outlined" sx={{ borderColor: mode === "dark" ? "#00000" : "inherit" }}>
+        <InputLabel sx={{ color: mode === "dark" ? "#000000" : "inherit" }}>Name</InputLabel>
         <OutlinedInput
           id="name"
           label="Name"
@@ -315,8 +310,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       </FormControl>
 
       {/* Email */}
-      <FormControl variant="outlined">
-        <InputLabel>Email</InputLabel>
+      <FormControl variant="outlined" sx={{ borderColor: mode === "dark" ? "#000000" : "inherit" }}>
+        <InputLabel sx={{ color: mode === "dark" ? "#000000" : "inherit" }}>Email</InputLabel>
         <OutlinedInput
           id="email"
           label="Email"
@@ -338,8 +333,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       </FormControl>
 
       {/* Password */}
-      <FormControl variant="outlined" error={userInfo.Password === ""}>
-        <InputLabel>Password</InputLabel>
+      <FormControl variant="outlined" error={userInfo.Password === ""} sx={{ borderColor: mode === "dark" ? "#000000" : "inherit" }}>
+        <InputLabel sx={{ color: mode === "dark" ? "#000000" : "inherit" }}>Password</InputLabel>
         <OutlinedInput
           id="password"
           label="Password"
@@ -366,6 +361,9 @@ function ProfileForm({ userInfo, setUserInfo }) {
           </FormHelperText>
         )}
       </FormControl>
+
+
+    
 
       {/* Google Link */}
       {userInfo.Linked_Account.Google === "" ? (
@@ -422,6 +420,6 @@ ProfileAvatar.propTypes = {
 
 ProfileForm.propTypes = {
   userInfo: PropTypes.object.isRequired,
-  setUserInfo: PropTypes.func.isRequired
+  setUserInfo: PropTypes.func.isRequired,
+  mode: PropTypes.string.isRequired // 添加 mode 属性的 PropTypes 定义
 };
-

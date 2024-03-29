@@ -1,12 +1,11 @@
-import { orange, lightGreen } from "@mui/material/colors";
-
+import { lightGreen } from "@mui/material/colors";
 export const Theme = (mode) => ({
   palette: {
     mode,
     primary: {
       ...(mode === "dark"
         ? {
-            main: orange[500],
+            main: "#000000", // 将主色调设置为黑色
           }
         : {
             main: lightGreen[300],
@@ -17,12 +16,12 @@ export const Theme = (mode) => ({
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          color: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+          color: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
           "&.Mui-checked": {
-            color: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+            color: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
           },
           "&.MuiCheckbox-indeterminate": {
-            color: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+            color: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
           },
         },
       },
@@ -30,9 +29,9 @@ export const Theme = (mode) => ({
     MuiRadio: {
       styleOverrides: {
         root: {
-          color: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+          color: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
           "&.Mui-checked": {
-            color: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+            color: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
           },
         },
       },
@@ -40,7 +39,7 @@ export const Theme = (mode) => ({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+          color: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
         },
       },
     },
@@ -48,7 +47,7 @@ export const Theme = (mode) => ({
       styleOverrides: {
         root: {
           "&.MuiAppBar-positionStatic": {
-            backgroundColor: mode === "dark" ? orange[200] : lightGreen[200], // 根据模式设置颜色
+            backgroundColor: mode === "dark" ? "#000000" : lightGreen[200], // 根据模式设置颜色
           },
         },
       },
