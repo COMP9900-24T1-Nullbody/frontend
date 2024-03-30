@@ -201,7 +201,7 @@ function Login() {
           width: '100%', // Ensures it occupies all available space when the cover image is hidden
         }}
       >
-        <Paper elevation={3} sx={{ padding: 2, width: '80%', maxWidth: 400 }}>
+        <Paper elevation={3} sx={{ padding: "25px", width: '100%', maxWidth: 400 }}>
           <Box
             sx={{
               display: 'flex',
