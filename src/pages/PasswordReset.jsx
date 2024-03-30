@@ -170,7 +170,7 @@ function PasswordReset() {
           flexDirection: "column"
         }}
       >
-        <Paper elevation={5} sx={{ padding: "25px", width: "80%" }}>
+        <Paper elevation={5} sx={{ padding: "25px", width: "80%", borderRadius: 10 }}>
           <Grid item id="form-title" marginBottom={4}>
             <Box sx={{ textAlign: "center" }}>
               <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>

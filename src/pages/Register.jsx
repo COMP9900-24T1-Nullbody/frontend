@@ -197,7 +197,7 @@ function Register() {
           width: '100%', // 确保在封面图片隐藏时此项占满所有可用空间
         }}
       >
-        <Paper elevation={3} sx={{ padding: "15px", width: '80%', maxWidth: 400 }}>
+        <Paper elevation={3} sx={{ padding: "15px", width: '80%', maxWidth: 400 , borderRadius: 10}}>
           <Grid item id="form-title" marginBottom={4}>
             <Box sx={{ textAlign: "center" }}>
               <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
