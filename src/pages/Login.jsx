@@ -83,7 +83,7 @@ function Login() {
     }
   }, []);
 
-  // Google OAuth
+  // OAuth
   const [GoogleProfile, setGoogleProfile] = useState([]);
   const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
@@ -135,6 +135,12 @@ function Login() {
       })
     };
 
+    if (email === "" || password === "") {
+      setDialogContent("Check if you filled in all the required fields.");
+      setOpenDialog(true);
+      return;
+    }
+
     if (!EmailError) {
       handleLogin(request);
     } else {
@@ -183,7 +189,6 @@ function Login() {
         <img
           src={CoverImage}
           alt="Login"
-          style={{ width: "100%", height: "100%", display: "block" }}
         />
       </Grid>
 
@@ -200,6 +205,7 @@ function Login() {
           flexDirection: "column"
         }}
       >
+        {/* Welcome Message */}
         <Grid item id="form-title" marginBottom={4}>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>

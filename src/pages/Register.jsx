@@ -29,10 +29,14 @@ import PasswordStrengthBar from "react-password-strength-bar";
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ErrorIcon from "@mui/icons-material/Cancel";
+import CorrectIcon from "@mui/icons-material/CheckCircle";
 
 import CoverImage from "../img/cover.webp";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
+
+import { green } from "@mui/material/colors";
 
 function Register() {
   const [name, setName] = useState("");
@@ -59,24 +63,94 @@ function Register() {
 
   // error/helperText config
   const [EmailError, setEmailError] = useState(false);
+  const [EmailMessage, setEmailMessage] = useState("");
+
+  const [PasswordLenError, setPasswordLenError] = useState(false);
+  const PasswordLenMessage = "Length is 8-16 characters.";
+
+  const [PasswordLowError, setPasswordLowError] = useState(false);
+  const PasswordLowMessage = "At least one lowercase letter.";
+
+  const [PasswordUpperError, setPasswordUpperError] = useState(false);
+  const PasswordUpperMessage = "At least one uppercase letter.";
+
+  const [PasswordSpecialError, setPasswordSpecialError] = useState(false);
+  const PasswordSpecialMessage = "At least one special character.";
+
   const [ConfirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [ConfirmPasswordMessage, setConfirmPasswordMessage] = useState("");
+
   useEffect(() => {
     if (validateEmail(email)) {
       setEmailError(false);
+      setEmailMessage("");
+
+      const request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      };
+      fetch(`${config.BACKEND_URL}/register_check/email`, request)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            setEmailError(true);
+            setEmailMessage(data.error);
+          } else {
+            setEmailError(false);
+            setEmailMessage(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } else {
       setEmailError(true);
+      setEmailMessage("Invalid Email format!");
     }
   }, [email]);
 
   useEffect(() => {
+    if (validatePasswordLen(password)) {
+      setPasswordLenError(false);
+    } else {
+      setPasswordLenError(true);
+    }
+
+    if (validatePasswordLow(password)) {
+      setPasswordLowError(false);
+    } else {
+      setPasswordLowError(true);
+    }
+
+    if (validatePasswordUpper(password)) {
+      setPasswordUpperError(false);
+    } else {
+      setPasswordUpperError(true);
+    }
+
+    if (validatePasswordSpecial(password)) {
+      setPasswordSpecialError(false);
+    } else {
+      setPasswordSpecialError(true);
+    }
+  }, [password]);
+
+  useEffect(() => {
     if (validateConfirmPassword(password, confirmPassword)) {
       setConfirmPasswordError(false);
+      setConfirmPasswordMessage("");
     } else {
       setConfirmPasswordError(true);
+      setConfirmPasswordMessage("Password mismatch!");
     }
   }, [password, confirmPassword]);
 
-  // Google OAuth
+  // OAuth
   const [GoogleProfile, setGoogleProfile] = useState([]);
   const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
@@ -131,7 +205,20 @@ function Register() {
       })
     };
 
-    if (!EmailError && !ConfirmPasswordError) {
+    if (name === "" || email === "" || password === "") {
+      setDialogContent("Check if you filled in all the required fields.");
+      setOpenDialog(true);
+      return;
+    }
+
+    if (
+      !EmailError &&
+      !PasswordLenError &&
+      !PasswordLowError &&
+      !PasswordUpperError &&
+      !PasswordSpecialError &&
+      !ConfirmPasswordError
+    ) {
       handleRegister(request);
     } else {
       setDialogContent(
@@ -173,13 +260,12 @@ function Register() {
   };
 
   return (
-    <Grid container width={"100vw"} height={"100vh"}>
+    <Grid container width={"100%"} height={"100%"}>
       {/* Cover Image */}
       <Grid item id="cover-img" xs={8}>
         <img
           src={CoverImage}
           alt="Register"
-          style={{ width: "100%", height: "100%", display: "block" }}
         />
       </Grid>
 
@@ -196,6 +282,7 @@ function Register() {
           flexDirection: "column"
         }}
       >
+        {/* Welcome Message */}
         <Grid item id="form-title" marginBottom={4}>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
@@ -214,47 +301,43 @@ function Register() {
           id="form-inputs"
           sx={{ display: "flex", justifyContent: "center", width: "70%" }}
         >
-          <Grid item container spacing={2}>
-            {/* Sign Up with Microsoft account */}
-            <Grid item xs={12}>
-              <LoginSocialMicrosoft
-                client_id={config.MICROSOFT_CLIENTID}
-                redirect_uri={window.location.href}
-                scope={"openid profile User.Read email"}
-                onResolve={({ provider, data }) => {
-                  console.log(provider);
-                  console.log(data);
-                  setMicrosoftProfile(data);
-                }}
-                onReject={(err) => {
-                  console.log(err);
-                }}
-              >
-                <MicrosoftLoginButton>
-                  Sign up with Microsoft account
-                </MicrosoftLoginButton>
-              </LoginSocialMicrosoft>
-            </Grid>
+          {/* Sign Up with Microsoft account */}
+          <Grid item xs={12}>
+            <LoginSocialMicrosoft
+              client_id={config.MICROSOFT_CLIENTID}
+              redirect_uri={window.location.href}
+              scope={"openid profile User.Read email"}
+              onResolve={({ provider, data }) => {
+                console.log(provider);
+                console.log(data);
+                setMicrosoftProfile(data);
+              }}
+              onReject={(err) => {
+                console.log(err);
+              }}
+            >
+              <MicrosoftLoginButton>
+                Sign up with Microsoft account
+              </MicrosoftLoginButton>
+            </LoginSocialMicrosoft>
+          </Grid>
 
-            {/* Sign Up with Google account */}
-            <Grid item xs={12}>
-              <LoginSocialGoogle
-                client_id={config.GOOGLE_CLIENTID}
-                redirect_uri={window.location.href}
-                onResolve={({ provider, data }) => {
-                  console.log(provider);
-                  console.log(data);
-                  setGoogleProfile(data);
-                }}
-                onReject={(err) => {
-                  console.log(err);
-                }}
-              >
-                <GoogleLoginButton>
-                  Sign up with Google account
-                </GoogleLoginButton>
-              </LoginSocialGoogle>
-            </Grid>
+          {/* Sign Up with Google account */}
+          <Grid item xs={12}>
+            <LoginSocialGoogle
+              client_id={config.GOOGLE_CLIENTID}
+              redirect_uri={window.location.href}
+              onResolve={({ provider, data }) => {
+                console.log(provider);
+                console.log(data);
+                setGoogleProfile(data);
+              }}
+              onReject={(err) => {
+                console.log(err);
+              }}
+            >
+              <GoogleLoginButton>Sign up with Google account</GoogleLoginButton>
+            </LoginSocialGoogle>
           </Grid>
 
           <Grid item xs={12}>
@@ -272,6 +355,7 @@ function Register() {
               onChange={(e) => setName(e.target.value)}
               sx={{ width: "100%", marginBottom: "10px" }}
             />
+
             <TextField
               required
               id="register-email"
@@ -280,7 +364,25 @@ function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={EmailError}
-              helperText={EmailError ? "Invalid Email format!" : ""}
+              helperText={
+                EmailError ? (
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <ErrorIcon fontSize="small" /> {EmailMessage}
+                  </Box>
+                ) : email !== "" ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: green[500]
+                    }}
+                  >
+                    <CorrectIcon fontSize="small" /> {EmailMessage}
+                  </Box>
+                ) : (
+                  ""
+                )
+              }
               sx={{ width: "100%", marginBottom: "10px" }}
             />
 
@@ -309,6 +411,82 @@ function Register() {
                 }
                 label="Password *"
               />
+              <FormHelperText
+                error={
+                  PasswordLenError ||
+                  PasswordLowError ||
+                  PasswordUpperError ||
+                  PasswordSpecialError
+                }
+              >
+                {password === "" ? (
+                  "" // 不显示任何内容
+                ) : (
+                  <Box>
+                    {PasswordLenError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {PasswordLenMessage}
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: green[500]
+                        }}
+                      >
+                        <CorrectIcon fontSize="small" /> {PasswordLenMessage}
+                      </Box>
+                    )}
+                    {PasswordLowError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {PasswordLowMessage}
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: green[500]
+                        }}
+                      >
+                        <CorrectIcon fontSize="small" /> {PasswordLowMessage}
+                      </Box>
+                    )}
+                    {PasswordUpperError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {PasswordUpperMessage}
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: green[500]
+                        }}
+                      >
+                        <CorrectIcon fontSize="small" /> {PasswordUpperMessage}
+                      </Box>
+                    )}
+                    {PasswordSpecialError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {PasswordSpecialMessage}
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: green[500]
+                        }}
+                      >
+                        <CorrectIcon fontSize="small" />{" "}
+                        {PasswordSpecialMessage}
+                      </Box>
+                    )}
+                  </Box>
+                )}
+              </FormHelperText>
             </FormControl>
 
             {password !== "" && <PasswordStrengthBar password={password} />}
@@ -326,7 +504,6 @@ function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 error={ConfirmPasswordError}
-                helperText={ConfirmPasswordError ? "Password mismatch!" : ""}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -341,7 +518,13 @@ function Register() {
                 label="Confirm Password *"
               />
               <FormHelperText error={ConfirmPasswordError}>
-                {ConfirmPasswordError ? "Password mismatch!" : ""}
+                {ConfirmPasswordError ? (
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <ErrorIcon fontSize="small" /> {ConfirmPasswordMessage}
+                  </Box>
+                ) : (
+                  ""
+                )}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -385,6 +568,48 @@ function validateEmail(email) {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+
+// Validate Password
+function validatePasswordLen(password) {
+  // 长度为8-16个字符
+  const lengthRegex = /^.{8,16}$/;
+  if (!lengthRegex.test(password)) {
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordLow(password) {
+  // 至少有一个小写字符
+  const lowercaseRegex = /[a-z]/;
+  if (!lowercaseRegex.test(password)) {
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordUpper(password) {
+  // 至少有一个大写字符
+  const uppercaseRegex = /[A-Z]/;
+  if (!uppercaseRegex.test(password)) {
+    return false;
+  }
+
+  return true;
+}
+
+function validatePasswordSpecial(password) {
+  // 至少有一个特殊字符，这里使用自定义的特殊字符列表
+  const specialChars = "!@#$%^&*()_+{}[\\]:\";'<>?,./|\\\\`~=-";
+  const specialRegex = new RegExp(`[${specialChars}]`);
+  if (!specialRegex.test(password)) {
+    return false;
+  }
+
+  return true;
 }
 
 // Validate Confirm Password
