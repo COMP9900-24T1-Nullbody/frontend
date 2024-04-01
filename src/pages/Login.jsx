@@ -38,6 +38,9 @@ function Login() {
   // navigate config
   const navigate = useNavigate();
 
+  // shadow config
+  const [boxShadow, setBoxShadow] = useState(3);
+
   // dialog config
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
@@ -183,19 +186,21 @@ function Login() {
   };
 
   return (
-    <Grid container width={"100vw"} height={"100vh"}>
+    <Grid
+      container
+      width={"100vw"}
+      height={"100vh"}
+      justifyContent="center"
+      alignItems="center"
+    >
       {/* Cover Image */}
       <Grid item id="cover-img" xs={8}>
-        <img
-          src={CoverImage}
-          alt="Login"
-        />
+        <img src={CoverImage} alt="Login" style={{ maxWidth: "100%" }} />
       </Grid>
 
       {/* Form */}
       <Grid
         item
-        container
         id="form-section"
         xs={4}
         sx={{
@@ -205,132 +210,170 @@ function Login() {
           flexDirection: "column"
         }}
       >
-        {/* Welcome Message */}
-        <Grid item id="form-title" marginBottom={4}>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
-              Welcome!
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
-              Log in to access your dashboard
-            </Typography>
-          </Box>
-        </Grid>
+        <Box
+          boxShadow={boxShadow}
+          sx={{
+            borderRadius: 4,
+            p: 4,
+            width: "80%",
+            transition: "box-shadow 0.5s ease", // 添加过渡效果
+          }}
+          onMouseEnter={() => {
+            setBoxShadow(24);
 
-        <Grid
-          item
-          container
-          rowSpacing={2}
-          id="form-inputs"
-          sx={{ display: "flex", justifyContent: "center", width: "70%" }}
+            const coverImg = document.getElementById("cover-img");
+            if (coverImg) {
+              coverImg.style.filter = "blur(8px)"; // 让Cover Image 虚化
+            }
+          }}
+          onMouseLeave={() => {
+            setBoxShadow(3);
+
+            const coverImg = document.getElementById("cover-img");
+            if (coverImg) {
+              coverImg.style.filter = "none"; // 恢复 Cover Image 正常显示
+            }
+          }}
         >
-          {/* Login with Microsoft account */}
-          <Grid item xs={12}>
-            <LoginSocialMicrosoft
-              client_id={config.MICROSOFT_CLIENTID}
-              redirect_uri={window.location.href}
-              scope={"openid profile User.Read email"}
-              onResolve={({ provider, data }) => {
-                console.log(provider);
-                console.log(data);
-                setMicrosoftProfile(data);
-              }}
-              onReject={(err) => {
-                console.log(err);
-              }}
+          <Grid
+            container
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column"
+            }}
+          >
+            {/* Welcome Message */}
+            <Grid item id="form-title" marginBottom={4}>
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
+                  Welcome!
+                </Typography>
+                <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
+                  Log in to access your dashboard
+                </Typography>
+              </Box>
+            </Grid>
+
+            <Grid
+              item
+              container
+              rowSpacing={2}
+              id="form-inputs"
+              sx={{ display: "flex", justifyContent: "center", width: "70%" }}
             >
-              <MicrosoftLoginButton>
-                Login with Microsoft account
-              </MicrosoftLoginButton>
-            </LoginSocialMicrosoft>
-          </Grid>
+              {/* Login with Microsoft account */}
+              <Grid item xs={12}>
+                <LoginSocialMicrosoft
+                  client_id={config.MICROSOFT_CLIENTID}
+                  redirect_uri={window.location.href}
+                  scope={"openid profile User.Read email"}
+                  onResolve={({ provider, data }) => {
+                    console.log(provider);
+                    console.log(data);
+                    setMicrosoftProfile(data);
+                  }}
+                  onReject={(err) => {
+                    console.log(err);
+                  }}
+                >
+                  <MicrosoftLoginButton>
+                    Login with Microsoft account
+                  </MicrosoftLoginButton>
+                </LoginSocialMicrosoft>
+              </Grid>
 
-          {/* Login with Google account */}
-          <Grid item xs={12}>
-            <LoginSocialGoogle
-              client_id={config.GOOGLE_CLIENTID}
-              redirect_uri={window.location.href}
-              onResolve={({ provider, data }) => {
-                console.log(provider);
-                console.log(data);
-                setGoogleProfile(data);
-              }}
-              onReject={(err) => {
-                console.log(err);
-              }}
-            >
-              <GoogleLoginButton>Login with Google account</GoogleLoginButton>
-            </LoginSocialGoogle>
-          </Grid>
+              {/* Login with Google account */}
+              <Grid item xs={12}>
+                <LoginSocialGoogle
+                  client_id={config.GOOGLE_CLIENTID}
+                  redirect_uri={window.location.href}
+                  onResolve={({ provider, data }) => {
+                    console.log(provider);
+                    console.log(data);
+                    setGoogleProfile(data);
+                  }}
+                  onReject={(err) => {
+                    console.log(err);
+                  }}
+                >
+                  <GoogleLoginButton>
+                    Login with Google account
+                  </GoogleLoginButton>
+                </LoginSocialGoogle>
+              </Grid>
 
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
 
-          {/* Login Form */}
-          <Grid item xs={12}>
-            <TextField
-              required
-              id="login-email"
-              label="Email Address"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={EmailError}
-              helperText={EmailErrorMessage}
-              sx={{ width: "100%", marginBottom: "10px" }}
-            />
-            <FormControl
-              variant="outlined"
-              sx={{ width: "100%", marginBottom: "10px" }}
-            >
-              <InputLabel htmlFor="standard-adornment-password">
-                Password *
-              </InputLabel>
-              <OutlinedInput
-                id="standard-adornment-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password *"
-              />
-            </FormControl>
-          </Grid>
+              {/* Login Form */}
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id="login-email"
+                  label="Email Address"
+                  variant="outlined"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={EmailError}
+                  helperText={EmailErrorMessage}
+                  sx={{ width: "100%", marginBottom: "10px" }}
+                />
+                <FormControl
+                  variant="outlined"
+                  sx={{ width: "100%", marginBottom: "10px" }}
+                >
+                  <InputLabel htmlFor="standard-adornment-password">
+                    Password *
+                  </InputLabel>
+                  <OutlinedInput
+                    id="standard-adornment-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password *"
+                  />
+                </FormControl>
+              </Grid>
 
-          {/* Forgot Password Link */}
-          <Grid item xs={12}>
-            <Link href="/reset">Forgot password?</Link>
-          </Grid>
+              {/* Forgot Password Link */}
+              <Grid item xs={12}>
+                <Link href="/reset">Forgot password?</Link>
+              </Grid>
 
-          {/* Login Button */}
-          <Grid item xs={12}>
-            <Button
-              style={{ textTransform: "none" }}
-              variant="contained"
-              sx={{ width: "100%" }}
-              onClick={handleNormalLogin}
-            >
-              Login
-            </Button>
-          </Grid>
+              {/* Login Button */}
+              <Grid item xs={12}>
+                <Button
+                  style={{ textTransform: "none" }}
+                  variant="contained"
+                  sx={{ width: "100%" }}
+                  onClick={handleNormalLogin}
+                >
+                  Login
+                </Button>
+              </Grid>
 
-          {/* Dont have an account */}
-          <Grid item xs={12} textAlign={"center"}>
-            Don&apos;t have an account?{" "}
-            <Link href="/register">Register here</Link>
+              {/* Dont have an account */}
+              <Grid item xs={12} textAlign={"center"}>
+                Don&apos;t have an account?{" "}
+                <Link href="/register">Register here</Link>
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
       </Grid>
 
       {/* Dialog for displaying login result */}

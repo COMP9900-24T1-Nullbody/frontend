@@ -47,6 +47,9 @@ function Register() {
   // navigate config
   const navigate = useNavigate();
 
+  // shadow config
+  const [boxShadow, setBoxShadow] = useState(3);
+
   // dialog config
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
@@ -260,19 +263,20 @@ function Register() {
   };
 
   return (
-    <Grid container width={"100%"} height={"100%"}>
+    <Grid
+      container
+      width={"100vw"}
+      height={"100vh"}
+      sx={{ justifyContent: "center", alignItems: "center" }}
+    >
       {/* Cover Image */}
       <Grid item id="cover-img" xs={8}>
-        <img
-          src={CoverImage}
-          alt="Register"
-        />
+        <img src={CoverImage} alt="Login" style={{ maxWidth: "100%" }} />
       </Grid>
 
       {/* Form */}
       <Grid
         item
-        container
         id="form-section"
         xs={4}
         sx={{
@@ -282,270 +286,317 @@ function Register() {
           flexDirection: "column"
         }}
       >
-        {/* Welcome Message */}
-        <Grid item id="form-title" marginBottom={4}>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
-              Welcome!
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
-              Sign up to access your dashboard
-            </Typography>
-          </Box>
-        </Grid>
+        <Box
+          boxShadow={boxShadow}
+          sx={{
+            borderRadius: 4,
+            p: 4,
+            width: "80%",
+            transition: "box-shadow 0.5s ease" // 添加过渡效果
+          }}
+          onMouseEnter={() => {
+            setBoxShadow(24);
 
-        <Grid
-          item
-          container
-          rowSpacing={2}
-          id="form-inputs"
-          sx={{ display: "flex", justifyContent: "center", width: "70%" }}
+            const coverImg = document.getElementById("cover-img");
+            if (coverImg) {
+              coverImg.style.filter = "blur(8px)"; // 让Cover Image 虚化
+            }
+          }}
+          onMouseLeave={() => {
+            setBoxShadow(3);
+
+            const coverImg = document.getElementById("cover-img");
+            if (coverImg) {
+              coverImg.style.filter = "none"; // 恢复 Cover Image 正常显示
+            }
+          }}
         >
-          {/* Sign Up with Microsoft account */}
-          <Grid item xs={12}>
-            <LoginSocialMicrosoft
-              client_id={config.MICROSOFT_CLIENTID}
-              redirect_uri={window.location.href}
-              scope={"openid profile User.Read email"}
-              onResolve={({ provider, data }) => {
-                console.log(provider);
-                console.log(data);
-                setMicrosoftProfile(data);
-              }}
-              onReject={(err) => {
-                console.log(err);
-              }}
+          <Grid
+            container
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column"
+            }}
+          >
+            {/* Welcome Message */}
+            <Grid item id="form-title" marginBottom={4}>
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
+                  Welcome!
+                </Typography>
+                <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
+                  Sign up to access your dashboard
+                </Typography>
+              </Box>
+            </Grid>
+
+            <Grid
+              item
+              container
+              rowSpacing={2}
+              id="form-inputs"
+              sx={{ display: "flex", justifyContent: "center", width: "70%" }}
             >
-              <MicrosoftLoginButton>
-                Sign up with Microsoft account
-              </MicrosoftLoginButton>
-            </LoginSocialMicrosoft>
-          </Grid>
+              {/* Sign Up with Microsoft account */}
+              <Grid item xs={12}>
+                <LoginSocialMicrosoft
+                  client_id={config.MICROSOFT_CLIENTID}
+                  redirect_uri={window.location.href}
+                  scope={"openid profile User.Read email"}
+                  onResolve={({ provider, data }) => {
+                    console.log(provider);
+                    console.log(data);
+                    setMicrosoftProfile(data);
+                  }}
+                  onReject={(err) => {
+                    console.log(err);
+                  }}
+                >
+                  <MicrosoftLoginButton>
+                    Sign up with Microsoft account
+                  </MicrosoftLoginButton>
+                </LoginSocialMicrosoft>
+              </Grid>
 
-          {/* Sign Up with Google account */}
-          <Grid item xs={12}>
-            <LoginSocialGoogle
-              client_id={config.GOOGLE_CLIENTID}
-              redirect_uri={window.location.href}
-              onResolve={({ provider, data }) => {
-                console.log(provider);
-                console.log(data);
-                setGoogleProfile(data);
-              }}
-              onReject={(err) => {
-                console.log(err);
-              }}
-            >
-              <GoogleLoginButton>Sign up with Google account</GoogleLoginButton>
-            </LoginSocialGoogle>
-          </Grid>
+              {/* Sign Up with Google account */}
+              <Grid item xs={12}>
+                <LoginSocialGoogle
+                  client_id={config.GOOGLE_CLIENTID}
+                  redirect_uri={window.location.href}
+                  onResolve={({ provider, data }) => {
+                    console.log(provider);
+                    console.log(data);
+                    setGoogleProfile(data);
+                  }}
+                  onReject={(err) => {
+                    console.log(err);
+                  }}
+                >
+                  <GoogleLoginButton>
+                    Sign up with Google account
+                  </GoogleLoginButton>
+                </LoginSocialGoogle>
+              </Grid>
 
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
 
-          {/* Register Form */}
-          <Grid item xs={12}>
-            <TextField
-              required
-              id="register-name"
-              label="Name"
-              variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              sx={{ width: "100%", marginBottom: "10px" }}
-            />
+              {/* Register Form */}
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id="register-name"
+                  label="Name"
+                  variant="outlined"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  sx={{ width: "100%", marginBottom: "10px" }}
+                />
 
-            <TextField
-              required
-              id="register-email"
-              label="Email Address"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={EmailError}
-              helperText={
-                EmailError ? (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <ErrorIcon fontSize="small" /> {EmailMessage}
-                  </Box>
-                ) : email !== "" ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: green[500]
-                    }}
+                <TextField
+                  required
+                  id="register-email"
+                  label="Email Address"
+                  variant="outlined"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={EmailError}
+                  helperText={
+                    EmailError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {EmailMessage}
+                      </Box>
+                    ) : email !== "" ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: green[500]
+                        }}
+                      >
+                        <CorrectIcon fontSize="small" /> {EmailMessage}
+                      </Box>
+                    ) : (
+                      ""
+                    )
+                  }
+                  sx={{ width: "100%", marginBottom: "10px" }}
+                />
+
+                <FormControl
+                  variant="outlined"
+                  sx={{ width: "100%", marginBottom: "10px" }}
+                >
+                  <InputLabel htmlFor="outlined-adornment-password">
+                    Password *
+                  </InputLabel>
+                  <OutlinedInput
+                    id="register-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password *"
+                  />
+                  <FormHelperText
+                    error={
+                      PasswordLenError ||
+                      PasswordLowError ||
+                      PasswordUpperError ||
+                      PasswordSpecialError
+                    }
                   >
-                    <CorrectIcon fontSize="small" /> {EmailMessage}
-                  </Box>
-                ) : (
-                  ""
-                )
-              }
-              sx={{ width: "100%", marginBottom: "10px" }}
-            />
+                    {password === "" ? (
+                      "" // 不显示任何内容
+                    ) : (
+                      <Box>
+                        {PasswordLenError ? (
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <ErrorIcon fontSize="small" /> {PasswordLenMessage}
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: green[500]
+                            }}
+                          >
+                            <CorrectIcon fontSize="small" />{" "}
+                            {PasswordLenMessage}
+                          </Box>
+                        )}
+                        {PasswordLowError ? (
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <ErrorIcon fontSize="small" /> {PasswordLowMessage}
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: green[500]
+                            }}
+                          >
+                            <CorrectIcon fontSize="small" />{" "}
+                            {PasswordLowMessage}
+                          </Box>
+                        )}
+                        {PasswordUpperError ? (
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <ErrorIcon fontSize="small" />{" "}
+                            {PasswordUpperMessage}
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: green[500]
+                            }}
+                          >
+                            <CorrectIcon fontSize="small" />{" "}
+                            {PasswordUpperMessage}
+                          </Box>
+                        )}
+                        {PasswordSpecialError ? (
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <ErrorIcon fontSize="small" />{" "}
+                            {PasswordSpecialMessage}
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: green[500]
+                            }}
+                          >
+                            <CorrectIcon fontSize="small" />{" "}
+                            {PasswordSpecialMessage}
+                          </Box>
+                        )}
+                      </Box>
+                    )}
+                  </FormHelperText>
+                </FormControl>
 
-            <FormControl
-              variant="outlined"
-              sx={{ width: "100%", marginBottom: "10px" }}
-            >
-              <InputLabel htmlFor="outlined-adornment-password">
-                Password *
-              </InputLabel>
-              <OutlinedInput
-                id="register-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password *"
-              />
-              <FormHelperText
-                error={
-                  PasswordLenError ||
-                  PasswordLowError ||
-                  PasswordUpperError ||
-                  PasswordSpecialError
-                }
-              >
-                {password === "" ? (
-                  "" // 不显示任何内容
-                ) : (
-                  <Box>
-                    {PasswordLenError ? (
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <ErrorIcon fontSize="small" /> {PasswordLenMessage}
-                      </Box>
-                    ) : (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: green[500]
-                        }}
-                      >
-                        <CorrectIcon fontSize="small" /> {PasswordLenMessage}
-                      </Box>
-                    )}
-                    {PasswordLowError ? (
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <ErrorIcon fontSize="small" /> {PasswordLowMessage}
-                      </Box>
-                    ) : (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: green[500]
-                        }}
-                      >
-                        <CorrectIcon fontSize="small" /> {PasswordLowMessage}
-                      </Box>
-                    )}
-                    {PasswordUpperError ? (
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <ErrorIcon fontSize="small" /> {PasswordUpperMessage}
-                      </Box>
-                    ) : (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: green[500]
-                        }}
-                      >
-                        <CorrectIcon fontSize="small" /> {PasswordUpperMessage}
-                      </Box>
-                    )}
-                    {PasswordSpecialError ? (
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <ErrorIcon fontSize="small" /> {PasswordSpecialMessage}
-                      </Box>
-                    ) : (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: green[500]
-                        }}
-                      >
-                        <CorrectIcon fontSize="small" />{" "}
-                        {PasswordSpecialMessage}
-                      </Box>
-                    )}
-                  </Box>
-                )}
-              </FormHelperText>
-            </FormControl>
+                {password !== "" && <PasswordStrengthBar password={password} />}
 
-            {password !== "" && <PasswordStrengthBar password={password} />}
+                <FormControl
+                  variant="outlined"
+                  sx={{ width: "100%", marginBottom: "10px" }}
+                >
+                  <InputLabel htmlFor="outlined-adornment-confirm-password">
+                    Confirm Password *
+                  </InputLabel>
+                  <OutlinedInput
+                    id="register-confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    error={ConfirmPasswordError}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle confirm password visibility"
+                          onClick={handleClickShowConfirmPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Confirm Password *"
+                  />
+                  <FormHelperText error={ConfirmPasswordError}>
+                    {ConfirmPasswordError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {ConfirmPasswordMessage}
+                      </Box>
+                    ) : (
+                      ""
+                    )}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
 
-            <FormControl
-              variant="outlined"
-              sx={{ width: "100%", marginBottom: "10px" }}
-            >
-              <InputLabel htmlFor="outlined-adornment-confirm-password">
-                Confirm Password *
-              </InputLabel>
-              <OutlinedInput
-                id="register-confirm-password"
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                error={ConfirmPasswordError}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle confirm password visibility"
-                      onClick={handleClickShowConfirmPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Confirm Password *"
-              />
-              <FormHelperText error={ConfirmPasswordError}>
-                {ConfirmPasswordError ? (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <ErrorIcon fontSize="small" /> {ConfirmPasswordMessage}
-                  </Box>
-                ) : (
-                  ""
-                )}
-              </FormHelperText>
-            </FormControl>
+              {/* Sign Up Button */}
+              <Grid item xs={12}>
+                <Button
+                  style={{ textTransform: "none" }}
+                  variant="contained"
+                  sx={{ width: "100%" }}
+                  onClick={handleNormalRegister}
+                >
+                  Sign Up
+                </Button>
+              </Grid>
+
+              {/* Already have an account */}
+              <Grid item xs={12} textAlign={"center"}>
+                Already have an account? <Link href="/login">Login here</Link>
+              </Grid>
+            </Grid>
           </Grid>
-
-          {/* Sign Up Button */}
-          <Grid item xs={12}>
-            <Button
-              style={{ textTransform: "none" }}
-              variant="contained"
-              sx={{ width: "100%" }}
-              onClick={handleNormalRegister}
-            >
-              Sign Up
-            </Button>
-          </Grid>
-
-          {/* Already have an account */}
-          <Grid item xs={12} textAlign={"center"}>
-            Already have an account? <Link href="/login">Login here</Link>
-          </Grid>
-        </Grid>
+        </Box>
       </Grid>
 
       {/* Dialog for displaying login result */}
