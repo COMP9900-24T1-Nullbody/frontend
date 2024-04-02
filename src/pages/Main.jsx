@@ -16,7 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 export default function Main() {
-  const [themeMode, setThemeMode] = useState("light");
+  const [themeColor, setThemeColor] = useState("");
 
   const [imageSrc, setImageSrc] = useState(Image01);
 
@@ -41,21 +41,11 @@ export default function Main() {
     }
   }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
 
-  const toggleThemeMode = () => {
-    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
-
   return (
-    <ThemeProvider
-      theme={
-        themeMode === "light"
-          ? createTheme(Theme("light"))
-          : createTheme(Theme("dark"))
-      }
-    >
+    <ThemeProvider theme={createTheme(Theme(themeColor))}>
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar toggleThemeMode={toggleThemeMode} avatarImage={imageSrc} />
+          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
         </Box>
 
         <Box sx={{ display: "flex" }}>

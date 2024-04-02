@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import AppBar from "@mui/material/AppBar";
@@ -10,26 +10,47 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import { Grid, FormControlLabel } from "@mui/material";
+import {
+  Grid,
+  FormControlLabel,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton
+} from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+
+import PaletteIcon from "@mui/icons-material/Palette";
+
 import AvatarMenu from "./AvatarMenu";
-import ModeSwitch from "./ModeSwitch"; // Import ModeSwitch component
+import { ColorPalette } from "./ColorPalette";
+import { Link } from "react-router-dom";
 
-export default function NavBar({ toggleThemeMode, avatarImage }) {
-  // Receive toggleThemeMode as a prop
-  const [industry, setIndustry] = React.useState("");
-  const [company, setCompany] = React.useState("");
-  const [view, setView] = React.useState("single-company-view");
+export default function NavBar({ setThemeColor, avatarImage }) {
+  const [industry, setIndustry] = useState("");
+  const [company, setCompany] = useState("");
+  const [view, setView] = useState("single-company-view");
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const IndustryChange = (event) => {
+  const handleIndustryChange = (event) => {
     setIndustry(event.target.value);
   };
-  const CompanyChange = (event) => {
+  const handleCompanyChange = (event) => {
     setCompany(event.target.value);
   };
-  const ViewChange = (event) => {
+  const handleViewChange = (event) => {
     setView(event.target.value);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   return (
@@ -43,7 +64,11 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
             justifyContent="center"
             alignItems="center"
           >
-            <LightbulbCircleIcon fontSize="large" />
+            <Link to="/main">
+              <IconButton>
+                <LightbulbCircleIcon fontSize="large" />
+              </IconButton>
+            </Link>
           </Grid>
 
           <Grid
@@ -66,7 +91,7 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
                 <Select
                   value={industry}
                   label="Industry"
-                  onChange={IndustryChange}
+                  onChange={handleIndustryChange}
                 >
                   <MenuItem value="Technology">Technology</MenuItem>
                   <MenuItem value="Healthcare">Healthcare</MenuItem>
@@ -88,7 +113,7 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
                 <Select
                   value={company}
                   label="Company"
-                  onChange={CompanyChange}
+                  onChange={handleCompanyChange}
                 >
                   <MenuItem value={10}>Ten</MenuItem>
                   <MenuItem value={20}>Twenty</MenuItem>
@@ -108,7 +133,7 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
                 sx={{ bgcolor: "white" }}
                 value={view}
                 exclusive
-                onChange={ViewChange}
+                onChange={handleViewChange}
                 aria-label="View Selection"
               >
                 <ToggleButton value="single-company-view">
@@ -129,17 +154,39 @@ export default function NavBar({ toggleThemeMode, avatarImage }) {
             alignItems="center"
           >
             <FormControlLabel
-              control={<ModeSwitch onChange={toggleThemeMode} />} // Pass toggleThemeMode to ModeSwitch
-            />
+              control={
+                <IconButton
+                  onClick={handleOpenDialog}
+                  sx={{
+                    background: "none",
+                    borderColor: "black",
+                    padding: "0"
+                  }}
+                >
+                  <PaletteIcon />
+                </IconButton>
+              }
+            ></FormControlLabel>
             <AvatarMenu avatarImage={avatarImage} />
           </Grid>
         </Grid>
       </Toolbar>
+
+      {/* Dialog for theme selection */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Select Theme Color</DialogTitle>
+        <DialogContent>
+          <ColorPalette setThemeColor={setThemeColor} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </AppBar>
   );
 }
 
 NavBar.propTypes = {
-  toggleThemeMode: PropTypes.func.isRequired,
+  setThemeColor: PropTypes.func.isRequired,
   avatarImage: PropTypes.string.isRequired
 };
