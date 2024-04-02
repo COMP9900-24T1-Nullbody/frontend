@@ -15,7 +15,7 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
-  OutlinedInput
+  OutlinedInput,
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
@@ -26,10 +26,13 @@ import {
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ErrorIcon from "@mui/icons-material/Cancel";
+import CorrectIcon from "@mui/icons-material/CheckCircle";
 
 import CoverImage from "../img/cover.webp";
 import config from "../config.json";
 import { useNavigate } from "react-router-dom";
+import { green } from "@mui/material/colors";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -58,7 +61,7 @@ function Login() {
   useEffect(() => {
     if (validateEmail(email)) {
       setEmailError(false);
-      setEmailErrorMessage("");
+      setEmailErrorMessage("Email format is correct!");
     } else {
       setEmailError(true);
       setEmailErrorMessage("Invalid Email format!");
@@ -194,7 +197,7 @@ function Login() {
       alignItems="center"
     >
       {/* Cover Image */}
-      <Grid item id="cover-img" xs={8}>
+      <Grid item id="cover-img" xs={0} md={8} sx={{ display: { xs: "none", md: "block" } }}>
         <img src={CoverImage} alt="Login" style={{ maxWidth: "100%" }} />
       </Grid>
 
@@ -202,12 +205,17 @@ function Login() {
       <Grid
         item
         id="form-section"
-        xs={4}
+        xs={12}
+        md={4}
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
+          position: "relative", // 相对定位，用于覆盖在虚化背景上面
+          zIndex: 1, // 提高层级，使得表单内容在虚化背景上方
+          backgroundColor: "rgba(255, 255, 255, 0.8)", // 添加半透明背景
+          padding: "20px", // 增加内边距
         }}
       >
         <Box
@@ -216,7 +224,7 @@ function Login() {
             borderRadius: 4,
             p: 4,
             width: "80%",
-            transition: "box-shadow 0.5s ease", // 添加过渡效果
+            transition: "box-shadow 0.5s ease" // 添加过渡效果
           }}
           onMouseEnter={() => {
             setBoxShadow(24);
@@ -318,7 +326,25 @@ function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   error={EmailError}
-                  helperText={EmailErrorMessage}
+                  helperText={
+                    EmailError ? (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <ErrorIcon fontSize="small" /> {EmailErrorMessage}
+                      </Box>
+                    ) : email !== "" ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: green[500]
+                        }}
+                      >
+                        <CorrectIcon fontSize="small" /> {EmailErrorMessage}
+                      </Box>
+                    ) : (
+                      ""
+                    )
+                  }
                   sx={{ width: "100%", marginBottom: "10px" }}
                 />
                 <FormControl

@@ -267,10 +267,11 @@ function Register() {
       container
       width={"100vw"}
       height={"100vh"}
-      sx={{ justifyContent: "center", alignItems: "center" }}
+      justifyContent="center"
+      alignItems="center"
     >
       {/* Cover Image */}
-      <Grid item id="cover-img" xs={8}>
+      <Grid item id="cover-img" xs={0} md={8} sx={{ display: { xs: "none", md: "block" } }}>
         <img src={CoverImage} alt="Login" style={{ maxWidth: "100%" }} />
       </Grid>
 
@@ -278,12 +279,17 @@ function Register() {
       <Grid
         item
         id="form-section"
-        xs={4}
+        xs={12}
+        md={4}
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column"
+          flexDirection: "column",
+          position: "relative", // 相对定位，用于覆盖在虚化背景上面
+          zIndex: 1, // 提高层级，使得表单内容在虚化背景上方
+          backgroundColor: "rgba(255, 255, 255, 0.8)", // 添加半透明背景
+          padding: "20px", // 增加内边距
         }}
       >
         <Box
