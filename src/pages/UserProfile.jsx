@@ -32,7 +32,7 @@ import {
 } from "react-social-login-buttons";
 
 export default function UserProfile() {
-  const [themeMode, setThemeMode] = useState("light");
+  const [themeColor, setThemeColor] = useState("");
 
   const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
@@ -68,21 +68,11 @@ export default function UserProfile() {
     }
   }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
 
-  const toggleThemeMode = () => {
-    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
-
   return (
-    <ThemeProvider
-      theme={
-        themeMode === "light"
-          ? createTheme(Theme("light"))
-          : createTheme(Theme("dark"))
-      }
-    >
+    <ThemeProvider theme={createTheme(Theme(themeColor))}>
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar toggleThemeMode={toggleThemeMode} avatarImage={imageSrc} />
+          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
         </Box>
 
         <Box
@@ -165,8 +155,11 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
           localStorage.setItem("token", data.token);
         }
         setIsUploading(false);
-      }).catch((error) => {
-        alert("Error: Upload avatar to server failed, Please check server status.");
+      })
+      .catch((error) => {
+        alert(
+          "Error: Upload avatar to server failed, Please check server status."
+        );
         console.error("Error:", error);
       });
   };
@@ -174,7 +167,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
   return (
     <Box sx={{ position: "relative" }}>
       {isUploading ? (
-        <CircularProgress size="10rem"/> // 上传中
+        <CircularProgress size="10rem" /> // 上传中
       ) : (
         <>
           <input
