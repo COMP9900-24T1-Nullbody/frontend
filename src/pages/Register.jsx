@@ -16,13 +16,13 @@ import {
   InputAdornment,
   IconButton,
   FormHelperText,
-  OutlinedInput
+  OutlinedInput,
 } from "@mui/material";
 
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton
+  MicrosoftLoginButton,
 } from "react-social-login-buttons";
 
 import PasswordStrengthBar from "react-password-strength-bar";
@@ -91,11 +91,11 @@ function Register() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email
-        })
+          email: email,
+        }),
       };
       fetch(`${config.BACKEND_URL}/register_check/email`, request)
         .then((response) => response.json())
@@ -161,7 +161,7 @@ function Register() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: GoogleProfile.name,
@@ -169,15 +169,15 @@ function Register() {
           password: "",
           google_id: GoogleProfile.sub,
           microsoft_id: "",
-          token: ""
-        })
+          token: "",
+        }),
       };
       handleRegister(request);
     } else if (MicrosoftProfile.length !== 0) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: MicrosoftProfile.displayName,
@@ -185,8 +185,8 @@ function Register() {
           password: "",
           google_id: "",
           microsoft_id: MicrosoftProfile.id,
-          token: ""
-        })
+          token: "",
+        }),
       };
       handleRegister(request);
     }
@@ -196,7 +196,7 @@ function Register() {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name,
@@ -204,8 +204,8 @@ function Register() {
         password,
         google_id: "",
         microsoft_id: "",
-        token: ""
-      })
+        token: "",
+      }),
     };
 
     if (name === "" || email === "" || password === "") {
@@ -271,7 +271,13 @@ function Register() {
       alignItems="center"
     >
       {/* Cover Image */}
-      <Grid item id="cover-img" xs={0} md={8} sx={{ display: { xs: "none", md: "block" } }}>
+      <Grid
+        item
+        id="cover-img"
+        xs={0}
+        md={8}
+        sx={{ display: { xs: "none", md: "block" } }}
+      >
         <img src={CoverImage} alt="Login" style={{ maxWidth: "100%" }} />
       </Grid>
 
@@ -298,7 +304,7 @@ function Register() {
             borderRadius: 4,
             p: 4,
             width: "80%",
-            transition: "box-shadow 0.5s ease" // 添加过渡效果
+            transition: "box-shadow 0.5s ease", // 添加过渡效果
           }}
           onMouseEnter={() => {
             setBoxShadow(24);
@@ -323,7 +329,7 @@ function Register() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             {/* Welcome Message */}
@@ -420,7 +426,7 @@ function Register() {
                         sx={{
                           display: "flex",
                           alignItems: "center",
-                          color: green[500]
+                          color: green[500],
                         }}
                       >
                         <CorrectIcon fontSize="small" /> {EmailMessage}
@@ -478,7 +484,7 @@ function Register() {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              color: green[500]
+                              color: green[500],
                             }}
                           >
                             <CorrectIcon fontSize="small" />{" "}
@@ -494,7 +500,7 @@ function Register() {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              color: green[500]
+                              color: green[500],
                             }}
                           >
                             <CorrectIcon fontSize="small" />{" "}
@@ -511,7 +517,7 @@ function Register() {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              color: green[500]
+                              color: green[500],
                             }}
                           >
                             <CorrectIcon fontSize="small" />{" "}
@@ -528,7 +534,7 @@ function Register() {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              color: green[500]
+                              color: green[500],
                             }}
                           >
                             <CorrectIcon fontSize="small" />{" "}

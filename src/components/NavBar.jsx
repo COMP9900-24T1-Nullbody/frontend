@@ -18,7 +18,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -160,7 +160,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
                   sx={{
                     background: "none",
                     borderColor: "black",
-                    padding: "0"
+                    padding: "0",
                   }}
                 >
                   <PaletteIcon />
@@ -188,5 +188,5 @@ export default function NavBar({ setThemeColor, avatarImage }) {
 
 NavBar.propTypes = {
   setThemeColor: PropTypes.func.isRequired,
-  avatarImage: PropTypes.string.isRequired
+  avatarImage: PropTypes.string.isRequired,
 };
