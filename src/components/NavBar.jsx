@@ -30,7 +30,9 @@ import CompanySelect from "./NavBar/CompanySelect";
 export default function NavBar({ setThemeColor, avatarImage }) {
   const [countryCode, setCountryCode] = useState("");
 
-  const [view, setView] = useState("single-company-view");
+  // Set initial view based on current location
+  const initialView = location.pathname === "/main/single" ? "single-company-view" : "comparison-view";
+  const [view, setView] = useState(initialView);
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleViewChange = (event) => {
