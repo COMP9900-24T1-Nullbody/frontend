@@ -75,7 +75,8 @@ export default function UserProfile() {
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
       <Box>
-        <Box sx={{ m: 1 }}>
+        {/* 使用媒体查询隐藏 NavBar */}
+        <Box sx={{ m: 1, '@media (max-width: 960px)': { display: 'none' } }}>
           <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
         </Box>
 
@@ -108,7 +109,6 @@ export default function UserProfile() {
     </ThemeProvider>
   );
 }
-
 function ProfileAvatar({ imageSrc, setImageSrc }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
