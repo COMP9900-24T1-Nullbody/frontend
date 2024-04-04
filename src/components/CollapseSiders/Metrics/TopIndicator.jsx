@@ -54,7 +54,7 @@ const TopIndicator = ({
       <Box>
         <WeightButton
           initial_weight={topIndicatorItem.weight}
-          onSave={onWeightSave}
+          onWeightSave={onWeightSave}
         />
       </Box>
 
