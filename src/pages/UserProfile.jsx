@@ -14,7 +14,8 @@ import {
   IconButton,
   Typography,
   FormHelperText,
-  CircularProgress
+  CircularProgress,
+  Grid
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -74,12 +75,18 @@ export default function UserProfile() {
 
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
-      <Box>
-        <Box sx={{ m: 1 }}>
-          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
-        </Box>
-
-        <Box
+      <Grid container justifyContent="center">
+        <Grid item xs={12}>
+          <Box sx={{ m: 1 }}>
+            <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={10}
+          md={8}
+          lg={6}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -96,15 +103,14 @@ export default function UserProfile() {
               boxShadow: 3,
               m: 1,
               p: 1,
-              width: "50%",
-              height: "100vh"
+              height: "100%"
             }}
           >
             <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
             <ProfileForm userInfo={userInfo} setUserInfo={setUserInfo} />
           </Box>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </ThemeProvider>
   );
 }
