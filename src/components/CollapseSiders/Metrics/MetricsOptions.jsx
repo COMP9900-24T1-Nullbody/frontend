@@ -91,7 +91,7 @@ export default function NestedCheckbox() {
   };
 
   return (
-    <Box>
+    <Box border={calculateTopBorder(data)}>
       {data.map((topIndicatorItem, index) => (
         <Box key={index}>
           <TopIndicator
@@ -118,7 +118,10 @@ export default function NestedCheckbox() {
             timeout="auto"
             unmountOnExit
           >
-            <Box sx={{ pl: 2, pr: 2 }}>
+            <Box
+              sx={{ pl: 2, pr: 2 }}
+              border={calculateSubBorder(topIndicatorItem.subIndicators)}
+            >
               {topIndicatorItem.subIndicators.map(
                 (subIndicatorItem, subIndicatorIndex) => (
                   <SubIndicator
@@ -172,4 +175,21 @@ export default function NestedCheckbox() {
       ))}
     </Box>
   );
+}
+
+function calculateTopBorder(data) {
+  const totalWeight = data.reduce(
+    (accumulator, item) => accumulator + item.weight,
+    0
+  );
+  return totalWeight !== 1 ? "2px solid red" : "none";
+}
+
+function calculateSubBorder(subIndicators) {
+  let totalWeight = subIndicators.reduce(
+    (accumulator, subIndicator) => accumulator + subIndicator.weight,
+    0
+  );
+
+  return totalWeight !== 1 ? "2px solid red" : "none";
 }
