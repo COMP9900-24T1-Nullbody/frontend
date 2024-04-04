@@ -25,14 +25,14 @@ const TopIndicator = ({
     >
       <Box>
         <Checkbox
-          checked={topIndicatorItem.subIndicatorren.every(
+          checked={topIndicatorItem.subIndicators.every(
             (subIndicator) => subIndicator.checked
           )}
           indeterminate={
-            topIndicatorItem.subIndicatorren.some(
+            topIndicatorItem.subIndicators.some(
               (subIndicator) => subIndicator.checked
             ) &&
-            !topIndicatorItem.subIndicatorren.every(
+            !topIndicatorItem.subIndicators.every(
               (subIndicator) => subIndicator.checked
             )
           }
@@ -79,7 +79,7 @@ TopIndicator.propTypes = {
     topIndicator: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     weight: PropTypes.number.isRequired,
-    subIndicatorren: PropTypes.arrayOf(
+    subIndicators: PropTypes.arrayOf(
       PropTypes.shape({
         subIndicator: PropTypes.string.isRequired,
         checked: PropTypes.bool.isRequired,

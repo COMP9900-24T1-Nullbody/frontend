@@ -18,7 +18,7 @@ export default function NestedCheckbox() {
 
     const updatedData = data.map((topIndicatorItem) => {
       if (topIndicatorItem.topIndicator === topIndicator) {
-        const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
+        const updatedSubIndicators = topIndicatorItem.subIndicators.map(
           (subIndicatorItem) => ({
             ...subIndicatorItem,
             checked:
@@ -29,7 +29,7 @@ export default function NestedCheckbox() {
         );
         return {
           ...topIndicatorItem,
-          subIndicatorren: updatedSubIndicatorren
+          subIndicators: updatedSubIndicators
         };
       }
       return topIndicatorItem;
@@ -50,10 +50,10 @@ export default function NestedCheckbox() {
     const topIndicatorItem = data.find(
       (item) => item.topIndicator === topIndicator
     );
-    const allChecked = topIndicatorItem.subIndicatorren.every(
+    const allChecked = topIndicatorItem.subIndicators.every(
       (subIndicatorItem) => subIndicatorItem.checked
     );
-    const allUnchecked = topIndicatorItem.subIndicatorren.every(
+    const allUnchecked = topIndicatorItem.subIndicators.every(
       (subIndicatorItem) => !subIndicatorItem.checked
     );
 
@@ -69,7 +69,7 @@ export default function NestedCheckbox() {
   const handleSubIndicatorClick = (topIndicator, subIndicator) => {
     const updatedData = data.map((topIndicatorItem) => {
       if (topIndicatorItem.topIndicator === topIndicator) {
-        const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
+        const updatedSubIndicators = topIndicatorItem.subIndicators.map(
           (subIndicatorItem) => {
             if (subIndicatorItem.subIndicator === subIndicator) {
               return {
@@ -82,7 +82,7 @@ export default function NestedCheckbox() {
         );
         return {
           ...topIndicatorItem,
-          subIndicatorren: updatedSubIndicatorren
+          subIndicators: updatedSubIndicators
         };
       }
       return topIndicatorItem;
@@ -121,7 +121,7 @@ export default function NestedCheckbox() {
             unmountOnExit
           >
             <Box sx={{ pl: 2, pr: 2 }}>
-              {topIndicatorItem.subIndicatorren.map(
+              {topIndicatorItem.subIndicators.map(
                 (subIndicatorItem, subIndicatorIndex) => (
                   <SubIndicator
                     key={subIndicatorIndex}

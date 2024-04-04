@@ -3,7 +3,7 @@
     "topIndicator": "TopIndicator_1",
     "description": "This is TopIndicator_1",
     "weight": 0.15,
-    "subIndicatorren": [
+    "subIndicators": [
       {
         "subIndicator": "SubIndicator_1 SubIndicator_1 SubIndicator_1",
         "checked": false,
@@ -22,7 +22,7 @@
     "topIndicator": "TopIndicator2",
     "description": "This is TopIndicator_2",
     "weight": 0.45,
-    "subIndicatorren": [
+    "subIndicators": [
       {
         "subIndicator": "SubIndicator_1",
         "checked": true,
