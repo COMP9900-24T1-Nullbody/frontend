@@ -99,7 +99,7 @@ function PasswordReset() {
           setOpenDialog(true);
 
           setTimeout(() => {
-            navigate("/main");
+            navigate("/main/single");
           }, 1500);
         }
       })

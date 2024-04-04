@@ -15,7 +15,7 @@ import Image01 from "../img/1.jpg";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
-export default function Main() {
+export default function SingleCompanyView() {
   const [themeColor, setThemeColor] = useState("");
 
   const [imageSrc, setImageSrc] = useState(Image01);

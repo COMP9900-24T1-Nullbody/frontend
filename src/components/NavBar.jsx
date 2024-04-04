@@ -18,7 +18,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
+  IconButton
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -64,7 +64,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
             justifyContent="center"
             alignItems="center"
           >
-            <Link to="/main">
+            <Link to="/main/single">
               <IconButton>
                 <LightbulbCircleIcon fontSize="large" />
               </IconButton>
@@ -136,10 +136,18 @@ export default function NavBar({ setThemeColor, avatarImage }) {
                 onChange={handleViewChange}
                 aria-label="View Selection"
               >
-                <ToggleButton value="single-company-view">
+                <ToggleButton
+                  component={Link}
+                  to="/main/single"
+                  value="single-company-view"
+                >
                   Single Company View
                 </ToggleButton>
-                <ToggleButton value="comparison-view">
+                <ToggleButton
+                  component={Link}
+                  to="/main/multi"
+                  value="comparison-view"
+                >
                   Comparison View
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -160,7 +168,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
                   sx={{
                     background: "none",
                     borderColor: "black",
-                    padding: "0",
+                    padding: "0"
                   }}
                 >
                   <PaletteIcon />
@@ -188,5 +196,5 @@ export default function NavBar({ setThemeColor, avatarImage }) {
 
 NavBar.propTypes = {
   setThemeColor: PropTypes.func.isRequired,
-  avatarImage: PropTypes.string.isRequired,
+  avatarImage: PropTypes.string.isRequired
 };

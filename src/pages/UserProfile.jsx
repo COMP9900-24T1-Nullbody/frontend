@@ -197,8 +197,8 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
                 alt="User Avatar"
                 src={imageSrc}
                 sx={{
-                  minWidth: "250px",
-                  minHeight: "250px",
+                  minWidth: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
+                  minHeight: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
                   filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
                   transition: "filter 0.3s ease-in-out"
                 }}
