@@ -7,6 +7,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import config from "../../config.json";
 
 export default function ViewTable({ selectedCompany }) {
@@ -14,7 +17,6 @@ export default function ViewTable({ selectedCompany }) {
 
   useEffect(() => {
     if (selectedCompany) {
-      // 发送POST请求
       fetch(`${config.BACKEND_URL}/company_info`, {
         method: "POST",
         headers: {
@@ -24,14 +26,20 @@ export default function ViewTable({ selectedCompany }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          // 保存数据到状态变量
           setCompanyData(data.company_info);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
     }
-  }, [selectedCompany]); // 仅在 selectedCompany 发生变化时执行回调
+  }, [selectedCompany]);
+
+  useEffect(() => {
+    // 更新表格数据
+    if (companyData) {
+      console.log("Company data updated:", companyData);
+    }
+  }, [companyData]);
 
   if (!companyData) {
     return <div>Loading...</div>;
@@ -53,7 +61,20 @@ export default function ViewTable({ selectedCompany }) {
           {companyData.map((item, index) => (
             <TableRow key={index}>
               {columns.map((column) => (
-                <TableCell key={column}>{item[column]}</TableCell>
+                <TableCell key={column}>
+                  {column === "metric_name" ? (
+                    <>
+                      {item[column]}{" "}
+                      <Tooltip title={item.metric_description}>
+                        <IconButton>
+                          <ErrorOutlineOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  ) : (
+                    item[column]
+                  )}
+                </TableCell>
               ))}
             </TableRow>
           ))}
