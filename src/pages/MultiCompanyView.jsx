@@ -5,9 +5,6 @@ import CollapseSiderMenu from "../components/CollapseSideMenu";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 
 import ViewTable from "../components/Views/ViewTable";
-import ViewBarChart from "../components/Views/ViewBarChart";
-import ViewLineChart from "../components/Views/ViewLineChart";
-import ViewPieChart from "../components/Views/ViewPieChart";
 
 import { Theme } from "../theme/main";
 
@@ -15,7 +12,7 @@ import Image01 from "../img/1.jpg";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
-export default function Main() {
+export default function MultiConpanyView() {
   const [themeColor, setThemeColor] = useState("");
 
   const [imageSrc, setImageSrc] = useState(Image01);
@@ -54,9 +51,6 @@ export default function Main() {
           </Box>
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
             <ViewTable />
-            <ViewBarChart />
-            <ViewLineChart />
-            <ViewPieChart />
           </Box>
         </Box>
       </Box>

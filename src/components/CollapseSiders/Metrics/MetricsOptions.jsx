@@ -18,7 +18,7 @@ export default function NestedCheckbox() {
 
     const updatedData = data.map((topIndicatorItem) => {
       if (topIndicatorItem.topIndicator === topIndicator) {
-        const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
+        const updatedSubIndicators = topIndicatorItem.subIndicators.map(
           (subIndicatorItem) => ({
             ...subIndicatorItem,
             checked:
@@ -29,7 +29,7 @@ export default function NestedCheckbox() {
         );
         return {
           ...topIndicatorItem,
-          subIndicatorren: updatedSubIndicatorren
+          subIndicators: updatedSubIndicators
         };
       }
       return topIndicatorItem;
@@ -50,10 +50,10 @@ export default function NestedCheckbox() {
     const topIndicatorItem = data.find(
       (item) => item.topIndicator === topIndicator
     );
-    const allChecked = topIndicatorItem.subIndicatorren.every(
+    const allChecked = topIndicatorItem.subIndicators.every(
       (subIndicatorItem) => subIndicatorItem.checked
     );
-    const allUnchecked = topIndicatorItem.subIndicatorren.every(
+    const allUnchecked = topIndicatorItem.subIndicators.every(
       (subIndicatorItem) => !subIndicatorItem.checked
     );
 
@@ -69,7 +69,7 @@ export default function NestedCheckbox() {
   const handleSubIndicatorClick = (topIndicator, subIndicator) => {
     const updatedData = data.map((topIndicatorItem) => {
       if (topIndicatorItem.topIndicator === topIndicator) {
-        const updatedSubIndicatorren = topIndicatorItem.subIndicatorren.map(
+        const updatedSubIndicators = topIndicatorItem.subIndicators.map(
           (subIndicatorItem) => {
             if (subIndicatorItem.subIndicator === subIndicator) {
               return {
@@ -82,7 +82,7 @@ export default function NestedCheckbox() {
         );
         return {
           ...topIndicatorItem,
-          subIndicatorren: updatedSubIndicatorren
+          subIndicators: updatedSubIndicators
         };
       }
       return topIndicatorItem;
@@ -90,22 +90,8 @@ export default function NestedCheckbox() {
     setData(updatedData);
   };
 
-  const handleSaveWeight = (topIndicator, newWeight) => {
-    // Update the data with the new weight
-    const updatedData = data.map((item) => {
-      if (item.topIndicator === topIndicator) {
-        return {
-          ...item,
-          weight: newWeight
-        };
-      }
-      return item;
-    });
-    setData(updatedData);
-  };
-
   return (
-    <Box>
+    <Box border={calculateTopBorder(data)}>
       {data.map((topIndicatorItem, index) => (
         <Box key={index}>
           <TopIndicator
@@ -113,15 +99,30 @@ export default function NestedCheckbox() {
             open={openTopIndicators[topIndicatorItem.topIndicator] || false}
             onTopIndicatorClick={handleTopIndicatorClick}
             onTopCheckBoxClick={handleTopCheckBoxClick}
-            onWeightSave={handleSaveWeight}
+            onWeightSave={(newWeight) => {
+              // Update the data with the new weight
+              const updatedData = data.map((item) => {
+                if (item.topIndicator === topIndicatorItem.topIndicator) {
+                  return {
+                    ...item,
+                    weight: newWeight
+                  };
+                }
+                return item;
+              });
+              setData(updatedData);
+            }}
           />
           <Collapse
             in={openTopIndicators[topIndicatorItem.topIndicator]}
             timeout="auto"
             unmountOnExit
           >
-            <Box sx={{ pl: 2, pr: 2 }}>
-              {topIndicatorItem.subIndicatorren.map(
+            <Box
+              sx={{ pl: 2, pr: 2 }}
+              border={calculateSubBorder(topIndicatorItem.subIndicators)}
+            >
+              {topIndicatorItem.subIndicators.map(
                 (subIndicatorItem, subIndicatorIndex) => (
                   <SubIndicator
                     key={subIndicatorIndex}
@@ -132,7 +133,39 @@ export default function NestedCheckbox() {
                         subIndicator
                       )
                     }
-                    onWeightSave={handleSaveWeight}
+                    onWeightSave={(newWeight) => {
+                      // 更新数据中的子指示器权重
+                      const updatedData = data.map((item) => {
+                        // 找到匹配的顶级指示器
+                        if (
+                          topIndicatorItem.topIndicator === item.topIndicator
+                        ) {
+                          // 更新子指示器权重
+                          const updatedSubIndicators =
+                            topIndicatorItem.subIndicators.map((subitem) => {
+                              // 找到匹配的子指示器
+                              if (
+                                subIndicatorItem.subIndicator ===
+                                subitem.subIndicator
+                              ) {
+                                return {
+                                  ...subitem,
+                                  weight: newWeight
+                                };
+                              }
+                              return subitem;
+                            });
+                          // 返回更新后的顶级指示器
+                          return {
+                            ...item,
+                            subIndicators: updatedSubIndicators
+                          };
+                        }
+                        return item;
+                      });
+                      // 将更新后的数据保存到父组件中
+                      setData(updatedData);
+                    }}
                   />
                 )
               )}
@@ -142,4 +175,21 @@ export default function NestedCheckbox() {
       ))}
     </Box>
   );
+}
+
+function calculateTopBorder(data) {
+  const totalWeight = data.reduce(
+    (accumulator, item) => accumulator + item.weight,
+    0
+  );
+  return totalWeight !== 1 ? "2px solid red" : "none";
+}
+
+function calculateSubBorder(subIndicators) {
+  let totalWeight = subIndicators.reduce(
+    (accumulator, subIndicator) => accumulator + subIndicator.weight,
+    0
+  );
+
+  return totalWeight !== 1 ? "2px solid red" : "none";
 }

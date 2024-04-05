@@ -5,10 +5,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
 import LightbulbCircleIcon from "@mui/icons-material/LightbulbCircle";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 
 import {
   Grid,
@@ -28,19 +24,17 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import AvatarMenu from "./AvatarMenu";
 import { ColorPalette } from "./ColorPalette";
 import { Link } from "react-router-dom";
+import CountrySelect from "./NavBar/CountrySelect";
+import CompanySelect from "./NavBar/CompanySelect";
 
-export default function NavBar({ setThemeColor, avatarImage }) {
-  const [industry, setIndustry] = useState("");
-  const [company, setCompany] = useState("");
-  const [view, setView] = useState("single-company-view");
+export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany }) {
+  const [countryCode, setCountryCode] = useState("");
+
+  // Set initial view based on current location
+  const initialView = location.pathname === "/main/single" ? "single-company-view" : "comparison-view";
+  const [view, setView] = useState(initialView);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleIndustryChange = (event) => {
-    setIndustry(event.target.value);
-  };
-  const handleCompanyChange = (event) => {
-    setCompany(event.target.value);
-  };
   const handleViewChange = (event) => {
     setView(event.target.value);
   };
@@ -64,7 +58,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
             justifyContent="center"
             alignItems="center"
           >
-            <Link to="/main">
+            <Link to="/main/single">
               <IconButton>
                 <LightbulbCircleIcon fontSize="large" />
               </IconButton>
@@ -86,20 +80,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
               justifyContent="center"
               alignContent="center"
             >
-              <FormControl fullWidth>
-                <InputLabel>Industry</InputLabel>
-                <Select
-                  value={industry}
-                  label="Industry"
-                  onChange={handleIndustryChange}
-                >
-                  <MenuItem value="Technology">Technology</MenuItem>
-                  <MenuItem value="Healthcare">Healthcare</MenuItem>
-                  <MenuItem value="Finance">Finance</MenuItem>
-                  <MenuItem value="Manufacturing">Manufacturing</MenuItem>
-                  <MenuItem value="Energy">Energy</MenuItem>
-                </Select>
-              </FormControl>
+              <CountrySelect onCountryChange={setCountryCode} />
             </Grid>
             <Grid
               item
@@ -108,18 +89,10 @@ export default function NavBar({ setThemeColor, avatarImage }) {
               justifyContent="center"
               alignContent="center"
             >
-              <FormControl fullWidth>
-                <InputLabel>Company</InputLabel>
-                <Select
-                  value={company}
-                  label="Company"
-                  onChange={handleCompanyChange}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
+              <CompanySelect
+                country_code={countryCode}
+                setSelectedCompany={setSelectedCompany}
+              />
             </Grid>
             <Grid
               item
@@ -136,10 +109,18 @@ export default function NavBar({ setThemeColor, avatarImage }) {
                 onChange={handleViewChange}
                 aria-label="View Selection"
               >
-                <ToggleButton value="single-company-view">
+                <ToggleButton
+                  component={Link}
+                  to="/main/single"
+                  value="single-company-view"
+                >
                   Single Company View
                 </ToggleButton>
-                <ToggleButton value="comparison-view">
+                <ToggleButton
+                  component={Link}
+                  to="/main/multi"
+                  value="comparison-view"
+                >
                   Comparison View
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -188,5 +169,6 @@ export default function NavBar({ setThemeColor, avatarImage }) {
 
 NavBar.propTypes = {
   setThemeColor: PropTypes.func.isRequired,
-  avatarImage: PropTypes.string.isRequired
+  avatarImage: PropTypes.string.isRequired,
+  setSelectedCompany: PropTypes.func.isRequired
 };

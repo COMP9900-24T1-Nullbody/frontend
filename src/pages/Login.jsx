@@ -178,7 +178,7 @@ function Login() {
           setDialogContent(data.message);
           setOpenDialog(true);
           setTimeout(() => {
-            navigate("/main");
+            navigate("/main/single");
           }, 1500);
         }
       })

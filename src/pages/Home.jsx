@@ -12,6 +12,10 @@ export default function Home() {
       <br />
       <Link to="/register">register页面</Link>
       <br />
+      <Link to="/main/single">single company页面</Link>
+      <br />
+      <Link to="/main/multi">multiple company页面</Link>
+      <br />
       <Link to="/user/profile">profile页面</Link>
       <br />
       <Link to="/user/history">analysis history页面</Link>

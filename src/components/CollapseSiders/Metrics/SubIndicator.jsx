@@ -33,7 +33,7 @@ const SubIndicator = ({
       <Box>
         <WeightButton
           initial_weight={subIndicatorItem.weight}
-          onSave={onWeightSave}
+          onWeightSave={onWeightSave}
         />
       </Box>
     </Box>

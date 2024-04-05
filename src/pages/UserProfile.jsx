@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
@@ -15,7 +14,8 @@ import {
   IconButton,
   Typography,
   FormHelperText,
-  CircularProgress
+  CircularProgress,
+  Grid
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -75,12 +75,18 @@ export default function UserProfile() {
 
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
-      <Box>
-        <Box sx={{ m: 1 }}>
-          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
-        </Box>
-
-        <Box
+      <Grid container justifyContent="center">
+        <Grid item xs={12}>
+          <Box sx={{ m: 1 }}>
+            <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={10}
+          md={8}
+          lg={6}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -97,15 +103,14 @@ export default function UserProfile() {
               boxShadow: 3,
               m: 1,
               p: 1,
-              width: "50%",
-              height: "100vh"
+              height: "100%"
             }}
           >
             <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
             <ProfileForm userInfo={userInfo} setUserInfo={setUserInfo} />
           </Box>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </ThemeProvider>
   );
 }
@@ -192,8 +197,8 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
                 alt="User Avatar"
                 src={imageSrc}
                 sx={{
-                  minWidth: "250px",
-                  minHeight: "250px",
+                  minWidth: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
+                  minHeight: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
                   filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
                   transition: "filter 0.3s ease-in-out"
                 }}
@@ -471,6 +476,37 @@ function ProfileForm({ userInfo, setUserInfo }) {
     if (validateEmail(userInfo.Email)) {
       setEmailError(false);
       setEmailMessage("Valid Email format!");
+
+      const request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: userInfo.Email
+        })
+      };
+      fetch(`${config.BACKEND_URL}/register_check/email`, request)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            if (
+              userInfo.Email == jwtDecode(localStorage.getItem("token")).email
+            ) {
+              setEmailError(false);
+              setEmailMessage("You haven't change your email yet!");
+            } else {
+              setEmailError(true);
+              setEmailMessage(data.error);
+            }
+          } else {
+            setEmailError(false);
+            setEmailMessage(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } else {
       setEmailError(true);
       setEmailMessage("Invalid Email format!");
@@ -562,25 +598,27 @@ function ProfileForm({ userInfo, setUserInfo }) {
             </InputAdornment>
           }
         />
-        <FormHelperText error={EmailError}>
-          {EmailError ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <ErrorIcon fontSize="small" /> {EmailMessage}
-            </Box>
-          ) : userInfo.Email !== "" ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                color: green[500]
-              }}
-            >
-              <CorrectIcon fontSize="small" /> {EmailMessage}
-            </Box>
-          ) : (
-            ""
-          )}
-        </FormHelperText>
+        {emailEditable && (
+          <FormHelperText error={EmailError}>
+            {EmailError ? (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <ErrorIcon fontSize="small" /> {EmailMessage}
+              </Box>
+            ) : userInfo.Email !== "" ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: green[500]
+                }}
+              >
+                <CorrectIcon fontSize="small" /> {EmailMessage}
+              </Box>
+            ) : (
+              ""
+            )}
+          </FormHelperText>
+        )}
       </FormControl>
 
       {/* Password */}
@@ -621,10 +659,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
         ) : (
           <FormHelperText
             error={
-              PasswordLenError ||
-              PasswordLowError ||
-              PasswordUpperError ||
-              PasswordSpecialError
+              PasswordLowError || PasswordUpperError || PasswordSpecialError
             }
           >
             {userInfo.Password === "" ? (
@@ -714,7 +749,9 @@ function ProfileForm({ userInfo, setUserInfo }) {
           <GoogleLoginButton>Link with Google account</GoogleLoginButton>
         </LoginSocialGoogle>
       ) : (
-        <Typography>Linked with: Google ID - {userInfo.Linked_Account.Google}</Typography>
+        <Typography>
+          Linked with: Google ID - {userInfo.Linked_Account.Google}
+        </Typography>
       )}
 
       {/* Microsoft Link */}
@@ -795,15 +832,6 @@ function validatePasswordSpecial(password) {
   }
 
   return true;
-}
-
-// Validate Confirm Password
-function validateConfirmPassword(password, confirmPassword) {
-  if (password === confirmPassword) {
-    return true;
-  } else {
-    return false;
-  }
 }
 
 ProfileAvatar.propTypes = {
