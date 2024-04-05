@@ -7,7 +7,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 import config from "../../config.json";
 
-const CompanySelect = ({ country_code }) => {
+const CompanySelect = ({ country_code, setSelectedCompany }) => {
   const [companies, setCompanies] = useState([]);
   const [value, setValue] = useState("");
 
@@ -45,6 +45,8 @@ const CompanySelect = ({ country_code }) => {
       value={value} // Set value for Autocomplete
       onChange={(event, newValue) => {
         setValue(newValue); // Update input value when selection changes
+        console.log(`value is ${newValue}`);
+        setSelectedCompany(newValue);
       }}
       getOptionLabel={(option) => option}
       renderOption={(props, option) => (
@@ -60,10 +62,6 @@ const CompanySelect = ({ country_code }) => {
         <TextField
           {...params}
           disabled={country_code === ""}
-          value={value} // Set value for TextField
-          onChange={(event) => {
-            setValue(event.target.value); // Update input value on change
-          }}
           label="Choose a company"
           inputProps={{
             ...params.inputProps,
@@ -78,5 +76,6 @@ const CompanySelect = ({ country_code }) => {
 export default CompanySelect;
 
 CompanySelect.propTypes = {
-  country_code: PropTypes.string.isRequired
+  country_code: PropTypes.string.isRequired,
+  setSelectedCompany: PropTypes.func.isRequired
 };

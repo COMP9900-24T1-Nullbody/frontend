@@ -27,7 +27,7 @@ import { Link } from "react-router-dom";
 import CountrySelect from "./NavBar/CountrySelect";
 import CompanySelect from "./NavBar/CompanySelect";
 
-export default function NavBar({ setThemeColor, avatarImage }) {
+export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany }) {
   const [countryCode, setCountryCode] = useState("");
 
   // Set initial view based on current location
@@ -91,6 +91,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
             >
               <CompanySelect
                 country_code={countryCode}
+                setSelectedCompany={setSelectedCompany}
               />
             </Grid>
             <Grid
@@ -168,5 +169,6 @@ export default function NavBar({ setThemeColor, avatarImage }) {
 
 NavBar.propTypes = {
   setThemeColor: PropTypes.func.isRequired,
-  avatarImage: PropTypes.string.isRequired
+  avatarImage: PropTypes.string.isRequired,
+  setSelectedCompany: PropTypes.func.isRequired
 };

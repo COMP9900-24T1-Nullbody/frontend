@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Box, createTheme, ThemeProvider, List, ListItem, ListItemText, Divider, IconButton } from '@mui/material';
 import NavBar from '../components/NavBar';
 import ViewTable from "../components/Views/ViewTable";
-import ViewBarChart from "../components/Views/ViewBarChart";
-import ViewLineChart from "../components/Views/ViewLineChart";
-import ViewPieChart from "../components/Views/ViewPieChart";
+
 import { Theme } from '../theme/main';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -62,9 +60,6 @@ export default function UserHistory() {
           {selectedCompany && (
             <>
               <ViewTable company={selectedCompany} />
-              <ViewBarChart company={selectedCompany} />
-              <ViewLineChart company={selectedCompany} />
-              <ViewPieChart company={selectedCompany} />
             </>
           )}
         </Box>

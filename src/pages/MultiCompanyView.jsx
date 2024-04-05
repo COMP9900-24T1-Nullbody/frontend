@@ -5,9 +5,6 @@ import CollapseSiderMenu from "../components/CollapseSideMenu";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 
 import ViewTable from "../components/Views/ViewTable";
-import ViewBarChart from "../components/Views/ViewBarChart";
-import ViewLineChart from "../components/Views/ViewLineChart";
-import ViewPieChart from "../components/Views/ViewPieChart";
 
 import { Theme } from "../theme/main";
 
@@ -54,9 +51,6 @@ export default function MultiConpanyView() {
           </Box>
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
             <ViewTable />
-            <ViewBarChart />
-            <ViewLineChart />
-            <ViewPieChart />
           </Box>
         </Box>
       </Box>

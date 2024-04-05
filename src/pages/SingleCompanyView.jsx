@@ -5,9 +5,6 @@ import CollapseSiderMenu from "../components/CollapseSideMenu";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 
 import ViewTable from "../components/Views/ViewTable";
-import ViewBarChart from "../components/Views/ViewBarChart";
-import ViewLineChart from "../components/Views/ViewLineChart";
-import ViewPieChart from "../components/Views/ViewPieChart";
 
 import { Theme } from "../theme/main";
 
@@ -16,6 +13,8 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 export default function SingleCompanyView() {
+  const [selectedCompany, setSelectedCompany] = useState("");
+
   const [themeColor, setThemeColor] = useState("");
 
   const [imageSrc, setImageSrc] = useState(Image01);
@@ -45,7 +44,7 @@ export default function SingleCompanyView() {
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
+          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} setSelectedCompany={setSelectedCompany}/>
         </Box>
 
         <Box sx={{ display: "flex" }}>
@@ -53,10 +52,7 @@ export default function SingleCompanyView() {
             <CollapseSiderMenu />
           </Box>
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            <ViewTable />
-            <ViewBarChart />
-            <ViewLineChart />
-            <ViewPieChart />
+            <ViewTable selectedCompany={selectedCompany} />
           </Box>
         </Box>
       </Box>
