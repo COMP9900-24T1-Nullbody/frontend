@@ -8,12 +8,20 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import FrameworkOptions from "./FrameworksOptions";
 import { Box, Button } from "@mui/material";
+import { SimpleDialog } from "./CustomizeDialog";
 
 export default function CollapseFrameworks() {
-  const [open, setOpen] = React.useState(true);
-
+  const [expanded, setExpanded] = React.useState(true);
   const handleClick = () => {
-    setOpen(!open);
+    setExpanded(!expanded);
+  };
+
+  const [dialog_open, setDialogOpen] = React.useState(false);
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -21,16 +29,19 @@ export default function CollapseFrameworks() {
       <Box>
         <ListItemButton onClick={handleClick}>
           <ListItemText primary="FRAMEWORKS" />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {expanded ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
       </Box>
 
       <Box>
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
           <FrameworkOptions />
           <Box sx={{ pl: 4 }}>
-            <Button variant="outlined">+ Customize A Framework</Button>
+            <Button variant="outlined" onClick={handleDialogOpen}>
+              + Customize A Framework
+            </Button>
           </Box>
+          <SimpleDialog open={dialog_open} handleClose={handleDialogClose} handleSave={handleDialogClose}/>
         </Collapse>
       </Box>
     </Box>

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { Box, Checkbox, IconButton, Tooltip, Typography } from "@mui/material";
@@ -10,16 +11,18 @@ const SubIndicator = ({
   onWeightSave
 }) => {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", maxWidth: "100%", pl: 2 }}>
+    <Box
+      sx={{ display: "flex", alignItems: "center", maxWidth: "100%", pl: 2 }}
+    >
       <Box>
         <Checkbox
           checked={subIndicatorItem.checked}
-          onChange={() => onSubIndicatorClick(subIndicatorItem.subIndicator)}
+          onChange={() => onSubIndicatorClick(subIndicatorItem.name)}
         />
       </Box>
 
       <Box sx={{ flexGrow: 1 }}>
-        <Typography>{subIndicatorItem.subIndicator}</Typography>
+        <Typography>{subIndicatorItem.name}</Typography>
       </Box>
 
       <Box>
@@ -42,10 +45,11 @@ const SubIndicator = ({
 
 SubIndicator.propTypes = {
   subIndicatorItem: PropTypes.shape({
-    checked: PropTypes.bool.isRequired,
-    subIndicator: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    weight: PropTypes.number.isRequired
+    weight: PropTypes.number.isRequired,
+    checked: PropTypes.bool.isRequired,
+    score: PropTypes.number.isRequired
   }).isRequired,
   onSubIndicatorClick: PropTypes.func.isRequired,
   onWeightSave: PropTypes.func.isRequired

@@ -1,0 +1,109 @@
+{
+    "company_name": "1911 Gold Corp",
+    "framework": "IFRS",
+    "score": 89,
+    "Risks": [
+        {
+            "name": "Environmental Risk",
+            "weight": 0.6,
+            "indicators": [
+                {
+                    "name": "Co2_emission",
+                    "weight": 0.2,
+                    "description": "this is Co2 emission description",
+                    "metrics": [
+                        {
+                            "name": "POLICY_CHILD_LABOR",
+                            "description": "this is description1",
+                            "weight": 0.2,
+                            "checked": false,
+                            "score": 80
+                        },
+                        {
+                            "name": "POLICY_WATER_EFFICIENCY",
+                            "description": "this is description2",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        }
+                    ]
+                },
+                {
+                    "name": "So2_emission",
+                    "weight": 0.2,
+                    "description": "this is So2 emmission description",
+                    "metrics": [
+                        {
+                            "name": "POLICY_CHILD_LABOR",
+                            "description": "this is description3",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        },
+                        {
+                            "name": "POLICY_WATER_EFFICIENCY",
+                            "description": "this is description4",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Social Risk",
+            "weight": 0.2,
+            "indicators": [
+                {
+                    "name": "S_1",
+                    "weight": 0.2,
+                    "description": "this is S_1 description",
+                    "metrics": [
+                        {
+                            "name": "POLICY_CHILD_LABOR",
+                            "description": "this is description5",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        },
+                        {
+                            "name": "POLICY_WATER_EFFICIENCY",
+                            "description": "this is description6",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Governmental Risk",
+            "weight": 0.2,
+            "indicators": [
+                {
+                    "name": "G_1",
+                    "weight": 0.2,
+                    "description": "this is G_1 description",
+                    "metrics": [
+                        {
+                            "name": "POLICY_CHILD_LABOR",
+                            "description": "this is description7",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        },
+                        {
+                            "name": "POLICY_WATER_EFFICIENCY",
+                            "description": "this is description8",
+                            "weight": 0.2,
+                            "checked": true,
+                            "score": 80
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
