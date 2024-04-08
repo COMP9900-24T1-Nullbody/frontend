@@ -13,7 +13,7 @@ import { Box } from "@mui/material";
 export default function CollapseSiderMenu() {
   return (
     <Box sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-      <List sx={{ width: "100%", maxWidth: 450 }}>
+      <List sx={{ width: "100%", maxWidth: 500 }}>
         <Grid container>
           {/* Frameworks */}
           <Grid item xs={12}>

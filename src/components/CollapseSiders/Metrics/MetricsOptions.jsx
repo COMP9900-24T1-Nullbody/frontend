@@ -3,12 +3,34 @@ import { Box, Collapse } from "@mui/material";
 import TopIndicator from "./TopIndicator.jsx";
 import SubIndicator from "./SubIndicator.jsx";
 
-import sample from "./sample.json";
+import config from "../../../config.json";
 
 export default function NestedCheckbox() {
   const [data, setData] = useState([]);
   useEffect(() => {
-    setData(sample.Risks);
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        company_name: "Rosetta Stone Inc",
+        framework: "IFRS"
+      })
+    };
+    fetch(`${config.BACKEND_URL}/company_info/v3`, request)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          setData(data.Risks);
+        }
+      })
+      .catch((error) => {
+        alert("Error: Get metrics failed, Please check server status.");
+        console.error("Error:", error);
+      });
   }, []);
 
   const [openTopIndicators, setOpenTopIndicators] = useState({});
