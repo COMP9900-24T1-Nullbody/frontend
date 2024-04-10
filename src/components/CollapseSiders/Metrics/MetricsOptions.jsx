@@ -7,28 +7,43 @@ import SubIndicator from "./SubIndicator.jsx";
 export default function MetricsOptions({ data, setData }) {
   const [openTopIndicators, setOpenTopIndicators] = useState({});
 
-  const handleTopCheckBoxClick = (topIndicator) => {
-    const currentStatus = getCurrentStatus(topIndicator);
+  const handleTopCheckBoxClick = (
+    RiskItem,
+    topIndicatorItem,
+    subIndicatorItem
+  ) => {
+    const currentStatus = getCurrentStatus(RiskItem, topIndicatorItem);
 
-    const updatedData = data.map((topIndicatorItem) => {
-      if (topIndicatorItem.name === topIndicator) {
-        const updatedSubIndicators = topIndicatorItem.metrics.map(
-          (subIndicatorItem) => ({
-            ...subIndicatorItem,
-            checked:
-              currentStatus === "intermediate"
-                ? true
-                : !subIndicatorItem.checked,
-          })
-        );
+    const updatedData = data.map((item) => {
+      if (RiskItem === item) {
+        const updatedTopIndicators = item.indicators.map((topitem) => {
+          if (topIndicatorItem === topitem) {
+            const updatedSubIndicators = topitem.metrics.map((subitem) => {
+              if (subIndicatorItem === subitem) {
+                return {
+                  ...subitem,
+                  checked:
+                    currentStatus === "intermediate"
+                      ? true
+                      : !subIndicatorItem.checked,
+                };
+              }
+              return subitem;
+            });
+            return {
+              ...topitem,
+              metrics: updatedSubIndicators,
+            };
+          }
+          return topitem;
+        });
         return {
-          ...topIndicatorItem,
-          metrics: updatedSubIndicators,
+          ...item,
+          indicators: updatedTopIndicators,
         };
       }
-      return topIndicatorItem;
+      return item;
     });
-
     setData(updatedData);
   };
 
@@ -40,8 +55,10 @@ export default function MetricsOptions({ data, setData }) {
     });
   };
 
-  const getCurrentStatus = (topIndicator) => {
-    const topIndicatorItem = data.find((item) => item.name === topIndicator);
+  const getCurrentStatus = (RiskItem, topIndicator) => {
+    const topIndicatorItem = RiskItem.indicators.find(
+      (item) => item === topIndicator
+    );
     const allChecked = topIndicatorItem.metrics.every(
       (subIndicatorItem) => subIndicatorItem.checked
     );
@@ -58,26 +75,37 @@ export default function MetricsOptions({ data, setData }) {
     }
   };
 
-  const handleSubIndicatorClick = (topIndicator, subIndicator) => {
-    const updatedData = data.map((topIndicatorItem) => {
-      if (topIndicatorItem.name === topIndicator) {
-        const updatedSubIndicators = topIndicatorItem.metrics.map(
-          (subIndicatorItem) => {
-            if (subIndicatorItem.name === subIndicator) {
-              return {
-                ...subIndicatorItem,
-                checked: !subIndicatorItem.checked,
-              };
-            }
-            return subIndicatorItem;
+  const handleSubIndicatorClick = (
+    RiskItem,
+    topIndicatorItem,
+    subIndicatorItem
+  ) => {
+    const updatedData = data.map((item) => {
+      if (RiskItem === item) {
+        const updatedTopIndicators = item.indicators.map((topitem) => {
+          if (topIndicatorItem === topitem) {
+            const updatedSubIndicators = topitem.metrics.map((subitem) => {
+              if (subIndicatorItem === subitem) {
+                return {
+                  ...subitem,
+                  checked: !subIndicatorItem.checked,
+                };
+              }
+              return subitem;
+            });
+            return {
+              ...topitem,
+              metrics: updatedSubIndicators,
+            };
           }
-        );
+          return topitem;
+        });
         return {
-          ...topIndicatorItem,
-          metrics: updatedSubIndicators,
+          ...item,
+          indicators: updatedTopIndicators,
         };
       }
-      return topIndicatorItem;
+      return item;
     });
     setData(updatedData);
   };
@@ -92,7 +120,9 @@ export default function MetricsOptions({ data, setData }) {
                 topIndicatorItem={topIndicatorItem}
                 open={openTopIndicators[topIndicatorItem.name] || false}
                 onTopIndicatorClick={handleTopIndicatorClick}
-                onTopCheckBoxClick={handleTopCheckBoxClick}
+                onTopCheckBoxClick={() => {
+                  handleTopCheckBoxClick(RiskItem, topIndicatorItem);
+                }}
                 onWeightSave={(newWeight) => {
                   // Update the data with the new weight
                   const updatedData = data.map((item) => {
@@ -129,10 +159,11 @@ export default function MetricsOptions({ data, setData }) {
                       <SubIndicator
                         key={subIndicatorIndex}
                         subIndicatorItem={subIndicatorItem}
-                        onSubIndicatorClick={(subIndicator) =>
+                        onSubIndicatorClick={() =>
                           handleSubIndicatorClick(
-                            topIndicatorItem.name,
-                            subIndicator
+                            RiskItem,
+                            topIndicatorItem,
+                            subIndicatorItem
                           )
                         }
                         onWeightSave={(newWeight) => {
