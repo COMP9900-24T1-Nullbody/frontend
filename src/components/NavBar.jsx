@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom"; // Import useLocation hook
 
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -26,6 +27,9 @@ import { ColorPalette } from "./ColorPalette";
 import { Link } from "react-router-dom";
 
 export default function NavBar({ setThemeColor, avatarImage }) {
+  // Use useLocation hook to get current location
+  const location = useLocation();
+
   // Set initial view based on current location
   const initialView =
     location.pathname === "/main/single"
@@ -44,6 +48,14 @@ export default function NavBar({ setThemeColor, avatarImage }) {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  // Function to check if ToggleButtonGroup should be shown
+  const shouldShowToggleButtonGroup = () => {
+    return (
+      location.pathname !== "/user/profile" &&
+      location.pathname !== "/user/history"
+    );
   };
 
   return (
@@ -66,6 +78,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
           </Grid>
 
           {/* View Selection Toggle Buttons */}
+
           <Grid
             item
             container
@@ -81,29 +94,31 @@ export default function NavBar({ setThemeColor, avatarImage }) {
               justifyContent="center"
               alignContent="center"
             >
-              <ToggleButtonGroup
-                color="primary"
-                sx={{ bgcolor: "white" }}
-                value={view}
-                exclusive
-                onChange={handleViewChange}
-                aria-label="View Selection"
-              >
-                <ToggleButton
-                  component={Link}
-                  to="/main/single"
-                  value="single-company-view"
+              {shouldShowToggleButtonGroup() && (
+                <ToggleButtonGroup
+                  color="primary"
+                  sx={{ bgcolor: "white" }}
+                  value={view}
+                  exclusive
+                  onChange={handleViewChange}
+                  aria-label="View Selection"
                 >
-                  Single Company View
-                </ToggleButton>
-                <ToggleButton
-                  component={Link}
-                  to="/main/multi"
-                  value="comparison-view"
-                >
-                  Comparison View
-                </ToggleButton>
-              </ToggleButtonGroup>
+                  <ToggleButton
+                    component={Link}
+                    to="/main/single"
+                    value="single-company-view"
+                  >
+                    Single Company View
+                  </ToggleButton>
+                  <ToggleButton
+                    component={Link}
+                    to="/main/multi"
+                    value="comparison-view"
+                  >
+                    Comparison View
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              )}
             </Grid>
           </Grid>
 
