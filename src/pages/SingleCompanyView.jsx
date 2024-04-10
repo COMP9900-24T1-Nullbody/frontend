@@ -12,9 +12,41 @@ import Image01 from "../img/1.jpg";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
+import config from "../config.json";
+
 export default function SingleCompanyView() {
   const [selectedFramework, setSelectedFramework] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (selectedCompany && selectedFramework) {
+      const request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          company_name: selectedCompany,
+          framework: selectedFramework,
+        }),
+      };
+
+      fetch(`${config.BACKEND_URL}/company_info/v3`, request)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            console.error(data.error);
+          } else {
+            setData(data.Risks);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [selectedCompany, selectedFramework]);
 
   const [themeColor, setThemeColor] = useState("");
 
@@ -51,17 +83,14 @@ export default function SingleCompanyView() {
         <Box sx={{ display: "flex" }}>
           <Box>
             <CollapseSiderMenu
-              selectedCompany={selectedCompany}
-              selectedFramework={selectedFramework}
+              data={data}
+              setData={setData}
               setSelectedCompany={setSelectedCompany}
               setSelectedFramework={setSelectedFramework}
             />
           </Box>
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            <ViewTable
-              selectedCompany={selectedCompany}
-              selectedFramework={selectedFramework}
-            />
+            <ViewTable data={data} />
           </Box>
         </Box>
       </Box>

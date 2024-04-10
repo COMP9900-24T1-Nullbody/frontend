@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,42 +11,15 @@ import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import config from "../../config.json";
 
-export default function ViewTable({ selectedCompany, selectedFramework }) {
-  const [companyData, setCompanyData] = useState(null);
-
-  useEffect(() => {
-    if (selectedCompany) {
-      fetch(`${config.BACKEND_URL}/company_info`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ company_name: selectedCompany }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setCompanyData(data.company_info);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-    }
-  }, [selectedCompany]);
-
-  useEffect(() => {
-    // 更新表格数据
-    if (companyData) {
-      console.log("Company data updated:", companyData);
-    }
-  }, [companyData]);
-
-  if (!companyData) {
-    return <div>Loading...</div>;
-  }
-
-  const columns = ["metric_name", "score", "year"];
+export default function ViewTable({ data }) {
+  const columns = [
+    "indicator_name",
+    "indicator_weight",
+    "metric_name",
+    "metric_weight",
+    "metric_score",
+  ];
 
   return (
     <TableContainer component={Paper}>
@@ -59,26 +32,37 @@ export default function ViewTable({ selectedCompany, selectedFramework }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {companyData.map((item, index) => (
-            <TableRow key={index}>
-              {columns.map((column) => (
-                <TableCell key={column}>
-                  {column === "metric_name" ? (
-                    <>
-                      {item[column]}{" "}
-                      <Tooltip title={item.metric_description}>
-                        <IconButton>
-                          <ErrorOutlineOutlinedIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  ) : (
-                    item[column]
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {data &&
+            data.flatMap((risks) =>
+              risks.indicators.flatMap((indicator) =>
+                indicator.metrics
+                  .filter((metric) => metric.checked)
+                  .map((metric) => (
+                    <TableRow
+                      key={`${risks.name}-${indicator.name}-${metric.name}`}
+                    >
+                      <TableCell>
+                        {indicator.name}{" "}
+                        <Tooltip title={indicator.description}>
+                          <IconButton>
+                            <ErrorOutlineOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell>
+                        {
+                          risks.indicators.find(
+                            (item) => item.name === indicator.name
+                          ).weight
+                        }
+                      </TableCell>
+                      <TableCell>{metric.name}</TableCell>
+                      <TableCell>{metric.weight}</TableCell>
+                      <TableCell>{metric.score.toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))
+              )
+            )}
         </TableBody>
       </Table>
     </TableContainer>
@@ -86,6 +70,5 @@ export default function ViewTable({ selectedCompany, selectedFramework }) {
 }
 
 ViewTable.propTypes = {
-  selectedCompany: PropTypes.string.isRequired,
-  selectedFramework: PropTypes.string.isRequired,
+  data: PropTypes.array.isRequired,
 };

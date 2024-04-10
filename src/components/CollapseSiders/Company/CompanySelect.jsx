@@ -45,7 +45,6 @@ const CompanySelect = ({ country_code, setSelectedCompany }) => {
       value={value} // Set value for Autocomplete
       onChange={(event, newValue) => {
         setValue(newValue); // Update input value when selection changes
-        console.log(`value is ${newValue}`);
         setSelectedCompany(newValue);
       }}
       getOptionLabel={(option) => option}

@@ -96,10 +96,21 @@ export default function MetricsOptions({ data, setData }) {
                 onWeightSave={(newWeight) => {
                   // Update the data with the new weight
                   const updatedData = data.map((item) => {
-                    if (item.name === topIndicatorItem.name) {
+                    if (RiskItem === item) {
+                      const updatedTopIndicators = item.indicators.map(
+                        (topitem) => {
+                          if (topIndicatorItem === topitem) {
+                            return {
+                              ...topitem,
+                              weight: newWeight,
+                            };
+                          }
+                          return topitem;
+                        }
+                      );
                       return {
                         ...item,
-                        weight: newWeight,
+                        indicators: updatedTopIndicators,
                       };
                     }
                     return item;
@@ -125,31 +136,36 @@ export default function MetricsOptions({ data, setData }) {
                           )
                         }
                         onWeightSave={(newWeight) => {
-                          // 更新数据中的子指示器权重
                           const updatedData = data.map((item) => {
-                            // 找到匹配的顶级指示器
-                            if (topIndicatorItem.name === item.name) {
-                              // 更新子指示器权重
-                              const updatedSubIndicators =
-                                topIndicatorItem.metrics.map((subitem) => {
-                                  // 找到匹配的子指示器
-                                  if (subIndicatorItem.name === subitem.name) {
+                            if (RiskItem === item) {
+                              const updatedTopIndicators = item.indicators.map(
+                                (topitem) => {
+                                  if (topIndicatorItem === topitem) {
+                                    const updatedSubIndicators =
+                                      topitem.metrics.map((subitem) => {
+                                        if (subIndicatorItem === subitem) {
+                                          return {
+                                            ...subitem,
+                                            weight: newWeight,
+                                          };
+                                        }
+                                        return subitem;
+                                      });
                                     return {
-                                      ...subitem,
-                                      weight: newWeight,
+                                      ...topitem,
+                                      metrics: updatedSubIndicators,
                                     };
                                   }
-                                  return subitem;
-                                });
-                              // 返回更新后的顶级指示器
+                                  return topitem;
+                                }
+                              );
                               return {
                                 ...item,
-                                metrics: updatedSubIndicators,
+                                indicators: updatedTopIndicators,
                               };
                             }
                             return item;
                           });
-                          // 将更新后的数据保存到父组件中
                           setData(updatedData);
                         }}
                       />

@@ -12,8 +12,8 @@ import CollapseCountries from "./CollapseSiders/Country/Countries";
 import CollapseCompanies from "./CollapseSiders/Company/Companies";
 
 export default function CollapseSiderMenu({
-  selectedCompany,
-  selectedFramework,
+  data,
+  setData,
   setSelectedCompany,
   setSelectedFramework,
 }) {
@@ -43,10 +43,7 @@ export default function CollapseSiderMenu({
 
           {/* Metrics & Indicators */}
           <Grid item xs={12}>
-            <CollapseMetrics
-              selectedCompany={selectedCompany}
-              selectedFramework={selectedFramework}
-            />
+            <CollapseMetrics data={data} setData={setData} />
           </Grid>
 
           {/* Years */}
@@ -76,8 +73,8 @@ export default function CollapseSiderMenu({
 }
 
 CollapseSiderMenu.propTypes = {
-  selectedCompany: PropTypes.string.isRequired,
-  selectedFramework: PropTypes.string.isRequired,
+  data: PropTypes.array.isRequired,
+  setData: PropTypes.func.isRequired,
   setSelectedCompany: PropTypes.func.isRequired,
   setSelectedFramework: PropTypes.func.isRequired,
 };
