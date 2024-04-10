@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Table from "@mui/material/Table";
@@ -12,7 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import config from "../../config.json";
 
-export default function ViewTable({ selectedCompany }) {
+export default function ViewTable({ selectedCompany, selectedFramework }) {
   const [companyData, setCompanyData] = useState(null);
 
   useEffect(() => {
@@ -20,9 +21,9 @@ export default function ViewTable({ selectedCompany }) {
       fetch(`${config.BACKEND_URL}/company_info`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ company_name: selectedCompany })
+        body: JSON.stringify({ company_name: selectedCompany }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -85,5 +86,6 @@ export default function ViewTable({ selectedCompany }) {
 }
 
 ViewTable.propTypes = {
-  selectedCompany: PropTypes.string.isRequired
+  selectedCompany: PropTypes.string.isRequired,
+  selectedFramework: PropTypes.string.isRequired,
 };

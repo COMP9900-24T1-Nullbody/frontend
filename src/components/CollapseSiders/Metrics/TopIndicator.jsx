@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -12,7 +11,7 @@ const TopIndicator = ({
   topIndicatorItem,
   onTopIndicatorClick,
   onTopCheckBoxClick,
-  onWeightSave
+  onWeightSave,
 }) => {
   return (
     <Box
@@ -21,7 +20,7 @@ const TopIndicator = ({
         alignItems: "center",
         maxWidth: "100%",
         pl: 2,
-        pr: 2
+        pr: 2,
       }}
     >
       <Box>
@@ -78,6 +77,7 @@ TopIndicator.propTypes = {
   open: PropTypes.bool.isRequired,
   topIndicatorItem: PropTypes.shape({
     name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
     weight: PropTypes.number.isRequired,
     metrics: PropTypes.arrayOf(
       PropTypes.shape({
@@ -85,13 +85,13 @@ TopIndicator.propTypes = {
         description: PropTypes.string.isRequired,
         weight: PropTypes.number.isRequired,
         checked: PropTypes.bool.isRequired,
-        score: PropTypes.number.isRequired
+        score: PropTypes.number.isRequired,
       })
-    ).isRequired
+    ).isRequired,
   }).isRequired,
   onTopIndicatorClick: PropTypes.func.isRequired,
   onTopCheckBoxClick: PropTypes.func.isRequired,
-  onWeightSave: PropTypes.func.isRequired
+  onWeightSave: PropTypes.func.isRequired,
 };
 
 export default TopIndicator;

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { Box, Checkbox, IconButton, Tooltip, Typography } from "@mui/material";
@@ -8,7 +7,7 @@ import WeightButton from "./WeightButton";
 const SubIndicator = ({
   subIndicatorItem,
   onSubIndicatorClick,
-  onWeightSave
+  onWeightSave,
 }) => {
   return (
     <Box
@@ -49,10 +48,10 @@ SubIndicator.propTypes = {
     description: PropTypes.string.isRequired,
     weight: PropTypes.number.isRequired,
     checked: PropTypes.bool.isRequired,
-    score: PropTypes.number.isRequired
+    score: PropTypes.number.isRequired,
   }).isRequired,
   onSubIndicatorClick: PropTypes.func.isRequired,
-  onWeightSave: PropTypes.func.isRequired
+  onWeightSave: PropTypes.func.isRequired,
 };
 
 export default SubIndicator;

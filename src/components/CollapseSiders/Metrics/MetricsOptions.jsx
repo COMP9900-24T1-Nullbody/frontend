@@ -1,38 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Box, Collapse } from "@mui/material";
 import TopIndicator from "./TopIndicator.jsx";
 import SubIndicator from "./SubIndicator.jsx";
 
-import config from "../../../config.json";
-
-export default function NestedCheckbox() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const request = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        company_name: "Rosetta Stone Inc",
-        framework: "IFRS"
-      })
-    };
-    fetch(`${config.BACKEND_URL}/company_info/v3`, request)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          setData(data.Risks);
-        }
-      })
-      .catch((error) => {
-        alert("Error: Get metrics failed, Please check server status.");
-        console.error("Error:", error);
-      });
-  }, []);
-
+export default function MetricsOptions({ data, setData }) {
   const [openTopIndicators, setOpenTopIndicators] = useState({});
 
   const handleTopCheckBoxClick = (topIndicator) => {
@@ -46,12 +18,12 @@ export default function NestedCheckbox() {
             checked:
               currentStatus === "intermediate"
                 ? true
-                : !subIndicatorItem.checked
+                : !subIndicatorItem.checked,
           })
         );
         return {
           ...topIndicatorItem,
-          metrics: updatedSubIndicators
+          metrics: updatedSubIndicators,
         };
       }
       return topIndicatorItem;
@@ -64,7 +36,7 @@ export default function NestedCheckbox() {
     const isOpen = !openTopIndicators[topIndicator];
     setOpenTopIndicators({
       ...openTopIndicators,
-      [topIndicator]: isOpen
+      [topIndicator]: isOpen,
     });
   };
 
@@ -94,7 +66,7 @@ export default function NestedCheckbox() {
             if (subIndicatorItem.name === subIndicator) {
               return {
                 ...subIndicatorItem,
-                checked: !subIndicatorItem.checked
+                checked: !subIndicatorItem.checked,
               };
             }
             return subIndicatorItem;
@@ -102,7 +74,7 @@ export default function NestedCheckbox() {
         );
         return {
           ...topIndicatorItem,
-          metrics: updatedSubIndicators
+          metrics: updatedSubIndicators,
         };
       }
       return topIndicatorItem;
@@ -127,7 +99,7 @@ export default function NestedCheckbox() {
                     if (item.name === topIndicatorItem.name) {
                       return {
                         ...item,
-                        weight: newWeight
+                        weight: newWeight,
                       };
                     }
                     return item;
@@ -164,7 +136,7 @@ export default function NestedCheckbox() {
                                   if (subIndicatorItem.name === subitem.name) {
                                     return {
                                       ...subitem,
-                                      weight: newWeight
+                                      weight: newWeight,
                                     };
                                   }
                                   return subitem;
@@ -172,7 +144,7 @@ export default function NestedCheckbox() {
                               // 返回更新后的顶级指示器
                               return {
                                 ...item,
-                                metrics: updatedSubIndicators
+                                metrics: updatedSubIndicators,
                               };
                             }
                             return item;
@@ -192,3 +164,8 @@ export default function NestedCheckbox() {
     </Box>
   );
 }
+
+MetricsOptions.propTypes = {
+  data: PropTypes.array.isRequired,
+  setData: PropTypes.func.isRequired,
+};

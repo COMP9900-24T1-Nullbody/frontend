@@ -14,7 +14,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -24,14 +24,13 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import AvatarMenu from "./AvatarMenu";
 import { ColorPalette } from "./ColorPalette";
 import { Link } from "react-router-dom";
-import CountrySelect from "./NavBar/CountrySelect";
-import CompanySelect from "./NavBar/CompanySelect";
 
-export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany }) {
-  const [countryCode, setCountryCode] = useState("");
-
+export default function NavBar({ setThemeColor, avatarImage }) {
   // Set initial view based on current location
-  const initialView = location.pathname === "/main/single" ? "single-company-view" : "comparison-view";
+  const initialView =
+    location.pathname === "/main/single"
+      ? "single-company-view"
+      : "comparison-view";
   const [view, setView] = useState(initialView);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -51,6 +50,7 @@ export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany 
     <AppBar position="static" sx={{ borderRadius: 2 }}>
       <Toolbar>
         <Grid container padding={2}>
+          {/* Logo */}
           <Grid
             item
             container
@@ -65,6 +65,7 @@ export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany 
             </Link>
           </Grid>
 
+          {/* View Selection Toggle Buttons */}
           <Grid
             item
             container
@@ -73,27 +74,6 @@ export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany 
             alignContent="center"
             justifyContent="center"
           >
-            <Grid
-              item
-              container
-              xs={4}
-              justifyContent="center"
-              alignContent="center"
-            >
-              <CountrySelect onCountryChange={setCountryCode} />
-            </Grid>
-            <Grid
-              item
-              container
-              xs={4}
-              justifyContent="center"
-              alignContent="center"
-            >
-              <CompanySelect
-                country_code={countryCode}
-                setSelectedCompany={setSelectedCompany}
-              />
-            </Grid>
             <Grid
               item
               container
@@ -127,6 +107,7 @@ export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany 
             </Grid>
           </Grid>
 
+          {/* Theme Color Selection */}
           <Grid
             item
             container
@@ -141,7 +122,7 @@ export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany 
                   sx={{
                     background: "none",
                     borderColor: "black",
-                    padding: "0"
+                    padding: "0",
                   }}
                 >
                   <PaletteIcon />
@@ -170,5 +151,4 @@ export default function NavBar({ setThemeColor, avatarImage, setSelectedCompany 
 NavBar.propTypes = {
   setThemeColor: PropTypes.func.isRequired,
   avatarImage: PropTypes.string.isRequired,
-  setSelectedCompany: PropTypes.func.isRequired
 };

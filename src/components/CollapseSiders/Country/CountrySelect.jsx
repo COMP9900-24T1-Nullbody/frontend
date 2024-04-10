@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import PropTypes from 'prop-types'; // Import PropTypes
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
-import config from "../../config.json";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
-const CountrySelect = ({ onCountryChange }) => { // Receive onCountryChange as prop
+import config from "../../../config.json";
+
+const CountrySelect = ({ setCountryCode }) => {
+  // Receive onCountryChange as prop
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null); // Track selected country
 
   useEffect(() => {
     const fetchData = () => {
       fetch(`${config.BACKEND_URL}/country/all`)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error("Network response was not ok");
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           setCountries(data.countries);
         })
-        .catch(error => {
-          console.error('Error fetching countries:', error);
+        .catch((error) => {
+          console.error("Error fetching countries:", error);
         });
     };
 
@@ -32,7 +34,7 @@ const CountrySelect = ({ onCountryChange }) => { // Receive onCountryChange as p
 
   const handleCountryChange = (event, newValue) => {
     setSelectedCountry(newValue);
-    onCountryChange(newValue !== null ? newValue.code : ""); // Pass the country code to the parent component
+    setCountryCode(newValue !== null ? newValue.code : ""); // Pass the country code to the parent component
   };
 
   return (
@@ -45,7 +47,11 @@ const CountrySelect = ({ onCountryChange }) => { // Receive onCountryChange as p
       value={selectedCountry} // Set the selected country
       onChange={handleCountryChange} // Handle country selection change
       renderOption={(props, option) => (
-        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+        <Box
+          component="li"
+          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+          {...props}
+        >
           <img
             loading="lazy"
             width="20"
@@ -62,7 +68,7 @@ const CountrySelect = ({ onCountryChange }) => { // Receive onCountryChange as p
           label="Choose a country"
           inputProps={{
             ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
+            autoComplete: "new-password", // disable autocomplete and autofill
           }}
         />
       )}
@@ -71,7 +77,7 @@ const CountrySelect = ({ onCountryChange }) => { // Receive onCountryChange as p
 };
 
 CountrySelect.propTypes = {
-  onCountryChange: PropTypes.func.isRequired, // PropTypes for the callback function
+  setCountryCode: PropTypes.func.isRequired, // PropTypes for the callback function
 };
 
 export default CountrySelect;

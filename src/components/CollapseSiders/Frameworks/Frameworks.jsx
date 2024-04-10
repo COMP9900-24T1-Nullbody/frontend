@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -10,7 +11,7 @@ import FrameworkOptions from "./FrameworksOptions";
 import { Box, Button } from "@mui/material";
 import { SimpleDialog } from "./CustomizeDialog";
 
-export default function CollapseFrameworks() {
+export default function CollapseFrameworks({ setSelectedFramework }) {
   const [expanded, setExpanded] = React.useState(true);
   const handleClick = () => {
     setExpanded(!expanded);
@@ -35,15 +36,23 @@ export default function CollapseFrameworks() {
 
       <Box>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <FrameworkOptions />
+          <FrameworkOptions setSelectedFramework={setSelectedFramework} />
           <Box sx={{ pl: 4 }}>
             <Button variant="outlined" onClick={handleDialogOpen}>
               + Customize A Framework
             </Button>
           </Box>
-          <SimpleDialog open={dialog_open} handleClose={handleDialogClose} handleSave={handleDialogClose}/>
+          <SimpleDialog
+            open={dialog_open}
+            handleClose={handleDialogClose}
+            handleSave={handleDialogClose}
+          />
         </Collapse>
       </Box>
     </Box>
   );
 }
+
+CollapseFrameworks.propTypes = {
+  setSelectedFramework: PropTypes.func.isRequired,
+};

@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 export default function SingleCompanyView() {
+  const [selectedFramework, setSelectedFramework] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
 
   const [themeColor, setThemeColor] = useState("");
@@ -44,15 +45,23 @@ export default function SingleCompanyView() {
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} setSelectedCompany={setSelectedCompany}/>
+          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
         </Box>
 
         <Box sx={{ display: "flex" }}>
           <Box>
-            <CollapseSiderMenu />
+            <CollapseSiderMenu
+              selectedCompany={selectedCompany}
+              selectedFramework={selectedFramework}
+              setSelectedCompany={setSelectedCompany}
+              setSelectedFramework={setSelectedFramework}
+            />
           </Box>
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            <ViewTable selectedCompany={selectedCompany} />
+            <ViewTable
+              selectedCompany={selectedCompany}
+              selectedFramework={selectedFramework}
+            />
           </Box>
         </Box>
       </Box>

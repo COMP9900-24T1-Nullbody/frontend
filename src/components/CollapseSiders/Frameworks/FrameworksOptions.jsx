@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -8,10 +9,15 @@ import { IconButton, Tooltip } from "@mui/material";
 
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
-export default function FrameworkOptions() {
+export default function FrameworkOptions({ setSelectedFramework }) {
   return (
     <FormControl>
-      <RadioGroup defaultValue="IFRS" sx={{ pl: 4 }}>
+      <RadioGroup
+        onChange={(event) => {
+          setSelectedFramework(event.target.value);
+        }}
+        sx={{ pl: 4 }}
+      >
         <FormControlLabel
           value="IFRS"
           control={<Radio />}
@@ -72,3 +78,7 @@ export default function FrameworkOptions() {
     </FormControl>
   );
 }
+
+FrameworkOptions.propTypes = {
+  setSelectedFramework: PropTypes.func.isRequired,
+};

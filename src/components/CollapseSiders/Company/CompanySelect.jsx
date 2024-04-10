@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-import config from "../../config.json";
+import config from "../../../config.json";
 
 const CompanySelect = ({ country_code, setSelectedCompany }) => {
   const [companies, setCompanies] = useState([]);
@@ -19,9 +19,9 @@ const CompanySelect = ({ country_code, setSelectedCompany }) => {
       fetch(`${config.BACKEND_URL}/company/by_country`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ country_code })
+        body: JSON.stringify({ country_code }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -65,7 +65,7 @@ const CompanySelect = ({ country_code, setSelectedCompany }) => {
           label="Choose a company"
           inputProps={{
             ...params.inputProps,
-            autoComplete: "new-password" // disable autocomplete and autofill
+            autoComplete: "new-password", // disable autocomplete and autofill
           }}
         />
       )}
@@ -77,5 +77,5 @@ export default CompanySelect;
 
 CompanySelect.propTypes = {
   country_code: PropTypes.string.isRequired,
-  setSelectedCompany: PropTypes.func.isRequired
+  setSelectedCompany: PropTypes.func.isRequired,
 };
