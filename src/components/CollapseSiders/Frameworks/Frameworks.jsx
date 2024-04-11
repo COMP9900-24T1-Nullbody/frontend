@@ -9,7 +9,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import FrameworkOptions from "./FrameworksOptions";
 import { Box, Button } from "@mui/material";
-import { SimpleDialog } from "./CustomizeDialog";
+import { CustomizeDialog } from "./CustomizeDialog";
 
 export default function CollapseFrameworks({ setSelectedFramework }) {
   const [expanded, setExpanded] = React.useState(true);
@@ -42,11 +42,7 @@ export default function CollapseFrameworks({ setSelectedFramework }) {
               + Customize A Framework
             </Button>
           </Box>
-          <SimpleDialog
-            open={dialog_open}
-            handleClose={handleDialogClose}
-            handleSave={handleDialogClose}
-          />
+          <CustomizeDialog open={dialog_open} handleClose={handleDialogClose} />
         </Collapse>
       </Box>
     </Box>
