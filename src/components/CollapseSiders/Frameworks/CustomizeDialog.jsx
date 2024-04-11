@@ -224,7 +224,7 @@ export function CustomizeDialog({ open, handleClose }) {
               <ListItemText primary="Environmental Indicators" />
               {E_expand ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={E_expand} timeout="auto" unmountOnExit>
+            <Collapse in={E_expand}>
               {E_indicators.map((indicator) => (
                 <Grid
                   container
@@ -276,7 +276,7 @@ export function CustomizeDialog({ open, handleClose }) {
               <ListItemText primary="Social Indicators" />
               {S_expand ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={S_expand} timeout="auto" unmountOnExit>
+            <Collapse in={S_expand}>
               {S_indicators.map((indicator) => (
                 <Grid
                   container
@@ -328,7 +328,7 @@ export function CustomizeDialog({ open, handleClose }) {
               <ListItemText primary="Governmental Indicators" />
               {G_expand ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={G_expand} timeout="auto" unmountOnExit>
+            <Collapse in={G_expand}>
               {G_indicators.map((indicator) => (
                 <Grid
                   container

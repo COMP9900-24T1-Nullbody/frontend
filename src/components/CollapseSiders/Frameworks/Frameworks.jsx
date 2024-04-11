@@ -35,7 +35,7 @@ export default function CollapseFrameworks({ setSelectedFramework }) {
       </Box>
 
       <Box>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded}>
           <FrameworkOptions setSelectedFramework={setSelectedFramework} />
           <Box sx={{ pl: 4 }}>
             <Button variant="outlined" onClick={handleDialogOpen}>

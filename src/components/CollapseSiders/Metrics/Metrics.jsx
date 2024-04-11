@@ -24,7 +24,7 @@ export default function CollapseMetrics({ data, setData }) {
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
 
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={open}>
         <MetricsOptions data={data} setData={setData} />
       </Collapse>
     </Box>

@@ -26,7 +26,7 @@ export default function CollapseCountries({ setCountryCode }) {
       </Box>
 
       <Box>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded}>
           <CountrySelect setCountryCode={setCountryCode} />
         </Collapse>
       </Box>

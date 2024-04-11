@@ -29,7 +29,7 @@ export default function CollapseCompanies({
       </Box>
 
       <Box>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded}>
           <CompanySelect
             country_code={country_code}
             setSelectedCompany={setSelectedCompany}
