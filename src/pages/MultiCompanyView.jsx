@@ -48,7 +48,12 @@ export default function MultiConpanyView() {
     }
   }, [selectedCompany, selectedFramework]);
 
-  const [themeColor, setThemeColor] = useState("");
+  const [themeColor, setThemeColor] = useState(
+    localStorage.getItem("theme-color")
+  );
+  useEffect(() => {
+    localStorage.setItem("theme-color", themeColor);
+  }, [themeColor]);
 
   const [imageSrc, setImageSrc] = useState(Image01);
 

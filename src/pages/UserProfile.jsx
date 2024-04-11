@@ -15,7 +15,7 @@ import {
   Typography,
   FormHelperText,
   CircularProgress,
-  Grid
+  Grid,
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -32,12 +32,17 @@ import config from "../config.json";
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton
+  MicrosoftLoginButton,
 } from "react-social-login-buttons";
 import { green } from "@mui/material/colors";
 
 export default function UserProfile() {
-  const [themeColor, setThemeColor] = useState("");
+  const [themeColor, setThemeColor] = useState(
+    localStorage.getItem("theme-color")
+  );
+  useEffect(() => {
+    localStorage.setItem("theme-color", themeColor);
+  }, [themeColor]);
 
   const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
@@ -46,8 +51,8 @@ export default function UserProfile() {
     Password: "-- Error: Token Decode Error, Please Re-Login --",
     Linked_Account: {
       Google: "",
-      Microsoft: ""
-    }
+      Microsoft: "",
+    },
   });
 
   // 添加解密逻辑
@@ -63,8 +68,8 @@ export default function UserProfile() {
           Password: decodedToken.password,
           Linked_Account: {
             Google: decodedToken.google_id,
-            Microsoft: decodedToken.microsoft_id
-          }
+            Microsoft: decodedToken.microsoft_id,
+          },
         });
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
@@ -91,7 +96,7 @@ export default function UserProfile() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Box
@@ -103,7 +108,7 @@ export default function UserProfile() {
               boxShadow: 3,
               m: 1,
               p: 1,
-              height: "100%"
+              height: "100%",
             }}
           >
             <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
@@ -147,12 +152,12 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         image: ImageData,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/upload_avatar`, request)
@@ -197,10 +202,22 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
                 alt="User Avatar"
                 src={imageSrc}
                 sx={{
-                  minWidth: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
-                  minHeight: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
+                  minWidth: {
+                    xs: "90px",
+                    sm: "130px",
+                    md: "170px",
+                    lg: "210px",
+                    xl: "250px",
+                  },
+                  minHeight: {
+                    xs: "90px",
+                    sm: "130px",
+                    md: "170px",
+                    lg: "210px",
+                    xl: "250px",
+                  },
                   filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
-                  transition: "filter 0.3s ease-in-out"
+                  transition: "filter 0.3s ease-in-out",
                 }}
               />
               {isHovered && (
@@ -216,7 +233,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
                     padding: "8px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <UploadIcon fontSize="large" />
@@ -284,8 +301,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Google: google_id
-      }
+        Google: google_id,
+      },
     };
     setUserInfo(updatedUserInfo);
   };
@@ -296,8 +313,8 @@ function ProfileForm({ userInfo, setUserInfo }) {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Microsoft: microsoft_id
-      }
+        Microsoft: microsoft_id,
+      },
     };
     setUserInfo(updatedUserInfo);
   };
@@ -306,12 +323,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name: userInfo.Name,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/update/name`, request)
@@ -335,12 +352,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: userInfo.Email,
-          token: localStorage.getItem("token")
-        })
+          token: localStorage.getItem("token"),
+        }),
       };
 
       fetch(`${config.BACKEND_URL}/update/email`, request)
@@ -381,12 +398,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           password: userInfo.Password,
-          token: localStorage.getItem("token")
-        })
+          token: localStorage.getItem("token"),
+        }),
       };
 
       fetch(`${config.BACKEND_URL}/update/password`, request)
@@ -416,12 +433,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         google_id: google_id,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/update/google_id`, request)
@@ -445,12 +462,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         microsoft_id: microsoft_id,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/update/microsoft_id`, request)
@@ -480,11 +497,11 @@ function ProfileForm({ userInfo, setUserInfo }) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: userInfo.Email
-        })
+          email: userInfo.Email,
+        }),
       };
       fetch(`${config.BACKEND_URL}/register_check/email`, request)
         .then((response) => response.json())
@@ -609,7 +626,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  color: green[500]
+                  color: green[500],
                 }}
               >
                 <CorrectIcon fontSize="small" /> {EmailMessage}
@@ -675,7 +692,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordLenMessage}
@@ -690,7 +707,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordLowMessage}
@@ -705,7 +722,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordUpperMessage}
@@ -720,7 +737,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordSpecialMessage}
@@ -836,10 +853,10 @@ function validatePasswordSpecial(password) {
 
 ProfileAvatar.propTypes = {
   imageSrc: PropTypes.string.isRequired,
-  setImageSrc: PropTypes.func.isRequired
+  setImageSrc: PropTypes.func.isRequired,
 };
 
 ProfileForm.propTypes = {
   userInfo: PropTypes.object.isRequired,
-  setUserInfo: PropTypes.func.isRequired
+  setUserInfo: PropTypes.func.isRequired,
 };

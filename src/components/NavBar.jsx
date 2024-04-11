@@ -122,7 +122,7 @@ export default function NavBar({ setThemeColor, avatarImage }) {
             </Grid>
           </Grid>
 
-          {/* Theme Color Selection */}
+          {/* Theme Color Palette and Avatar Menu */}
           <Grid
             item
             container
