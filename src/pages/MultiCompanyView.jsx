@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 import NavBar from "../components/NavBar";
-import CollapseSiderMenu from "../components/CollapseSideMenu";
+import CollapseCompareSiderMenu from "../components/CollapseCompareSideMenu";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 
-import ViewTable from "../components/Views/ViewTable";
+import CompareTable from "../components/Views/CompareTable";
 
 import { Theme } from "../theme/main";
 
@@ -16,24 +16,26 @@ import config from "../config.json";
 
 export default function MultiConpanyView() {
   const [selectedFramework, setSelectedFramework] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCompany_1, setSelectedCompany1] = useState("");
+  const [selectedCompany_2, setSelectedCompany2] = useState("");
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    if (selectedCompany && selectedFramework) {
+    if (selectedCompany_1 && selectedCompany_2 && selectedFramework) {
       const request = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          company_name: selectedCompany,
+          company_1_name: selectedCompany_1,
+          company_2_name: selectedCompany_2,
           framework: selectedFramework,
         }),
       };
 
-      fetch(`${config.BACKEND_URL}/company_info/v3`, request)
+      fetch(`${config.BACKEND_URL}/compare_company_info/v3`, request)
         .then((response) => response.json())
         .then((data) => {
           if (data.error) {
@@ -46,7 +48,7 @@ export default function MultiConpanyView() {
           console.error("Error:", error);
         });
     }
-  }, [selectedCompany, selectedFramework]);
+  }, [selectedCompany_1, selectedCompany_2, selectedFramework]);
 
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("theme-color")
@@ -87,15 +89,16 @@ export default function MultiConpanyView() {
 
         <Box sx={{ display: "flex" }}>
           <Box>
-            <CollapseSiderMenu
+            <CollapseCompareSiderMenu
               data={data}
               setData={setData}
-              setSelectedCompany={setSelectedCompany}
+              setSelectedCompany1={setSelectedCompany1}
+              setSelectedCompany2={setSelectedCompany2}
               setSelectedFramework={setSelectedFramework}
             />
           </Box>
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            <ViewTable data={data} />
+            {data.length > 0 && <CompareTable data={data} />}
           </Box>
         </Box>
       </Box>

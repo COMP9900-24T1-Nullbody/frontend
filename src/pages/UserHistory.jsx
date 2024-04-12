@@ -22,7 +22,6 @@ import Image01 from "../img/1.jpg";
 import config from "../config.json";
 
 export default function UserHistory() {
-  // eslint-disable-next-line no-unused-vars
   const [analysis_data, setAnalysisData] = useState(null);
   useEffect(() => {
     fetch(`${config.BACKEND_URL}/list/analysis`, {
