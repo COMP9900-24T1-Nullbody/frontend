@@ -40,7 +40,7 @@ export default function CustomizeButton({ initial_weight }) {
             value={weight}
             onChange={handleSliderChange}
             aria-labelledby="weight-slider"
-            step={0.01}
+            step={0.1}
             min={0}
             max={1}
             valueLabelDisplay="auto"

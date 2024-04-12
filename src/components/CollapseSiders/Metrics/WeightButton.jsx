@@ -41,7 +41,7 @@ export default function WeightButton({ initial_weight, onWeightSave }) {
             value={weight}
             onChange={handleSliderChange}
             aria-labelledby="weight-slider"
-            step={0.01}
+            step={0.1}
             min={0}
             max={1}
             valueLabelDisplay="auto"
@@ -58,5 +58,5 @@ export default function WeightButton({ initial_weight, onWeightSave }) {
 // WeightButton prop validation
 WeightButton.propTypes = {
   initial_weight: PropTypes.number.isRequired,
-  onWeightSave: PropTypes.func.isRequired
+  onWeightSave: PropTypes.func.isRequired,
 };

@@ -12,7 +12,6 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import config from "../../../config.json";
 
 export default function FrameworkOptions({ setSelectedFramework }) {
-  // eslint-disable-next-line no-unused-vars
   const [frameworks, setFrameworks] = useState([]);
   useEffect(() => {
     // 获取 local storage 中的 token

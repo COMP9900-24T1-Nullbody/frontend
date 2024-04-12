@@ -193,7 +193,7 @@ export function CustomizeDialog({ open, handleClose }) {
               value={E_weight}
               min={0}
               max={1}
-              step={0.01} // Optional: Define the step size for finer adjustments
+              step={0.1} // Optional: Define the step size for finer adjustments
               onChange={(e, value) => handleSliderChange(value, setE_weight)}
             />
             {/* Slider for Social weights */}
@@ -202,7 +202,7 @@ export function CustomizeDialog({ open, handleClose }) {
               value={S_weight}
               min={0}
               max={1}
-              step={0.01} // Optional: Define the step size for finer adjustments
+              step={0.1} // Optional: Define the step size for finer adjustments
               onChange={(e, value) => handleSliderChange(value, setS_weight)}
             />
             {/* Slider for Governmental weights */}
@@ -213,7 +213,7 @@ export function CustomizeDialog({ open, handleClose }) {
               value={G_weight}
               min={0}
               max={1}
-              step={0.01} // Optional: Define the step size for finer adjustments
+              step={0.1} // Optional: Define the step size for finer adjustments
               onChange={(e, value) => handleSliderChange(value, setG_weight)}
             />
             {/* Environmental Metrics */}
