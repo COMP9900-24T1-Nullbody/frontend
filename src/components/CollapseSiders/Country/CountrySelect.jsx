@@ -45,7 +45,6 @@ const CountrySelect = ({ setCountryCode }) => {
   return (
     <Autocomplete
       id="country-select-demo"
-      sx={{ width: 300 }}
       options={countries.length > 0 ? countries : []}
       autoHighlight
       getOptionLabel={(option) => option.name}

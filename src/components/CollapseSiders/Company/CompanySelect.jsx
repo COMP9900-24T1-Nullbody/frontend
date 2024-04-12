@@ -38,7 +38,6 @@ const CompanySelect = ({ country_code, setSelectedCompany }) => {
   return (
     <Autocomplete
       id="company-select-demo"
-      sx={{ width: 300 }}
       disabled={country_code === ""}
       options={companies ? companies : []}
       autoHighlight
