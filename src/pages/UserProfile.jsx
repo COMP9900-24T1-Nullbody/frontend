@@ -16,6 +16,9 @@ import {
   FormHelperText,
   CircularProgress,
   Grid,
+  ListItemText,
+  ListItem,
+  List,
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -35,6 +38,8 @@ import {
   MicrosoftLoginButton,
 } from "react-social-login-buttons";
 import { green } from "@mui/material/colors";
+
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function UserProfile() {
   const [themeColor, setThemeColor] = useState(
@@ -294,7 +299,6 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const updatedUserInfo = { ...userInfo, Password: event.target.value };
     setUserInfo(updatedUserInfo);
   };
-
   // 更改谷歌账户link
   const handleGoogleLinkChange = (google_id) => {
     const updatedUserInfo = {
@@ -306,7 +310,6 @@ function ProfileForm({ userInfo, setUserInfo }) {
     };
     setUserInfo(updatedUserInfo);
   };
-
   // 更改微软账户link
   const handleMicrosoftLinkChange = (microsoft_id) => {
     const updatedUserInfo = {
@@ -556,6 +559,33 @@ function ProfileForm({ userInfo, setUserInfo }) {
     }
   }, [userInfo.Password]);
 
+  const [customized_frameworks, setCustomizedFrameworks] = useState([]);
+
+  useEffect(() => {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem("token"),
+      }),
+    };
+    fetch(`${config.BACKEND_URL}/list/customized_frameworks`, request)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCustomizedFrameworks(data.frameworks);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <Stack spacing={2} sx={{ marginTop: 2, width: "70%" }}>
       {/* Name */}
@@ -795,6 +825,68 @@ function ProfileForm({ userInfo, setUserInfo }) {
           Linked with: Microsoft ID - {userInfo.Linked_Account.Microsoft}
         </Typography>
       )}
+
+      {/* Customized Frameworks */}
+      {customized_frameworks.length > 0 ? (
+        <Typography variant="h5">Customized Frameworks:</Typography>
+      ) : (
+        <Typography variant="h5">
+          You don{"'"}t have any customized frameworks!
+        </Typography>
+      )}
+      <List>
+        {customized_frameworks.map((framework) => (
+          <ListItem
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+            key={framework.name}
+            secondaryAction={
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => {
+                  // 后端删除自定义框架
+                  fetch(`${config.BACKEND_URL}/delete/customized_framework`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      token: localStorage.getItem("token"),
+                      framework_name: framework.name,
+                    }),
+                  })
+                    .then((response) => {
+                      if (!response.ok) {
+                        console.error("Network response was not ok");
+                        return response.json();
+                      }
+                      return response.json();
+                    })
+                    .then((data) => {
+                      alert(data.message);
+                    })
+                    .catch((error) => {
+                      console.error("Error:", error);
+                    });
+
+                  // 前端删除自定义框架
+                  const updatedFrameworks = customized_frameworks.filter(
+                    (item) => item.id !== framework.id
+                  );
+                  setCustomizedFrameworks(updatedFrameworks);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <ListItemText primary={framework.name} />
+          </ListItem>
+        ))}
+      </List>
     </Stack>
   );
 }
