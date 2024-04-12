@@ -166,7 +166,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
       }),
     };
 
-    fetch(`${config.BACKEND_URL}/upload_avatar`, request)
+    fetch(`${config.BACKEND_URL}/update/avatar`, request)
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {

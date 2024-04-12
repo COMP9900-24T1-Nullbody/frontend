@@ -14,7 +14,12 @@ const CountrySelect = ({ setCountryCode }) => {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch(`${config.BACKEND_URL}/country/all`)
+      fetch(`${config.BACKEND_URL}/country/all`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
