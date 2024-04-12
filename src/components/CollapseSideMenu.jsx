@@ -100,9 +100,11 @@ export default function CollapseSiderMenu({
             justifyContent="right
         "
           >
-            <Button variant="contained" onClick={handleAddCompanyToFavorites}>
-              Add Company to Favourites
-            </Button>
+            {company_name && (
+              <Button variant="contained" onClick={handleAddCompanyToFavorites}>
+                Add Company to Favourites
+              </Button>
+            )}
           </Grid>
         </Grid>
       </List>

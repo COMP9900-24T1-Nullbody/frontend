@@ -13,9 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { Button } from "@mui/material";
 
-import config from "../../config.json";
-
-export default function ViewTable({ data }) {
+export default function ResultTable({ data, onDelete }) {
   const columns = [
     "indicator_name",
     "indicator_weight",
@@ -23,38 +21,6 @@ export default function ViewTable({ data }) {
     "metric_weight",
     "metric_score",
   ];
-
-  const handleSave = () => {
-    fetch(`${config.BACKEND_URL}/save/analysis`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem("token"),
-        timestamp: Date.now(),
-        data: data,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          console.error("Network response was not ok");
-          return response.json();
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.error) {
-          console.error(data.error);
-        } else {
-          alert(data.message);
-        }
-      })
-      .catch((error) => {
-        alert("Error: Save analysis failed, Please check server status.");
-        console.error("Error:", error);
-      });
-  };
 
   return (
     <TableContainer component={Paper}>
@@ -100,13 +66,14 @@ export default function ViewTable({ data }) {
         </TableBody>
       </Table>
 
-      <Button fullWidth variant="contained" onClick={handleSave}>
-        Save Analysis Result
+      <Button fullWidth variant="contained" color="error" onClick={onDelete}>
+        Delete This Analysis Result
       </Button>
     </TableContainer>
   );
 }
 
-ViewTable.propTypes = {
+ResultTable.propTypes = {
   data: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };

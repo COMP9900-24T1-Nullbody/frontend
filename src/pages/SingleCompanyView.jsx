@@ -97,8 +97,9 @@ export default function SingleCompanyView() {
               setSelectedFramework={setSelectedFramework}
             />
           </Box>
+
           <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            <ViewTable data={data} />
+            {data.length > 0 && <ViewTable data={data} />}
           </Box>
         </Box>
       </Box>
