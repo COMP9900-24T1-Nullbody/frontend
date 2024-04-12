@@ -11,13 +11,49 @@ import CollapseMetrics from "./CollapseSiders/Metrics/Metrics";
 import CollapseCountries from "./CollapseSiders/Country/Countries";
 import CollapseCompanies from "./CollapseSiders/Company/Companies";
 
+import config from "../config.json";
+
 export default function CollapseSiderMenu({
   data,
   setData,
+  company_name,
   setSelectedCompany,
   setSelectedFramework,
 }) {
   const [country_code, setCountryCode] = useState("");
+
+  const handleAddCompanyToFavorites = () => {
+    fetch(`${config.BACKEND_URL}/create/favourite_company`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem("token"),
+        company_name: company_name,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Network response was not ok");
+          return response.json();
+        }
+        return response.json();
+      })
+      .then(
+        (data) => {
+          if (data.error) {
+            // 检查是否有错误消息
+            console.error(data.error);
+          } else {
+            alert(data.message);
+          }
+        },
+        (error) => {
+          console.error("Error:", error);
+        }
+      );
+  };
 
   return (
     <Box sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
@@ -64,7 +100,9 @@ export default function CollapseSiderMenu({
             justifyContent="right
         "
           >
-            <Button variant="contained">Save</Button>
+            <Button variant="contained" onClick={handleAddCompanyToFavorites}>
+              Add Company to Favourites
+            </Button>
           </Grid>
         </Grid>
       </List>
@@ -75,6 +113,7 @@ export default function CollapseSiderMenu({
 CollapseSiderMenu.propTypes = {
   data: PropTypes.array.isRequired,
   setData: PropTypes.func.isRequired,
+  company_name: PropTypes.string.isRequired,
   setSelectedCompany: PropTypes.func.isRequired,
   setSelectedFramework: PropTypes.func.isRequired,
 };

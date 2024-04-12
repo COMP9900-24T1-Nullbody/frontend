@@ -561,6 +561,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
 
   const [customized_frameworks, setCustomizedFrameworks] = useState([]);
 
+  // 初始化页面中，获取自定义框架
   useEffect(() => {
     const request = {
       method: "POST",
@@ -580,6 +581,34 @@ function ProfileForm({ userInfo, setUserInfo }) {
       })
       .then((data) => {
         setCustomizedFrameworks(data.frameworks);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  const [favourite_companies, setFavouriteCompanies] = useState([]);
+
+  // 初始化页面中，获取最爱的公司
+  useEffect(() => {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem("token"),
+      }),
+    };
+    fetch(`${config.BACKEND_URL}/list/favourite_companies`, request)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setFavouriteCompanies(data.favourites);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -871,10 +900,11 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     .catch((error) => {
                       console.error("Error:", error);
                     });
+                  name;
 
                   // 前端删除自定义框架
                   const updatedFrameworks = customized_frameworks.filter(
-                    (item) => item.id !== framework.id
+                    (item) => item.name !== framework.name
                   );
                   setCustomizedFrameworks(updatedFrameworks);
                 }}
@@ -884,6 +914,69 @@ function ProfileForm({ userInfo, setUserInfo }) {
             }
           >
             <ListItemText primary={framework.name} />
+          </ListItem>
+        ))}
+      </List>
+
+      {/* Favorite Companies */}
+      {favourite_companies.length > 0 ? (
+        <Typography variant="h5">Favourite Companies:</Typography>
+      ) : (
+        <Typography variant="h5">
+          You don{"'"}t have any favourite companies!
+        </Typography>
+      )}
+      <List>
+        {favourite_companies.map((favourite_company) => (
+          <ListItem
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+            key={favourite_company.name}
+            secondaryAction={
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => {
+                  // 后端删除最爱的公司
+                  fetch(`${config.BACKEND_URL}/delete/favourite_company`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      token: localStorage.getItem("token"),
+                      company_name: favourite_company.name,
+                    }),
+                  })
+                    .then((response) => {
+                      if (!response.ok) {
+                        console.error("Network response was not ok");
+                        return response.json();
+                      }
+                      return response.json();
+                    })
+                    .then((data) => {
+                      alert(data.message);
+                    })
+                    .catch((error) => {
+                      console.error("Error:", error);
+                    });
+
+                  // 前端删除最爱的公司
+                  const updatedFavouriteCompanies = favourite_companies.filter(
+                    (item) => item.name !== favourite_company.name
+                  );
+                  setFavouriteCompanies(updatedFavouriteCompanies);
+                  console.log(favourite_companies);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <ListItemText primary={favourite_company.name} />
           </ListItem>
         ))}
       </List>

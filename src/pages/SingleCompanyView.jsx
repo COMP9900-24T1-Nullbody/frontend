@@ -18,8 +18,8 @@ export default function SingleCompanyView() {
   const [selectedFramework, setSelectedFramework] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
 
+  // Metrics和Indicators数据
   const [data, setData] = useState([]);
-
   useEffect(() => {
     if (selectedCompany && selectedFramework) {
       const request = {
@@ -48,6 +48,7 @@ export default function SingleCompanyView() {
     }
   }, [selectedCompany, selectedFramework]);
 
+  // 主题色
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("theme-color")
   );
@@ -55,6 +56,7 @@ export default function SingleCompanyView() {
     localStorage.setItem("theme-color", themeColor);
   }, [themeColor]);
 
+  // 默认头像
   const [imageSrc, setImageSrc] = useState(Image01);
 
   const navigate = useNavigate();
@@ -90,6 +92,7 @@ export default function SingleCompanyView() {
             <CollapseSiderMenu
               data={data}
               setData={setData}
+              company_name={selectedCompany}
               setSelectedCompany={setSelectedCompany}
               setSelectedFramework={setSelectedFramework}
             />
