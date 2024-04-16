@@ -10,6 +10,7 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
 import config from "../../../config.json";
+import { green, grey, orange } from "@mui/material/colors";
 
 export default function FrameworkOptions({ setSelectedFramework }) {
   const [frameworks, setFrameworks] = useState([]);
@@ -48,7 +49,6 @@ export default function FrameworkOptions({ setSelectedFramework }) {
             value={item.name}
             control={<Radio />}
             label={
-              <div>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Tooltip title={<span>{item.description}</span>}>
                     {item.name}
@@ -63,7 +63,7 @@ export default function FrameworkOptions({ setSelectedFramework }) {
                         width: "40px",
                         height: "20px",
                         borderRadius: "50%",
-                        backgroundColor: "green",
+                        backgroundColor: green[500],
                         color: "white",
                         display: "flex",
                         alignItems: "center",
@@ -81,7 +81,7 @@ export default function FrameworkOptions({ setSelectedFramework }) {
                         width: "40px",
                         height: "20px",
                         borderRadius: "50%",
-                        backgroundColor: "orange",
+                        backgroundColor: orange[500],
                         color: "white",
                         display: "flex",
                         alignItems: "center",
@@ -99,7 +99,7 @@ export default function FrameworkOptions({ setSelectedFramework }) {
                         width: "40px",
                         height: "20px",
                         borderRadius: "50%",
-                        backgroundColor: "grey",
+                        backgroundColor: grey[500],
                         color: "white",
                         display: "flex",
                         alignItems: "center",
@@ -111,7 +111,6 @@ export default function FrameworkOptions({ setSelectedFramework }) {
                     </Box>
                   </Tooltip>
                 </Box>
-              </div>
             }
           />
         ))}
