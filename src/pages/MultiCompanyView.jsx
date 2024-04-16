@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 import config from "../config.json";
+import FinalScore from "../components/FinalCompareScore";
 
 export default function MultiConpanyView() {
   const [selectedFramework, setSelectedFramework] = useState("");
@@ -26,13 +27,13 @@ export default function MultiConpanyView() {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           company_1_name: selectedCompany_1,
           company_2_name: selectedCompany_2,
-          framework: selectedFramework,
-        }),
+          framework: selectedFramework
+        })
       };
 
       fetch(`${config.BACKEND_URL}/compare_company_info/v3`, request)
@@ -97,8 +98,21 @@ export default function MultiConpanyView() {
               setSelectedFramework={setSelectedFramework}
             />
           </Box>
-          <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            {data.length > 0 && <CompareTable data={data} />}
+
+          <Box flexGrow={1} sx={{ display: "flex", flexDirection: "column" }}>
+            <Box
+              flexGrow={1}
+              sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}
+            >
+              {data.length > 0 && <FinalScore data={data} />}
+            </Box>
+
+            <Box
+              flexGrow={2}
+              sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}
+            >
+              {data.length > 0 && <CompareTable data={data} />}
+            </Box>
           </Box>
         </Box>
       </Box>

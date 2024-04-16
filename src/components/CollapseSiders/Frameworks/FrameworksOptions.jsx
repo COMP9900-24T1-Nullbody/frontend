@@ -49,68 +49,68 @@ export default function FrameworkOptions({ setSelectedFramework }) {
             value={item.name}
             control={<Radio />}
             label={
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Tooltip title={<span>{item.description}</span>}>
-                    {item.name}
-                    <IconButton sx={{ marginRight: "5px" }}>
-                      <ErrorOutlineOutlinedIcon />
-                    </IconButton>
-                  </Tooltip>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Tooltip title={<span>{item.description}</span>}>
+                  {item.name}
+                  <IconButton sx={{ marginRight: "5px" }}>
+                    <ErrorOutlineOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
 
-                  <Tooltip title={<span>Environmental Weight</span>}>
-                    <Box
-                      sx={{
-                        width: "40px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: green[500],
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                        marginRight: "5px"
-                      }}
-                    >
-                      {item.E_weight}
-                    </Box>
-                  </Tooltip>
-                  <Tooltip title={<span>Social Weight</span>}>
-                    <Box
-                      sx={{
-                        width: "40px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: orange[500],
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                        marginRight: "5px"
-                      }}
-                    >
-                      {item.S_weight}
-                    </Box>
-                  </Tooltip>
-                  <Tooltip title={<span>Governmental Weight</span>}>
-                    <Box
-                      sx={{
-                        width: "40px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: grey[500],
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px"
-                      }}
-                    >
-                      {item.G_weight}
-                    </Box>
-                  </Tooltip>
-                </Box>
+                <Tooltip title={<span>Environmental Weight</span>}>
+                  <Box
+                    sx={{
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: green[500],
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      marginRight: "5px"
+                    }}
+                  >
+                    {item.E_weight}
+                  </Box>
+                </Tooltip>
+                <Tooltip title={<span>Social Weight</span>}>
+                  <Box
+                    sx={{
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: orange[500],
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      marginRight: "5px"
+                    }}
+                  >
+                    {item.S_weight}
+                  </Box>
+                </Tooltip>
+                <Tooltip title={<span>Governmental Weight</span>}>
+                  <Box
+                    sx={{
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: grey[500],
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px"
+                    }}
+                  >
+                    {item.G_weight}
+                  </Box>
+                </Tooltip>
+              </Box>
             }
           />
         ))}

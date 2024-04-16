@@ -100,11 +100,11 @@ export default function SingleCompanyView() {
           </Box>
 
           <Box flexGrow={1} sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
+            <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
               {data.length > 0 && <FinalScore data={data} />}
             </Box>
 
-            <Box sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
+            <Box flexGrow={2} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
               {data.length > 0 && <ViewTable data={data} />}
             </Box>
           </Box>
