@@ -56,10 +56,6 @@ export default function ResultTable({ data, onDelete }) {
     setColumns(newColumns);
   }, [data]);
 
-  useEffect(() => {
-    console.log(columns);
-  }, [columns]);
-
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

@@ -7,13 +7,14 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Typography,
+  Typography
 } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 import NavBar from "../components/NavBar";
 import ResultTable from "../components/Views/ResultTable";
+import FinalScore from "../components/FinalHistoryScore";
 
 import { Theme } from "../theme/main";
 
@@ -27,11 +28,11 @@ export default function UserHistory() {
     fetch(`${config.BACKEND_URL}/list/analysis`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        token: localStorage.getItem("token"),
-      }),
+        token: localStorage.getItem("token")
+      })
     })
       .then((response) => response.json())
       .then((data) => {
@@ -80,13 +81,13 @@ export default function UserHistory() {
     fetch(`${config.BACKEND_URL}/delete/analysis`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         token: localStorage.getItem("token"),
         timestamp: selected_timestamp,
-        data: selected_data,
-      }),
+        data: selected_data
+      })
     })
       .then((response) => {
         if (!response.ok) {
@@ -162,7 +163,7 @@ export default function UserHistory() {
             sx={{
               borderRadius: 2,
               boxShadow: 3,
-              m: 1,
+              m: 1
             }}
           >
             <List component="nav" aria-label="mailbox folders">
@@ -173,7 +174,7 @@ export default function UserHistory() {
                     button
                     onClick={() => handleListItemClick(index)}
                     sx={{
-                      bgcolor: selected_timestamp === timestamp && "green",
+                      bgcolor: selected_timestamp === timestamp && "green"
                     }}
                   >
                     <ListItemText primary={timestamp} />
@@ -190,15 +191,32 @@ export default function UserHistory() {
             borderRadius: 2,
             boxShadow: 3,
             m: 1,
-            p: 1,
+            p: 1
           }}
         >
-          {selected_data.length > 0 && (
-            <ResultTable data={selected_data} onDelete={handleDeleteClick} />
-          )}
-          {timestamps.length === 0 && datas.length === 0 && (
-            <Typography variant="h5">No Analysis History Data</Typography>
-          )}
+          <Box flexGrow={1} sx={{ display: "flex", flexDirection: "column" }}>
+          <Box
+              flexGrow={1}
+              sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}
+            >
+              {selected_data.length > 0 && <FinalScore data={selected_data} />}
+            </Box>
+
+            <Box
+              flexGrow={1}
+              sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}
+            >
+              {selected_data.length > 0 && (
+                <ResultTable
+                  data={selected_data}
+                  onDelete={handleDeleteClick}
+                />
+              )}
+              {timestamps.length === 0 && datas.length === 0 && (
+                <Typography variant="h5">No Analysis History Data</Typography>
+              )}
+            </Box>
+          </Box>
         </Box>
       </Box>
     </ThemeProvider>
