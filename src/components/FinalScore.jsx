@@ -34,9 +34,11 @@ export default function FinalScore({ data }) {
         let totalIndicatorWeight = 0;
 
         indicator.metrics.forEach((metric) => {
-          let metricWeightedScore = parseFloat(metric.score) * metric.weight;
-          indicatorWeightedScore += metricWeightedScore;
-          totalIndicatorWeight += metric.weight;
+          if (metric.checked) {
+            let metricWeightedScore = parseFloat(metric.score) * metric.weight;
+            indicatorWeightedScore += metricWeightedScore;
+            totalIndicatorWeight += metric.weight;
+          }
         });
 
         indicatorWeightedScore /= totalIndicatorWeight;

@@ -48,13 +48,15 @@ export default function FinalScore({ data }) {
         let totalIndicatorWeight = 0;
 
         indicator.metrics.forEach((metric) => {
-          let metricWeightedScore_company_1 =
-            parseFloat(metric.score_1) * metric.weight;
-          let metricWeightedScore_company_2 =
-            parseFloat(metric.score_2) * metric.weight;
-          indicatorWeightedScore_company_1 += metricWeightedScore_company_1;
-          indicatorWeightedScore_company_2 += metricWeightedScore_company_2;
-          totalIndicatorWeight += metric.weight;
+          if (metric.checked) {
+            let metricWeightedScore_company_1 =
+              parseFloat(metric.score_1) * metric.weight;
+            let metricWeightedScore_company_2 =
+              parseFloat(metric.score_2) * metric.weight;
+            indicatorWeightedScore_company_1 += metricWeightedScore_company_1;
+            indicatorWeightedScore_company_2 += metricWeightedScore_company_2;
+            totalIndicatorWeight += metric.weight;
+          }
         });
 
         indicatorWeightedScore_company_1 /= totalIndicatorWeight;
