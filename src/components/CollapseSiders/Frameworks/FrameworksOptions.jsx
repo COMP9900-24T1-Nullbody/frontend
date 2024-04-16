@@ -5,7 +5,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import { IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
@@ -21,9 +21,9 @@ export default function FrameworkOptions({ setSelectedFramework }) {
     fetch(`${config.BACKEND_URL}/list/frameworks`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token })
     })
       .then((response) => response.json())
       .then((data) => {
@@ -48,14 +48,70 @@ export default function FrameworkOptions({ setSelectedFramework }) {
             value={item.name}
             control={<Radio />}
             label={
-              <Tooltip title={<span>{item.description}</span>}>
-                <div>
-                  {item.name}
-                  <IconButton>
-                    <ErrorOutlineOutlinedIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
+              <div>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Tooltip title={<span>{item.description}</span>}>
+                    {item.name}
+                    <IconButton sx={{ marginRight: "5px" }}>
+                      <ErrorOutlineOutlinedIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title={<span>Environmental Weight</span>}>
+                    <Box
+                      sx={{
+                        width: "40px",
+                        height: "20px",
+                        borderRadius: "50%",
+                        backgroundColor: "green",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "12px",
+                        marginRight: "5px"
+                      }}
+                    >
+                      {item.E_weight}
+                    </Box>
+                  </Tooltip>
+                  <Tooltip title={<span>Social Weight</span>}>
+                    <Box
+                      sx={{
+                        width: "40px",
+                        height: "20px",
+                        borderRadius: "50%",
+                        backgroundColor: "orange",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "12px",
+                        marginRight: "5px"
+                      }}
+                    >
+                      {item.S_weight}
+                    </Box>
+                  </Tooltip>
+                  <Tooltip title={<span>Governmental Weight</span>}>
+                    <Box
+                      sx={{
+                        width: "40px",
+                        height: "20px",
+                        borderRadius: "50%",
+                        backgroundColor: "grey",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "12px"
+                      }}
+                    >
+                      {item.G_weight}
+                    </Box>
+                  </Tooltip>
+                </Box>
+              </div>
             }
           />
         ))}
@@ -65,5 +121,5 @@ export default function FrameworkOptions({ setSelectedFramework }) {
 }
 
 FrameworkOptions.propTypes = {
-  setSelectedFramework: PropTypes.func.isRequired,
+  setSelectedFramework: PropTypes.func.isRequired
 };
