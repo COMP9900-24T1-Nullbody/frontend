@@ -96,19 +96,24 @@ export function CustomizeDialog({ open, handleClose }) {
       G_indicators: G_indicators,
       E_weight: E_weight,
       S_weight: S_weight,
-      G_weight: G_weight,
+      G_weight: G_weight
     };
+
+    if (data.E_indicators.length == 0 && data.S_indicators.length == 0 && data.G_indicators.length == 0) {
+      alert("Please add at least one indicator!");
+      return;
+    }
 
     if (!framework_name_error && !framework_description_error) {
       fetch(`${config.BACKEND_URL}/create/framework`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          framework_info: data,
-        }),
+          framework_info: data
+        })
       })
         .then((response) => {
           if (!response.ok) {
@@ -119,9 +124,23 @@ export function CustomizeDialog({ open, handleClose }) {
         .then((data) => {
           alert(data.message);
         });
-    }
 
-    handleClose(data);
+      // 重置framework表单
+      setFrameworkName("");
+      setFrameworkDescription("");
+      setE_weight(0.5);
+      setS_weight(0.5);
+      setG_weight(0.5);
+      setE_indicators([]);
+      setS_indicators([]);
+      setG_indicators([]);
+
+      handleClose();
+    } else if (framework_name_error) {
+      alert("Please enter framework name!");
+    } else if (framework_description_error) {
+      alert("Please enter framework description!");
+    }
   };
 
   // 控制ESG对应Dialog的开关状态
@@ -235,11 +254,11 @@ export function CustomizeDialog({ open, handleClose }) {
                   <Grid item xs>
                     {/* 第一个按钮自适应长度 */}
                     <Button fullWidth variant="contained">
-                      {indicator.name}
+                      Name: {indicator.name}
                       {"-----"}
-                      {indicator.weight}
+                      Weight: {indicator.weight}
                       {"-----"}
-                      {indicator.metrics.length}
+                      Metric_num: {indicator.metrics.length}
                     </Button>
                   </Grid>
                   <Grid item>
@@ -398,18 +417,6 @@ export function CustomizeDialog({ open, handleClose }) {
             onClick={() => {
               // 上传framework
               upload();
-
-              // 重置framework表单
-              setFrameworkName("");
-              setFrameworkDescription("");
-              setE_weight(0.5);
-              setS_weight(0.5);
-              setG_weight(0.5);
-              setE_indicators([]);
-              setS_indicators([]);
-              setG_indicators([]);
-
-              handleClose();
             }}
             autoFocus
           >
@@ -441,5 +448,5 @@ export function CustomizeDialog({ open, handleClose }) {
 
 CustomizeDialog.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired
 };

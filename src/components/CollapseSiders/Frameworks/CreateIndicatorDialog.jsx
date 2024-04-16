@@ -18,7 +18,7 @@ export default function CreateIndicatorDialog({
   upload,
   pillar,
   open,
-  handleClose,
+  handleClose
 }) {
   const [indicatorName, setIndicatorName] = React.useState("");
   const [indicatorWeight, setIndicatorWeight] = React.useState(0);
@@ -26,12 +26,36 @@ export default function CreateIndicatorDialog({
   const [indicatorMetrics, setIndicatorMetrics] = React.useState([]);
 
   const handleSaveIndicator = () => {
+    if (indicatorName === "") {
+      alert("Please enter an indicator name");
+      return;
+    }
+
+    if (indicatorDescription === "") {
+      alert("Please enter an indicator description");
+      return;
+    }
+
+    if (indicatorMetrics.length === 0) {
+      alert("Please add at least one metric");
+      return;
+    }
+
+    // Check if any metric has an empty name
+    const hasEmptyName = indicatorMetrics.some(
+      (metric) => metric.name.trim() === ""
+    );
+    if (hasEmptyName) {
+      alert("Please enter a name for each metric");
+      return;
+    }
+
     // 上传
     upload({
       name: indicatorName,
       weight: indicatorWeight,
       description: indicatorDescription,
-      metrics: indicatorMetrics,
+      metrics: indicatorMetrics
     });
 
     // 重置表单
@@ -39,6 +63,7 @@ export default function CreateIndicatorDialog({
     setIndicatorWeight(0);
     setIndicatorDescription("");
     setIndicatorMetrics([]);
+
     handleClose();
   };
 
@@ -79,7 +104,7 @@ export default function CreateIndicatorDialog({
       </DialogTitle>
       <DialogContent
         sx={{
-          width: 500,
+          width: 500
         }}
       >
         <Typography id="input-slider">Name:</Typography>
@@ -177,5 +202,5 @@ CreateIndicatorDialog.propTypes = {
   upload: PropTypes.func.isRequired,
   pillar: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired
 };
