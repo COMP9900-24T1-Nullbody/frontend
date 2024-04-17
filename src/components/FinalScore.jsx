@@ -60,19 +60,67 @@ export default function FinalScore({ data }) {
     const finalSWeightedScore = totalSWeightedScore / totalSWeight;
     const finalGWeightedScore = totalGWeightedScore / totalGWeight;
 
-    const finalScore =
-      (finalEWeightedScore * E_weight +
-        finalSWeightedScore * S_weight +
-        finalGWeightedScore * G_weight) /
-      (E_weight + S_weight + G_weight);
+    const finalScore = calculateFinalScore(
+      finalEWeightedScore,
+      finalSWeightedScore,
+      finalGWeightedScore,
+      E_weight,
+      S_weight,
+      G_weight
+    );
 
     setWeightedScores({
       E: finalEWeightedScore,
       S: finalSWeightedScore,
-      G: finalGWeightedScore
+      G: finalGWeightedScore,
     });
     setFinalScore(finalScore);
   }, [data]);
+
+  const calculateFinalScore = (
+    finalEWeightedScore,
+    finalSWeightedScore,
+    finalGWeightedScore,
+    E_weight,
+    S_weight,
+    G_weight
+  ) => {
+    if (
+      isNaN(finalEWeightedScore) &&
+      isNaN(finalSWeightedScore) &&
+      isNaN(finalGWeightedScore)
+    ) {
+      return NaN; // All scores are NaN, cannot calculate final score
+    } else if (isNaN(finalEWeightedScore) && isNaN(finalSWeightedScore)) {
+      return (finalGWeightedScore * G_weight) / G_weight; // Only finalGWeightedScore available
+    } else if (isNaN(finalSWeightedScore) && isNaN(finalGWeightedScore)) {
+      return (finalEWeightedScore * E_weight) / E_weight; // Only finalEWeightedScore available
+    } else if (isNaN(finalEWeightedScore) && isNaN(finalGWeightedScore)) {
+      return (finalSWeightedScore * S_weight) / S_weight; // Only finalSWeightedScore available
+    } else if (isNaN(finalEWeightedScore)) {
+      return (
+        (finalSWeightedScore * S_weight + finalGWeightedScore * G_weight) /
+        (S_weight + G_weight)
+      );
+    } else if (isNaN(finalSWeightedScore)) {
+      return (
+        (finalEWeightedScore * E_weight + finalGWeightedScore * G_weight) /
+        (E_weight + G_weight)
+      );
+    } else if (isNaN(finalGWeightedScore)) {
+      return (
+        (finalEWeightedScore * E_weight + finalSWeightedScore * S_weight) /
+        (E_weight + S_weight)
+      );
+    } else {
+      return (
+        (finalEWeightedScore * E_weight +
+          finalSWeightedScore * S_weight +
+          finalGWeightedScore * G_weight) /
+        (E_weight + S_weight + G_weight)
+      );
+    }
+  };
 
   return (
     <Box>
@@ -127,11 +175,11 @@ FinalScore.propTypes = {
               description: PropTypes.string.isRequired,
               score: PropTypes.number.isRequired,
               weight: PropTypes.number.isRequired,
-              checked: PropTypes.bool.isRequired
+              checked: PropTypes.bool.isRequired,
             })
-          ).isRequired
+          ).isRequired,
         })
-      ).isRequired
+      ).isRequired,
     })
-  ).isRequired
+  ).isRequired,
 };
