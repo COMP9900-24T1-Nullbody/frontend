@@ -12,11 +12,52 @@ import Image01 from "../img/1.jpg";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
+import config from "../config.json";
+import FinalScore from "../components/FinalScore";
+
 export default function SingleCompanyView() {
+  const [selectedFramework, setSelectedFramework] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
 
-  const [themeColor, setThemeColor] = useState("");
+  // Metrics和Indicators数据
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    if (selectedCompany && selectedFramework) {
+      const request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          company_name: selectedCompany,
+          framework: selectedFramework,
+        }),
+      };
 
+      fetch(`${config.BACKEND_URL}/company_info/v3`, request)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            console.error(data.error);
+          } else {
+            setData(data.Risks);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [selectedCompany, selectedFramework]);
+
+  // 主题色
+  const [themeColor, setThemeColor] = useState(
+    localStorage.getItem("theme-color")
+  );
+  useEffect(() => {
+    localStorage.setItem("theme-color", themeColor);
+  }, [themeColor]);
+
+  // 默认头像
   const [imageSrc, setImageSrc] = useState(Image01);
 
   const navigate = useNavigate();
@@ -44,15 +85,28 @@ export default function SingleCompanyView() {
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
       <Box>
         <Box sx={{ m: 1 }}>
-          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} setSelectedCompany={setSelectedCompany}/>
+          <NavBar setThemeColor={setThemeColor} avatarImage={imageSrc} />
         </Box>
 
         <Box sx={{ display: "flex" }}>
           <Box>
-            <CollapseSiderMenu />
+            <CollapseSiderMenu
+              data={data}
+              setData={setData}
+              company_name={selectedCompany}
+              setSelectedCompany={setSelectedCompany}
+              setSelectedFramework={setSelectedFramework}
+            />
           </Box>
-          <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
-            <ViewTable selectedCompany={selectedCompany} />
+
+          <Box flexGrow={1} sx={{ display: "flex", flexDirection: "column" }}>
+            <Box flexGrow={1} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
+              {data.length > 0 && <FinalScore data={data} />}
+            </Box>
+
+            <Box flexGrow={2} sx={{ borderRadius: 2, boxShadow: 3, m: 1, p: 1 }}>
+              {data.length > 0 && <ViewTable data={data} />}
+            </Box>
           </Box>
         </Box>
       </Box>

@@ -15,13 +15,14 @@ import { Button } from "@mui/material";
 
 import config from "../../config.json";
 
-export default function ViewTable({ data }) {
+export default function CompareTable({ data }) {
   const columns = [
     "indicator_name",
     "indicator_weight",
     "metric_name",
     "metric_weight",
-    "metric_score",
+    "score_1",
+    "score_2",
   ];
 
   const handleSave = () => {
@@ -92,7 +93,8 @@ export default function ViewTable({ data }) {
                     </TableCell>
                     <TableCell>{metric.name}</TableCell>
                     <TableCell>{metric.weight}</TableCell>
-                    <TableCell>{metric.score.toFixed(2)}</TableCell>
+                    <TableCell>{metric.score_1.toFixed(2)}</TableCell>
+                    <TableCell>{metric.score_2.toFixed(2)}</TableCell>
                   </TableRow>
                 ))
             )
@@ -107,6 +109,6 @@ export default function ViewTable({ data }) {
   );
 }
 
-ViewTable.propTypes = {
+CompareTable.propTypes = {
   data: PropTypes.array.isRequired,
 };

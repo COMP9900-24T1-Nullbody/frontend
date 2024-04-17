@@ -11,7 +11,7 @@ const TopIndicator = ({
   topIndicatorItem,
   onTopIndicatorClick,
   onTopCheckBoxClick,
-  onWeightSave
+  onWeightSave,
 }) => {
   return (
     <Box
@@ -20,27 +20,27 @@ const TopIndicator = ({
         alignItems: "center",
         maxWidth: "100%",
         pl: 2,
-        pr: 2
+        pr: 2,
       }}
     >
       <Box>
         <Checkbox
-          checked={topIndicatorItem.subIndicators.every(
+          checked={topIndicatorItem.metrics.every(
             (subIndicator) => subIndicator.checked
           )}
           indeterminate={
-            topIndicatorItem.subIndicators.some(
+            topIndicatorItem.metrics.some(
               (subIndicator) => subIndicator.checked
             ) &&
-            !topIndicatorItem.subIndicators.every(
+            !topIndicatorItem.metrics.every(
               (subIndicator) => subIndicator.checked
             )
           }
-          onChange={() => onTopCheckBoxClick(topIndicatorItem.topIndicator)}
+          onChange={() => onTopCheckBoxClick(topIndicatorItem.name)}
         />
       </Box>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography wrap="wrap">{topIndicatorItem.topIndicator}</Typography>
+        <Typography wrap="wrap">{topIndicatorItem.name}</Typography>
       </Box>
 
       <Box>
@@ -61,11 +61,11 @@ const TopIndicator = ({
       <Box>
         {open ? (
           <ExpandLess
-            onClick={() => onTopIndicatorClick(topIndicatorItem.topIndicator)}
+            onClick={() => onTopIndicatorClick(topIndicatorItem.name)}
           />
         ) : (
           <ExpandMore
-            onClick={() => onTopIndicatorClick(topIndicatorItem.topIndicator)}
+            onClick={() => onTopIndicatorClick(topIndicatorItem.name)}
           />
         )}
       </Box>
@@ -76,21 +76,22 @@ const TopIndicator = ({
 TopIndicator.propTypes = {
   open: PropTypes.bool.isRequired,
   topIndicatorItem: PropTypes.shape({
-    topIndicator: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     weight: PropTypes.number.isRequired,
-    subIndicators: PropTypes.arrayOf(
+    metrics: PropTypes.arrayOf(
       PropTypes.shape({
-        subIndicator: PropTypes.string.isRequired,
-        checked: PropTypes.bool.isRequired,
+        name: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,
-        weight: PropTypes.number.isRequired
+        weight: PropTypes.number.isRequired,
+        checked: PropTypes.bool.isRequired,
+        score: PropTypes.number.isRequired,
       })
-    ).isRequired
+    ).isRequired,
   }).isRequired,
   onTopIndicatorClick: PropTypes.func.isRequired,
   onTopCheckBoxClick: PropTypes.func.isRequired,
-  onWeightSave: PropTypes.func.isRequired
+  onWeightSave: PropTypes.func.isRequired,
 };
 
 export default TopIndicator;

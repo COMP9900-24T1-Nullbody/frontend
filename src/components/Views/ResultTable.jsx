@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import Table from "@mui/material/Table";
@@ -13,48 +13,48 @@ import IconButton from "@mui/material/IconButton";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { Button } from "@mui/material";
 
-import config from "../../config.json";
-
-export default function ViewTable({ data }) {
-  const columns = [
+export default function ResultTable({ data, onDelete }) {
+  const [columns, setColumns] = useState([
     "indicator_name",
     "indicator_weight",
     "metric_name",
     "metric_weight",
-    "metric_score",
-  ];
+  ]);
 
-  const handleSave = () => {
-    fetch(`${config.BACKEND_URL}/save/analysis`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem("token"),
-        timestamp: Date.now(),
-        data: data,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          console.error("Network response was not ok");
-          return response.json();
+  useEffect(() => {
+    let newColumns = [
+      "indicator_name",
+      "indicator_weight",
+      "metric_name",
+      "metric_weight",
+    ];
+
+    let hasScore = true;
+    for (let risks of data) {
+      for (let indicator of risks.indicators) {
+        for (let metric of indicator.metrics) {
+          if (!Object.prototype.hasOwnProperty.call(metric, "score")) {
+            hasScore = false;
+            break; // 跳出当前循环
+          }
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.error) {
-          console.error(data.error);
-        } else {
-          alert(data.message);
+        if (!hasScore) {
+          break; // 跳出外层循环
         }
-      })
-      .catch((error) => {
-        alert("Error: Save analysis failed, Please check server status.");
-        console.error("Error:", error);
-      });
-  };
+      }
+      if (!hasScore) {
+        break; // 跳出外层循环
+      }
+    }
+
+    if (hasScore) {
+      newColumns.push("metric_score");
+    } else {
+      newColumns.push("score_1", "score_2");
+    }
+
+    setColumns(newColumns);
+  }, [data]);
 
   return (
     <TableContainer component={Paper}>
@@ -76,7 +76,7 @@ export default function ViewTable({ data }) {
                     key={`${risks.name}-${indicator.name}-${metric.name}`}
                   >
                     <TableCell>
-                      {indicator.name}{" "}
+                      {indicator.name}
                       <Tooltip title={indicator.description}>
                         <IconButton>
                           <ErrorOutlineOutlinedIcon />
@@ -92,7 +92,14 @@ export default function ViewTable({ data }) {
                     </TableCell>
                     <TableCell>{metric.name}</TableCell>
                     <TableCell>{metric.weight}</TableCell>
-                    <TableCell>{metric.score.toFixed(2)}</TableCell>
+                    {columns.includes("metric_score") ? (
+                      <TableCell>{metric.score}</TableCell>
+                    ) : (
+                      <>
+                        <TableCell>{metric.score_1}</TableCell>
+                        <TableCell>{metric.score_2}</TableCell>
+                      </>
+                    )}
                   </TableRow>
                 ))
             )
@@ -100,13 +107,14 @@ export default function ViewTable({ data }) {
         </TableBody>
       </Table>
 
-      <Button fullWidth variant="contained" onClick={handleSave}>
-        Save Analysis Result
+      <Button fullWidth variant="contained" color="error" onClick={onDelete}>
+        Delete This Analysis Result
       </Button>
     </TableContainer>
   );
 }
 
-ViewTable.propTypes = {
+ResultTable.propTypes = {
   data: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };

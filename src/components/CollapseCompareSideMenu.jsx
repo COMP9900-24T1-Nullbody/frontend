@@ -8,8 +8,8 @@ import Grid from "@mui/material/Grid";
 
 import CollapseFrameworks from "./CollapseSiders/Frameworks/Frameworks";
 import CollapseMetrics from "./CollapseSiders/Metrics/Metrics";
-import CollapseCountries from "./CollapseSiders/Country/Countries";
-import CollapseCompanies from "./CollapseSiders/Company/Companies";
+import CollapseCountries from "./CollapseSiders/Country/CompareCountries";
+import CollapseCompanies from "./CollapseSiders/Company/CompareCompanies";
 
 import config from "../config.json";
 
@@ -17,10 +17,12 @@ export default function CollapseSiderMenu({
   data,
   setData,
   company_name,
-  setSelectedCompany,
+  setSelectedCompany1,
+  setSelectedCompany2,
   setSelectedFramework,
 }) {
-  const [country_code, setCountryCode] = useState("");
+  const [country_code_1, setCountryCode1] = useState("");
+  const [country_code_2, setCountryCode2] = useState("");
 
   const handleAddCompanyToFavorites = () => {
     fetch(`${config.BACKEND_URL}/create/favourite_company`, {
@@ -61,14 +63,19 @@ export default function CollapseSiderMenu({
         <Grid container>
           {/* Countries */}
           <Grid item xs={12}>
-            <CollapseCountries setCountryCode={setCountryCode} />
+            <CollapseCountries
+              setCountryCode1={setCountryCode1}
+              setCountryCode2={setCountryCode2}
+            />
           </Grid>
 
           {/* Company */}
           <Grid item xs={12}>
             <CollapseCompanies
-              country_code={country_code}
-              setSelectedCompany={setSelectedCompany}
+              country_code_1={country_code_1}
+              country_code_2={country_code_2}
+              setSelectedCompany1={setSelectedCompany1}
+              setSelectedCompany2={setSelectedCompany2}
             />
           </Grid>
 
@@ -116,6 +123,7 @@ CollapseSiderMenu.propTypes = {
   data: PropTypes.array.isRequired,
   setData: PropTypes.func.isRequired,
   company_name: PropTypes.string.isRequired,
-  setSelectedCompany: PropTypes.func.isRequired,
+  setSelectedCompany1: PropTypes.func.isRequired,
+  setSelectedCompany2: PropTypes.func.isRequired,
   setSelectedFramework: PropTypes.func.isRequired,
 };

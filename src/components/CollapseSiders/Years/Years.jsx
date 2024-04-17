@@ -23,7 +23,7 @@ export default function CollapseYears() {
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
 
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={open}>
         <YearsOptions />
       </Collapse>
     </Box>

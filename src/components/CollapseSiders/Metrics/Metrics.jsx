@@ -1,4 +1,5 @@
-import React from "react";
+import { React, useState } from "react";
+import PropTypes from "prop-types";
 
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -9,8 +10,8 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import MetricsOptions from "./MetricsOptions";
 import { Box } from "@mui/material";
 
-export default function CollapseMetrics() {
-  const [open, setOpen] = React.useState(true);
+export default function CollapseMetrics({ data, setData }) {
+  const [open, setOpen] = useState(true);
 
   const handleClick = () => {
     setOpen(!open);
@@ -23,9 +24,14 @@ export default function CollapseMetrics() {
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
 
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <MetricsOptions />
+      <Collapse in={open}>
+        <MetricsOptions data={data} setData={setData} />
       </Collapse>
     </Box>
   );
 }
+
+CollapseMetrics.propTypes = {
+  data: PropTypes.array.isRequired,
+  setData: PropTypes.func.isRequired,
+};

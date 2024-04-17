@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -8,12 +9,20 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import FrameworkOptions from "./FrameworksOptions";
 import { Box, Button } from "@mui/material";
+import { CustomizeDialog } from "./CustomizeDialog";
 
-export default function CollapseFrameworks() {
-  const [open, setOpen] = React.useState(true);
-
+export default function CollapseFrameworks({ setSelectedFramework }) {
+  const [expanded, setExpanded] = React.useState(true);
   const handleClick = () => {
-    setOpen(!open);
+    setExpanded(!expanded);
+  };
+
+  const [dialog_open, setDialogOpen] = React.useState(false);
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -21,18 +30,25 @@ export default function CollapseFrameworks() {
       <Box>
         <ListItemButton onClick={handleClick}>
           <ListItemText primary="FRAMEWORKS" />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {expanded ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
       </Box>
 
       <Box>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <FrameworkOptions />
+        <Collapse in={expanded}>
+          <FrameworkOptions setSelectedFramework={setSelectedFramework} />
           <Box sx={{ pl: 4 }}>
-            <Button variant="outlined">+ Customize A Framework</Button>
+            <Button variant="outlined" onClick={handleDialogOpen}>
+              + Customize A Framework
+            </Button>
           </Box>
+          <CustomizeDialog open={dialog_open} handleClose={handleDialogClose} />
         </Collapse>
       </Box>
     </Box>
   );
 }
+
+CollapseFrameworks.propTypes = {
+  setSelectedFramework: PropTypes.func.isRequired,
+};

@@ -1,40 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Box, Collapse } from "@mui/material";
 import TopIndicator from "./TopIndicator.jsx";
 import SubIndicator from "./SubIndicator.jsx";
 
-import sample_data from "./sample_data.json";
-
-export default function NestedCheckbox() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    setData(sample_data);
-  }, []);
-
+export default function MetricsOptions({ data, setData }) {
   const [openTopIndicators, setOpenTopIndicators] = useState({});
 
-  const handleTopCheckBoxClick = (topIndicator) => {
-    const currentStatus = getCurrentStatus(topIndicator);
+  const handleTopCheckBoxClick = (
+    RiskItem,
+    topIndicatorItem,
+    subIndicatorItem
+  ) => {
+    const currentStatus = getCurrentStatus(RiskItem, topIndicatorItem);
 
-    const updatedData = data.map((topIndicatorItem) => {
-      if (topIndicatorItem.topIndicator === topIndicator) {
-        const updatedSubIndicators = topIndicatorItem.subIndicators.map(
-          (subIndicatorItem) => ({
-            ...subIndicatorItem,
-            checked:
-              currentStatus === "intermediate"
-                ? true
-                : !subIndicatorItem.checked
-          })
-        );
+    const updatedData = data.map((item) => {
+      if (RiskItem === item) {
+        const updatedTopIndicators = item.indicators.map((topitem) => {
+          if (topIndicatorItem === topitem) {
+            const updatedSubIndicators = topitem.metrics.map((subitem) => {
+              if (subIndicatorItem === subitem) {
+                return {
+                  ...subitem,
+                  checked:
+                    currentStatus === "intermediate"
+                      ? true
+                      : !subIndicatorItem.checked,
+                };
+              }
+              return subitem;
+            });
+            return {
+              ...topitem,
+              metrics: updatedSubIndicators,
+            };
+          }
+          return topitem;
+        });
         return {
-          ...topIndicatorItem,
-          subIndicators: updatedSubIndicators
+          ...item,
+          indicators: updatedTopIndicators,
         };
       }
-      return topIndicatorItem;
+      return item;
     });
-
     setData(updatedData);
   };
 
@@ -42,18 +51,18 @@ export default function NestedCheckbox() {
     const isOpen = !openTopIndicators[topIndicator];
     setOpenTopIndicators({
       ...openTopIndicators,
-      [topIndicator]: isOpen
+      [topIndicator]: isOpen,
     });
   };
 
-  const getCurrentStatus = (topIndicator) => {
-    const topIndicatorItem = data.find(
-      (item) => item.topIndicator === topIndicator
+  const getCurrentStatus = (RiskItem, topIndicator) => {
+    const topIndicatorItem = RiskItem.indicators.find(
+      (item) => item === topIndicator
     );
-    const allChecked = topIndicatorItem.subIndicators.every(
+    const allChecked = topIndicatorItem.metrics.every(
       (subIndicatorItem) => subIndicatorItem.checked
     );
-    const allUnchecked = topIndicatorItem.subIndicators.every(
+    const allUnchecked = topIndicatorItem.metrics.every(
       (subIndicatorItem) => !subIndicatorItem.checked
     );
 
@@ -66,130 +75,144 @@ export default function NestedCheckbox() {
     }
   };
 
-  const handleSubIndicatorClick = (topIndicator, subIndicator) => {
-    const updatedData = data.map((topIndicatorItem) => {
-      if (topIndicatorItem.topIndicator === topIndicator) {
-        const updatedSubIndicators = topIndicatorItem.subIndicators.map(
-          (subIndicatorItem) => {
-            if (subIndicatorItem.subIndicator === subIndicator) {
-              return {
-                ...subIndicatorItem,
-                checked: !subIndicatorItem.checked
-              };
-            }
-            return subIndicatorItem;
+  const handleSubIndicatorClick = (
+    RiskItem,
+    topIndicatorItem,
+    subIndicatorItem
+  ) => {
+    const updatedData = data.map((item) => {
+      if (RiskItem === item) {
+        const updatedTopIndicators = item.indicators.map((topitem) => {
+          if (topIndicatorItem === topitem) {
+            const updatedSubIndicators = topitem.metrics.map((subitem) => {
+              if (subIndicatorItem === subitem) {
+                return {
+                  ...subitem,
+                  checked: !subIndicatorItem.checked,
+                };
+              }
+              return subitem;
+            });
+            return {
+              ...topitem,
+              metrics: updatedSubIndicators,
+            };
           }
-        );
+          return topitem;
+        });
         return {
-          ...topIndicatorItem,
-          subIndicators: updatedSubIndicators
+          ...item,
+          indicators: updatedTopIndicators,
         };
       }
-      return topIndicatorItem;
+      return item;
     });
     setData(updatedData);
   };
 
   return (
-    <Box border={calculateTopBorder(data)}>
-      {data.map((topIndicatorItem, index) => (
+    <Box>
+      {data.map((RiskItem, index) => (
         <Box key={index}>
-          <TopIndicator
-            topIndicatorItem={topIndicatorItem}
-            open={openTopIndicators[topIndicatorItem.topIndicator] || false}
-            onTopIndicatorClick={handleTopIndicatorClick}
-            onTopCheckBoxClick={handleTopCheckBoxClick}
-            onWeightSave={(newWeight) => {
-              // Update the data with the new weight
-              const updatedData = data.map((item) => {
-                if (item.topIndicator === topIndicatorItem.topIndicator) {
-                  return {
-                    ...item,
-                    weight: newWeight
-                  };
-                }
-                return item;
-              });
-              setData(updatedData);
-            }}
-          />
-          <Collapse
-            in={openTopIndicators[topIndicatorItem.topIndicator]}
-            timeout="auto"
-            unmountOnExit
-          >
-            <Box
-              sx={{ pl: 2, pr: 2 }}
-              border={calculateSubBorder(topIndicatorItem.subIndicators)}
-            >
-              {topIndicatorItem.subIndicators.map(
-                (subIndicatorItem, subIndicatorIndex) => (
-                  <SubIndicator
-                    key={subIndicatorIndex}
-                    subIndicatorItem={subIndicatorItem}
-                    onSubIndicatorClick={(subIndicator) =>
-                      handleSubIndicatorClick(
-                        topIndicatorItem.topIndicator,
-                        subIndicator
-                      )
-                    }
-                    onWeightSave={(newWeight) => {
-                      // 更新数据中的子指示器权重
-                      const updatedData = data.map((item) => {
-                        // 找到匹配的顶级指示器
-                        if (
-                          topIndicatorItem.topIndicator === item.topIndicator
-                        ) {
-                          // 更新子指示器权重
-                          const updatedSubIndicators =
-                            topIndicatorItem.subIndicators.map((subitem) => {
-                              // 找到匹配的子指示器
-                              if (
-                                subIndicatorItem.subIndicator ===
-                                subitem.subIndicator
-                              ) {
-                                return {
-                                  ...subitem,
-                                  weight: newWeight
-                                };
-                              }
-                              return subitem;
-                            });
-                          // 返回更新后的顶级指示器
-                          return {
-                            ...item,
-                            subIndicators: updatedSubIndicators
-                          };
+          {RiskItem.indicators.map((topIndicatorItem, index) => (
+            <Box key={index}>
+              <TopIndicator
+                topIndicatorItem={topIndicatorItem}
+                open={openTopIndicators[topIndicatorItem.name] || false}
+                onTopIndicatorClick={handleTopIndicatorClick}
+                onTopCheckBoxClick={() => {
+                  handleTopCheckBoxClick(RiskItem, topIndicatorItem);
+                }}
+                onWeightSave={(newWeight) => {
+                  // Update the data with the new weight
+                  const updatedData = data.map((item) => {
+                    if (RiskItem === item) {
+                      const updatedTopIndicators = item.indicators.map(
+                        (topitem) => {
+                          if (topIndicatorItem === topitem) {
+                            return {
+                              ...topitem,
+                              weight: newWeight,
+                            };
+                          }
+                          return topitem;
                         }
-                        return item;
-                      });
-                      // 将更新后的数据保存到父组件中
-                      setData(updatedData);
-                    }}
-                  />
-                )
-              )}
+                      );
+                      return {
+                        ...item,
+                        indicators: updatedTopIndicators,
+                      };
+                    }
+                    return item;
+                  });
+                  setData(updatedData);
+                }}
+              />
+              <Collapse
+                in={openTopIndicators[topIndicatorItem.name]}
+                timeout="auto"
+                unmountOnExit
+              >
+                <Box sx={{ pl: 2, pr: 2 }}>
+                  {topIndicatorItem.metrics.map(
+                    (subIndicatorItem, subIndicatorIndex) => (
+                      <SubIndicator
+                        key={subIndicatorIndex}
+                        subIndicatorItem={subIndicatorItem}
+                        onSubIndicatorClick={() =>
+                          handleSubIndicatorClick(
+                            RiskItem,
+                            topIndicatorItem,
+                            subIndicatorItem
+                          )
+                        }
+                        onWeightSave={(newWeight) => {
+                          const updatedData = data.map((item) => {
+                            if (RiskItem === item) {
+                              const updatedTopIndicators = item.indicators.map(
+                                (topitem) => {
+                                  if (topIndicatorItem === topitem) {
+                                    const updatedSubIndicators =
+                                      topitem.metrics.map((subitem) => {
+                                        if (subIndicatorItem === subitem) {
+                                          return {
+                                            ...subitem,
+                                            weight: newWeight,
+                                          };
+                                        }
+                                        return subitem;
+                                      });
+                                    return {
+                                      ...topitem,
+                                      metrics: updatedSubIndicators,
+                                    };
+                                  }
+                                  return topitem;
+                                }
+                              );
+                              return {
+                                ...item,
+                                indicators: updatedTopIndicators,
+                              };
+                            }
+                            return item;
+                          });
+                          setData(updatedData);
+                        }}
+                      />
+                    )
+                  )}
+                </Box>
+              </Collapse>
             </Box>
-          </Collapse>
+          ))}
         </Box>
       ))}
     </Box>
   );
 }
 
-function calculateTopBorder(data) {
-  const totalWeight = data.reduce(
-    (accumulator, item) => accumulator + item.weight,
-    0
-  );
-  return totalWeight !== 1 ? "2px solid red" : "none";
-}
-
-function calculateSubBorder(subIndicators) {
-  let totalWeight = subIndicators.reduce(
-    (accumulator, subIndicator) => accumulator + subIndicator.weight,
-    0
-  );
-
-  return totalWeight !== 1 ? "2px solid red" : "none";
-}
+MetricsOptions.propTypes = {
+  data: PropTypes.array.isRequired,
+  setData: PropTypes.func.isRequired,
+};

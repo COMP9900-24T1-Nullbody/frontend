@@ -15,7 +15,10 @@ import {
   Typography,
   FormHelperText,
   CircularProgress,
-  Grid
+  Grid,
+  ListItemText,
+  ListItem,
+  List,
 } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -32,12 +35,20 @@ import config from "../config.json";
 import { LoginSocialGoogle, LoginSocialMicrosoft } from "reactjs-social-login";
 import {
   GoogleLoginButton,
-  MicrosoftLoginButton
+  MicrosoftLoginButton,
 } from "react-social-login-buttons";
 import { green } from "@mui/material/colors";
 
+import DeleteIcon from "@mui/icons-material/Delete";
+
 export default function UserProfile() {
-  const [themeColor, setThemeColor] = useState("");
+  // 主题色
+  const [themeColor, setThemeColor] = useState(
+    localStorage.getItem("theme-color")
+  );
+  useEffect(() => {
+    localStorage.setItem("theme-color", themeColor);
+  }, [themeColor]);
 
   const [imageSrc, setImageSrc] = useState(Image01);
   const [userInfo, setUserInfo] = useState({
@@ -46,8 +57,8 @@ export default function UserProfile() {
     Password: "-- Error: Token Decode Error, Please Re-Login --",
     Linked_Account: {
       Google: "",
-      Microsoft: ""
-    }
+      Microsoft: "",
+    },
   });
 
   // 添加解密逻辑
@@ -63,8 +74,8 @@ export default function UserProfile() {
           Password: decodedToken.password,
           Linked_Account: {
             Google: decodedToken.google_id,
-            Microsoft: decodedToken.microsoft_id
-          }
+            Microsoft: decodedToken.microsoft_id,
+          },
         });
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
@@ -91,7 +102,7 @@ export default function UserProfile() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Box
@@ -103,7 +114,7 @@ export default function UserProfile() {
               boxShadow: 3,
               m: 1,
               p: 1,
-              height: "100%"
+              height: "100%",
             }}
           >
             <ProfileAvatar imageSrc={imageSrc} setImageSrc={setImageSrc} />
@@ -147,15 +158,15 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         image: ImageData,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
-    fetch(`${config.BACKEND_URL}/upload_avatar`, request)
+    fetch(`${config.BACKEND_URL}/update/avatar`, request)
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
@@ -197,10 +208,22 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
                 alt="User Avatar"
                 src={imageSrc}
                 sx={{
-                  minWidth: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
-                  minHeight: { xs: "90px", sm: "130px", md: "170px", lg: "210px", xl: "250px" },
+                  minWidth: {
+                    xs: "90px",
+                    sm: "130px",
+                    md: "170px",
+                    lg: "210px",
+                    xl: "250px",
+                  },
+                  minHeight: {
+                    xs: "90px",
+                    sm: "130px",
+                    md: "170px",
+                    lg: "210px",
+                    xl: "250px",
+                  },
                   filter: isHovered ? "grayscale(100%) blur(2px)" : "none",
-                  transition: "filter 0.3s ease-in-out"
+                  transition: "filter 0.3s ease-in-out",
                 }}
               />
               {isHovered && (
@@ -216,7 +239,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
                     padding: "8px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <UploadIcon fontSize="large" />
@@ -277,27 +300,25 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const updatedUserInfo = { ...userInfo, Password: event.target.value };
     setUserInfo(updatedUserInfo);
   };
-
   // 更改谷歌账户link
   const handleGoogleLinkChange = (google_id) => {
     const updatedUserInfo = {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Google: google_id
-      }
+        Google: google_id,
+      },
     };
     setUserInfo(updatedUserInfo);
   };
-
   // 更改微软账户link
   const handleMicrosoftLinkChange = (microsoft_id) => {
     const updatedUserInfo = {
       ...userInfo,
       Linked_Account: {
         ...userInfo.Linked_Account,
-        Microsoft: microsoft_id
-      }
+        Microsoft: microsoft_id,
+      },
     };
     setUserInfo(updatedUserInfo);
   };
@@ -306,12 +327,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name: userInfo.Name,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/update/name`, request)
@@ -335,12 +356,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: userInfo.Email,
-          token: localStorage.getItem("token")
-        })
+          token: localStorage.getItem("token"),
+        }),
       };
 
       fetch(`${config.BACKEND_URL}/update/email`, request)
@@ -381,12 +402,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           password: userInfo.Password,
-          token: localStorage.getItem("token")
-        })
+          token: localStorage.getItem("token"),
+        }),
       };
 
       fetch(`${config.BACKEND_URL}/update/password`, request)
@@ -416,12 +437,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         google_id: google_id,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/update/google_id`, request)
@@ -445,12 +466,12 @@ function ProfileForm({ userInfo, setUserInfo }) {
     const request = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         microsoft_id: microsoft_id,
-        token: localStorage.getItem("token")
-      })
+        token: localStorage.getItem("token"),
+      }),
     };
 
     fetch(`${config.BACKEND_URL}/update/microsoft_id`, request)
@@ -480,11 +501,11 @@ function ProfileForm({ userInfo, setUserInfo }) {
       const request = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: userInfo.Email
-        })
+          email: userInfo.Email,
+        }),
       };
       fetch(`${config.BACKEND_URL}/register_check/email`, request)
         .then((response) => response.json())
@@ -538,6 +559,62 @@ function ProfileForm({ userInfo, setUserInfo }) {
       setPasswordSpecialError(true);
     }
   }, [userInfo.Password]);
+
+  const [customized_frameworks, setCustomizedFrameworks] = useState([]);
+
+  // 初始化页面中，获取自定义框架
+  useEffect(() => {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem("token"),
+      }),
+    };
+    fetch(`${config.BACKEND_URL}/list/customized_frameworks`, request)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCustomizedFrameworks(data.frameworks);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  const [favourite_companies, setFavouriteCompanies] = useState([]);
+
+  // 初始化页面中，获取最爱的公司
+  useEffect(() => {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem("token"),
+      }),
+    };
+    fetch(`${config.BACKEND_URL}/list/favourite_companies`, request)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setFavouriteCompanies(data.favourites);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   return (
     <Stack spacing={2} sx={{ marginTop: 2, width: "70%" }}>
@@ -609,7 +686,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  color: green[500]
+                  color: green[500],
                 }}
               >
                 <CorrectIcon fontSize="small" /> {EmailMessage}
@@ -675,7 +752,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordLenMessage}
@@ -690,7 +767,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordLowMessage}
@@ -705,7 +782,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordUpperMessage}
@@ -720,7 +797,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: green[500]
+                      color: green[500],
                     }}
                   >
                     <CorrectIcon fontSize="small" /> {PasswordSpecialMessage}
@@ -778,6 +855,132 @@ function ProfileForm({ userInfo, setUserInfo }) {
           Linked with: Microsoft ID - {userInfo.Linked_Account.Microsoft}
         </Typography>
       )}
+
+      {/* Customized Frameworks */}
+      {customized_frameworks.length > 0 ? (
+        <Typography variant="h5">Customized Frameworks:</Typography>
+      ) : (
+        <Typography variant="h5">
+          You don{"'"}t have any customized frameworks!
+        </Typography>
+      )}
+      <List>
+        {customized_frameworks.map((framework) => (
+          <ListItem
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+            key={framework.name}
+            secondaryAction={
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => {
+                  // 后端删除自定义框架
+                  fetch(`${config.BACKEND_URL}/delete/customized_framework`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      token: localStorage.getItem("token"),
+                      framework_name: framework.name,
+                    }),
+                  })
+                    .then((response) => {
+                      if (!response.ok) {
+                        console.error("Network response was not ok");
+                        return response.json();
+                      }
+                      return response.json();
+                    })
+                    .then((data) => {
+                      alert(data.message);
+                    })
+                    .catch((error) => {
+                      console.error("Error:", error);
+                    });
+                  name;
+
+                  // 前端删除自定义框架
+                  const updatedFrameworks = customized_frameworks.filter(
+                    (item) => item.name !== framework.name
+                  );
+                  setCustomizedFrameworks(updatedFrameworks);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <ListItemText primary={framework.name} />
+          </ListItem>
+        ))}
+      </List>
+
+      {/* Favorite Companies */}
+      {favourite_companies.length > 0 ? (
+        <Typography variant="h5">Favourite Companies:</Typography>
+      ) : (
+        <Typography variant="h5">
+          You don{"'"}t have any favourite companies!
+        </Typography>
+      )}
+      <List>
+        {favourite_companies.map((favourite_company) => (
+          <ListItem
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+            key={favourite_company.name}
+            secondaryAction={
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => {
+                  // 后端删除最爱的公司
+                  fetch(`${config.BACKEND_URL}/delete/favourite_company`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      token: localStorage.getItem("token"),
+                      company_name: favourite_company.name,
+                    }),
+                  })
+                    .then((response) => {
+                      if (!response.ok) {
+                        console.error("Network response was not ok");
+                        return response.json();
+                      }
+                      return response.json();
+                    })
+                    .then((data) => {
+                      alert(data.message);
+                    })
+                    .catch((error) => {
+                      console.error("Error:", error);
+                    });
+
+                  // 前端删除最爱的公司
+                  const updatedFavouriteCompanies = favourite_companies.filter(
+                    (item) => item.name !== favourite_company.name
+                  );
+                  setFavouriteCompanies(updatedFavouriteCompanies);
+                  console.log(favourite_companies);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <ListItemText primary={favourite_company.name} />
+          </ListItem>
+        ))}
+      </List>
     </Stack>
   );
 }
@@ -836,10 +1039,10 @@ function validatePasswordSpecial(password) {
 
 ProfileAvatar.propTypes = {
   imageSrc: PropTypes.string.isRequired,
-  setImageSrc: PropTypes.func.isRequired
+  setImageSrc: PropTypes.func.isRequired,
 };
 
 ProfileForm.propTypes = {
   userInfo: PropTypes.object.isRequired,
-  setUserInfo: PropTypes.func.isRequired
+  setUserInfo: PropTypes.func.isRequired,
 };

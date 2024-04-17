@@ -1,74 +1,124 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import { IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
-export default function FrameworkOptions() {
+import config from "../../../config.json";
+import { green, grey, orange } from "@mui/material/colors";
+
+export default function FrameworkOptions({ setSelectedFramework }) {
+  const [frameworks, setFrameworks] = useState([]);
+  useEffect(() => {
+    // 获取 local storage 中的 token
+    const token = localStorage.getItem("token");
+
+    // 发送请求获取框架数据
+    fetch(`${config.BACKEND_URL}/list/frameworks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setFrameworks(data.frameworks);
+      })
+      .catch((error) => {
+        console.error("Error fetching frameworks:", error);
+      });
+  }, []);
+
   return (
     <FormControl>
-      <RadioGroup defaultValue="IFRS" sx={{ pl: 4 }}>
-        <FormControlLabel
-          value="IFRS"
-          control={<Radio />}
-          label={
-            <Tooltip title="International Financial Reporting Standards">
-              <div>
-                IFRS
-                <IconButton>
-                  <ErrorOutlineOutlinedIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          }
-        />
-        <FormControlLabel
-          value="TCFD"
-          control={<Radio />}
-          label={
-            <Tooltip title="Task Force on Climate-related Financial Disclosures">
-              <div>
-                TCFD
-                <IconButton>
-                  <ErrorOutlineOutlinedIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          }
-        />
-        <FormControlLabel
-          value="TNFD"
-          control={<Radio />}
-          label={
-            <Tooltip title="Task Force on Nature-related Financial Disclosures">
-              <div>
-                TNFD
-                <IconButton>
-                  <ErrorOutlineOutlinedIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          }
-        />
-        <FormControlLabel
-          value="APRA-CPG"
-          control={<Radio />}
-          label={
-            <Tooltip title="Australian Prudential Regulation Authority - Corporate Governance Practice Guide">
-              <div>
-                APRA-CPG
-                <IconButton>
-                  <ErrorOutlineOutlinedIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          }
-        />
+      <RadioGroup
+        onChange={(event) => {
+          setSelectedFramework(event.target.value);
+        }}
+        sx={{ pl: 4 }}
+      >
+        {frameworks.map((item) => (
+          <FormControlLabel
+            key={item.name}
+            value={item.name}
+            control={<Radio />}
+            label={
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Tooltip title={<span>{item.description}</span>}>
+                  {item.name}
+                  <IconButton sx={{ marginRight: "5px" }}>
+                    <ErrorOutlineOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title={<span>Environmental Weight</span>}>
+                  <Box
+                    sx={{
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: green[500],
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      marginRight: "5px"
+                    }}
+                  >
+                    {item.E_weight}
+                  </Box>
+                </Tooltip>
+                <Tooltip title={<span>Social Weight</span>}>
+                  <Box
+                    sx={{
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: orange[500],
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      marginRight: "5px"
+                    }}
+                  >
+                    {item.S_weight}
+                  </Box>
+                </Tooltip>
+                <Tooltip title={<span>Governmental Weight</span>}>
+                  <Box
+                    sx={{
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      backgroundColor: grey[500],
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px"
+                    }}
+                  >
+                    {item.G_weight}
+                  </Box>
+                </Tooltip>
+              </Box>
+            }
+          />
+        ))}
       </RadioGroup>
     </FormControl>
   );
 }
+
+FrameworkOptions.propTypes = {
+  setSelectedFramework: PropTypes.func.isRequired
+};

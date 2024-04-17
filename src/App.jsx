@@ -5,7 +5,7 @@ import "./App.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 
 import SingleCompanyView from "./pages/SingleCompanyView";
 import MultiConpanyView from "./pages/MultiCompanyView";
@@ -19,7 +19,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} />
         <Route path="/reset" element={<PasswordReset />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
