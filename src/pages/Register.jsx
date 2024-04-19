@@ -238,11 +238,11 @@ function Register() {
           console.error("Network response was not ok");
           return response.json();
         }
-        return response.json(); // 这里移到下一个then中
+        return response.json();
       })
       .then((data) => {
         if (data.error) {
-          // 检查是否有错误消息
+          // check if there is any error message
           setDialogContent(data.error);
           setOpenDialog(true);
         } else {
@@ -292,10 +292,10 @@ function Register() {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          position: "relative", // 相对定位，用于覆盖在虚化背景上面
-          zIndex: 1, // 提高层级，使得表单内容在虚化背景上方
-          backgroundColor: "rgba(255, 255, 255, 0.8)", // 添加半透明背景
-          padding: "20px", // 增加内边距
+          position: "relative", // Relative positioning, used to overlay on blurred background
+          zIndex: 1, // Increase the layer to display form content above the blurred background
+          backgroundColor: "rgba(255, 255, 255, 0.8)", // Add a semi-transparent background
+          padding: "20px", // Add padding
         }}
       >
         <Box
@@ -304,14 +304,14 @@ function Register() {
             borderRadius: 4,
             p: 4,
             width: "80%",
-            transition: "box-shadow 0.5s ease", // 添加过渡效果
+            transition: "box-shadow 0.5s ease", // Add transition effect
           }}
           onMouseEnter={() => {
             setBoxShadow(24);
 
             const coverImg = document.getElementById("cover-img");
             if (coverImg) {
-              coverImg.style.filter = "blur(8px)"; // 让Cover Image 虚化
+              coverImg.style.filter = "blur(8px)"; // Blur the Cover Image
             }
           }}
           onMouseLeave={() => {
@@ -319,7 +319,7 @@ function Register() {
 
             const coverImg = document.getElementById("cover-img");
             if (coverImg) {
-              coverImg.style.filter = "none"; // 恢复 Cover Image 正常显示
+              coverImg.style.filter = "none"; // Restore the Cover Image to normal
             }
           }}
         >
@@ -472,7 +472,7 @@ function Register() {
                     }
                   >
                     {password === "" ? (
-                      "" // 不显示任何内容
+                      ""
                     ) : (
                       <Box>
                         {PasswordLenError ? (
@@ -635,7 +635,7 @@ function validateEmail(email) {
 
 // Validate Password
 function validatePasswordLen(password) {
-  // 长度为8-16个字符
+  // Length is 8-16 characters
   const lengthRegex = /^.{8,16}$/;
   if (!lengthRegex.test(password)) {
     return false;
@@ -645,7 +645,7 @@ function validatePasswordLen(password) {
 }
 
 function validatePasswordLow(password) {
-  // 至少有一个小写字符
+  // At least one lowercase letter
   const lowercaseRegex = /[a-z]/;
   if (!lowercaseRegex.test(password)) {
     return false;
@@ -655,7 +655,7 @@ function validatePasswordLow(password) {
 }
 
 function validatePasswordUpper(password) {
-  // 至少有一个大写字符
+  // At least one uppercase letter
   const uppercaseRegex = /[A-Z]/;
   if (!uppercaseRegex.test(password)) {
     return false;
@@ -665,8 +665,8 @@ function validatePasswordUpper(password) {
 }
 
 function validatePasswordSpecial(password) {
-  // 至少有一个特殊字符，这里使用自定义的特殊字符列表
-  const specialChars = "!@#$%^&*()_+{}[\\]:\";'<>?,./|\\\\`~=-";
+  // At least one special character, using a custom list of special characters here
+  const specialChars = "!@#$%^&*()_+{}[]:\";'<>?,./|\\`~=-";
   const specialRegex = new RegExp(`[${specialChars}]`);
   if (!specialRegex.test(password)) {
     return false;

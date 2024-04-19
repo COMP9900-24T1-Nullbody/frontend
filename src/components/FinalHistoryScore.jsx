@@ -13,15 +13,15 @@ export default function FinalScore({ data }) {
         for (let metric of indicator.metrics) {
           if (!Object.prototype.hasOwnProperty.call(metric, "score")) {
             hasScore = false;
-            break; // 跳出当前循环
+            break;
           }
         }
         if (!hasScore) {
-          break; // 跳出外层循环
+          break;
         }
       }
       if (!hasScore) {
-        break; // 跳出外层循环
+        break;
       }
     }
 

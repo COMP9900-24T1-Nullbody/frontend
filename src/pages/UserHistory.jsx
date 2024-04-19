@@ -50,18 +50,18 @@ export default function UserHistory() {
 
   useEffect(() => {
     if (analysis_data) {
-      // 处理 analysis_data，并将数据添加到 datas 和 timestamps 中
+      // Process analysis_data and add data to datas and timestamps
       const updatedDatas = [];
       const updatedTimestamps = [];
 
       analysis_data.forEach((item) => {
-        // 处理数据并添加到 updatedDatas
+        // Process data and add to updatedDatas
         updatedDatas.push(item.data);
-        // 添加时间戳到 updatedTimestamps
+        // Add timestamp to updatedTimestamps
         updatedTimestamps.push(item.timestamp);
       });
 
-      // 更新 state 中的数据
+      // Update data in state
       setDatas(updatedDatas);
       setTimestamps(updatedTimestamps);
     }
@@ -106,22 +106,22 @@ export default function UserHistory() {
         console.error("Error:", error);
       });
 
-    // 从 datas 中删除 selected_data
+    // Remove selected_data from datas
     const updatedDatas = datas.filter((dataItem) => dataItem !== selected_data);
     setDatas(updatedDatas);
 
-    // 从 timestamps 中删除 selected_timestamp
+    // Remove selected_timestamp from timestamps
     const updatedTimestamps = timestamps.filter(
       (timestampItem) => timestampItem !== selected_timestamp
     );
     setTimestamps(updatedTimestamps);
 
-    // 清空 selected_data 和 selected_timestamp
+    // Clear selected_data and selected_timestamp
     setSelectedData([]);
     setSelectedTimestamp("");
   };
 
-  // 主题色
+  // Theme color
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("theme-color")
   );
@@ -131,16 +131,16 @@ export default function UserHistory() {
 
   const [imageSrc, setImageSrc] = useState(Image01);
   const navigate = useNavigate();
-  // 添加解密逻辑
+  // Adding decryption logic
   useEffect(() => {
-    const token = localStorage.getItem("token"); // 从localStorage获取token
+    const token = localStorage.getItem("token"); // Get token from localStorage
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
+        const decodedToken = jwtDecode(token); // Decode token using jwt-decode library
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
         alert("Error: Token may be expired, Please Re-Login.");
-        console.error("Token Decode Error：", error);
+        console.error("Token Decode Error:", error);
         localStorage.removeItem("token");
         navigate("/login");
       }
@@ -148,7 +148,7 @@ export default function UserHistory() {
       alert("Error: Token not found, Please Re-Login.");
       navigate("/login");
     }
-  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
+  }, []); // useEffect dependency array is empty, indicating it should run only once on component mount
 
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
@@ -157,7 +157,7 @@ export default function UserHistory() {
       </Box>
 
       <Box display="flex" sx={{ m: 1 }}>
-        {/* 侧边栏 */}
+        {/* Sidebar */}
         {timestamps.length > 0 && (
           <Box
             sx={{
@@ -184,7 +184,7 @@ export default function UserHistory() {
             </List>
           </Box>
         )}
-        {/* 主内容区 */}
+        {/* Main Content Area */}
         <Box
           flexGrow={1}
           sx={{

@@ -21,14 +21,16 @@ import {
 } from "@mui/material/colors";
 
 export const Theme = (mode) => {
+  // Create a theme object with a default primary color of lightGreen
   const theme = {
     palette: {
       primary: {
-        main: lightGreen[500] // 默认使用 lightGreen
+        main: lightGreen[500] // Default to using lightGreen
       }
     }
   };
 
+  // Check the mode parameter and update the primary color accordingly
   if (mode === "red") {
     theme.palette.primary.main = red[500];
   } else if (mode === "pink") {
@@ -71,4 +73,3 @@ export const Theme = (mode) => {
 
   return theme;
 };
-

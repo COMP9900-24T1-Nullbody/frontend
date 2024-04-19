@@ -50,7 +50,7 @@ export default function CreateIndicatorDialog({
       return;
     }
 
-    // 上传
+    // upload
     upload({
       name: indicatorName,
       weight: indicatorWeight,
@@ -58,7 +58,7 @@ export default function CreateIndicatorDialog({
       metrics: indicatorMetrics
     });
 
-    // 重置表单
+    // reset state
     setIndicatorName("");
     setIndicatorWeight(0);
     setIndicatorDescription("");
@@ -67,11 +67,11 @@ export default function CreateIndicatorDialog({
     handleClose();
   };
 
-  // 在CreateIndicatorDialog组件中添加一个函数，用于更新指标的name
+  // update metric name
   const handleUpdateMetricName = (metricId, newName) => {
     const updatedMetrics = indicatorMetrics.map((m) => {
       if (m.id === metricId) {
-        return { ...m, name: newName }; // 更新指标的name
+        return { ...m, name: newName }; // update metric name
       }
       return m;
     });
@@ -81,7 +81,7 @@ export default function CreateIndicatorDialog({
   const handleUpdateMetricWeight = (metricId, newValue) => {
     const updatedMetrics = indicatorMetrics.map((m) => {
       if (m.id === metricId) {
-        return { ...m, weight: newValue }; // 更新指标的weight
+        return { ...m, weight: newValue }; // update metric weight
       }
       return m;
     });
@@ -89,8 +89,8 @@ export default function CreateIndicatorDialog({
   };
 
   const handleAddMetric = () => {
-    const newMetric = { id: indicatorMetrics.length + 1, name: "", weight: 0 }; // 创建一个新的 metric 对象
-    setIndicatorMetrics([...indicatorMetrics, newMetric]); // 将新的 metric 添加到 metrics 数组中
+    const newMetric = { id: indicatorMetrics.length + 1, name: "", weight: 0 }; // create new metric object
+    setIndicatorMetrics([...indicatorMetrics, newMetric]); // add new metric to state
   };
 
   return (
@@ -171,7 +171,7 @@ export default function CreateIndicatorDialog({
               <IconButton
                 aria-label="delete"
                 onClick={() => {
-                  // 删除对应 metric
+                  // delete metric
                   const updatedMetrics = indicatorMetrics.filter(
                     (m) => m.id !== metric.id
                   );

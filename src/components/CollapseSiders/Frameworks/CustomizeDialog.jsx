@@ -65,7 +65,7 @@ export function CustomizeDialog({ open, handleClose }) {
     }
   }, [framework_description]);
 
-  // 控制下拉框的展开状态
+  // control the collapse of indicators
   const [E_expand, setE_expand] = React.useState(false);
   const [S_expand, setS_expand] = React.useState(false);
   const [G_expand, setG_expand] = React.useState(false);
@@ -125,7 +125,7 @@ export function CustomizeDialog({ open, handleClose }) {
           alert(data.message);
         });
 
-      // 重置framework表单
+      // reset state
       setFrameworkName("");
       setFrameworkDescription("");
       setE_weight(0.5);
@@ -143,7 +143,7 @@ export function CustomizeDialog({ open, handleClose }) {
     }
   };
 
-  // 控制ESG对应Dialog的开关状态
+  // control the open/close of create dialog
   const [openEnvironmentalCreateDialog, setOpenEnvironmentalCreateDialog] =
     React.useState(false);
   const [openSocialCreateDialog, setOpenSocialCreateDialog] =
@@ -151,7 +151,7 @@ export function CustomizeDialog({ open, handleClose }) {
   const [openGovernmentalCreateDialog, setOpenGovernmentalCreateDialog] =
     React.useState(false);
 
-  // 控制ESG的权重
+  // control the weight
   const [E_weight, setE_weight] = React.useState(0.5); // Default value set to 0.5
   const [S_weight, setS_weight] = React.useState(0.5); // Default value set to 0.5
   const [G_weight, setG_weight] = React.useState(0.5); // Default value set to 0.5
@@ -252,7 +252,7 @@ export function CustomizeDialog({ open, handleClose }) {
                   spacing={1}
                 >
                   <Grid item xs>
-                    {/* 第一个按钮自适应长度 */}
+                    {/* Indicator Info */}
                     <Button fullWidth variant="contained">
                       Name: {indicator.name}
                       {"-----"}
@@ -264,7 +264,7 @@ export function CustomizeDialog({ open, handleClose }) {
                   <Grid item>
                     <IconButton
                       onClick={() => {
-                        // 删除指标
+                        // delete the indicator
                         setE_indicators(
                           E_indicators.filter((i) => i !== indicator)
                         );
@@ -304,7 +304,7 @@ export function CustomizeDialog({ open, handleClose }) {
                   spacing={1}
                 >
                   <Grid item xs>
-                    {/* 第一个按钮自适应长度 */}
+                    {/* Indicator Info */}
                     <Button fullWidth variant="contained">
                       {indicator.name}
                       {"-----"}
@@ -316,7 +316,7 @@ export function CustomizeDialog({ open, handleClose }) {
                   <Grid item>
                     <IconButton
                       onClick={() => {
-                        // 删除指标
+                        // delete the indicator
                         setS_indicators(
                           S_indicators.filter((i) => i !== indicator)
                         );
@@ -356,7 +356,7 @@ export function CustomizeDialog({ open, handleClose }) {
                   spacing={1}
                 >
                   <Grid item xs>
-                    {/* 第一个按钮自适应长度 */}
+                    {/* Indicator Info */}
                     <Button fullWidth variant="contained">
                       {indicator.name}
                       {"-----"}
@@ -368,7 +368,7 @@ export function CustomizeDialog({ open, handleClose }) {
                   <Grid item>
                     <IconButton
                       onClick={() => {
-                        // 删除指标
+                        // delete the indicator
                         setG_indicators(
                           G_indicators.filter((i) => i !== indicator)
                         );
@@ -398,7 +398,7 @@ export function CustomizeDialog({ open, handleClose }) {
         <DialogActions>
           <Button
             onClick={() => {
-              // 重置framework表单
+              // reset the form
               setFrameworkName("");
               setFrameworkDescription("");
               setE_weight(0.5);
@@ -415,7 +415,7 @@ export function CustomizeDialog({ open, handleClose }) {
           </Button>
           <Button
             onClick={() => {
-              // 上传framework
+              // upload framework
               upload();
             }}
             autoFocus

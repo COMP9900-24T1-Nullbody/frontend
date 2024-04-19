@@ -42,7 +42,7 @@ import { green } from "@mui/material/colors";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function UserProfile() {
-  // 主题色
+  // Theme Color
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("theme-color")
   );
@@ -61,13 +61,13 @@ export default function UserProfile() {
     },
   });
 
-  // 添加解密逻辑
+  // Add decrypt logic
   useEffect(() => {
-    const token = localStorage.getItem("token"); // 从localStorage获取token
+    const token = localStorage.getItem("token"); // get token from localStorage
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
-        // 更新user_info中的数据
+        const decodedToken = jwtDecode(token); // use jwt-decode library to decrypt token
+        // update userInfo state
         setUserInfo({
           Name: decodedToken.name,
           Email: decodedToken.email,
@@ -79,10 +79,10 @@ export default function UserProfile() {
         });
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
-        console.error("Token Decode Error：", error);
+        console.error("Token Decode Error:", error);
       }
     }
-  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
+  }, []); // useEffect will run only once
 
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
@@ -144,9 +144,9 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
 
     reader.readAsDataURL(file);
 
-    // 将图片显示在页面上
+    // show the image in the page
     reader.onloadend = () => {
-      // 将图片传到后端
+      // pass the image to the backend
       setIsUploading(true);
       handleImageUpload(reader.result);
 
@@ -188,7 +188,7 @@ function ProfileAvatar({ imageSrc, setImageSrc }) {
   return (
     <Box sx={{ position: "relative" }}>
       {isUploading ? (
-        <CircularProgress size="10rem" /> // 上传中
+        <CircularProgress size="10rem" /> // uploading
       ) : (
         <>
           <input
@@ -285,22 +285,22 @@ function ProfileForm({ userInfo, setUserInfo }) {
     event.preventDefault();
   };
 
-  // 更改姓名
+  // update name
   const handleNameChange = (event) => {
     const updatedUserInfo = { ...userInfo, Name: event.target.value };
     setUserInfo(updatedUserInfo);
   };
-  // 更改Email
+  // update email
   const handleEmailChange = (event) => {
     const updatedUserInfo = { ...userInfo, Email: event.target.value };
     setUserInfo(updatedUserInfo);
   };
-  // 更改Password
+  // update password
   const handlePasswordChange = (event) => {
     const updatedUserInfo = { ...userInfo, Password: event.target.value };
     setUserInfo(updatedUserInfo);
   };
-  // 更改谷歌账户link
+  // update google account link
   const handleGoogleLinkChange = (google_id) => {
     const updatedUserInfo = {
       ...userInfo,
@@ -311,7 +311,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
     };
     setUserInfo(updatedUserInfo);
   };
-  // 更改微软账户link
+  // update microsoft account link
   const handleMicrosoftLinkChange = (microsoft_id) => {
     const updatedUserInfo = {
       ...userInfo,
@@ -562,7 +562,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
 
   const [customized_frameworks, setCustomizedFrameworks] = useState([]);
 
-  // 初始化页面中，获取自定义框架
+  // initialize page with customized frameworks
   useEffect(() => {
     const request = {
       method: "POST",
@@ -590,7 +590,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
 
   const [favourite_companies, setFavouriteCompanies] = useState([]);
 
-  // 初始化页面中，获取最爱的公司
+  // initialize page with favourite companies
   useEffect(() => {
     const request = {
       method: "POST",
@@ -740,7 +740,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
             }
           >
             {userInfo.Password === "" ? (
-              "" // 不显示任何内容
+              "" // show nothing
             ) : (
               <Box>
                 {PasswordLenError ? (
@@ -877,7 +877,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                 edge="end"
                 aria-label="delete"
                 onClick={() => {
-                  // 后端删除自定义框架
+                  // delete customized framework at backend
                   fetch(`${config.BACKEND_URL}/delete/customized_framework`, {
                     method: "POST",
                     headers: {
@@ -903,7 +903,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                     });
                   name;
 
-                  // 前端删除自定义框架
+                  // delete customized framework at frontend
                   const updatedFrameworks = customized_frameworks.filter(
                     (item) => item.name !== framework.name
                   );
@@ -940,7 +940,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                 edge="end"
                 aria-label="delete"
                 onClick={() => {
-                  // 后端删除最爱的公司
+                  // delete favourite company at backend
                   fetch(`${config.BACKEND_URL}/delete/favourite_company`, {
                     method: "POST",
                     headers: {
@@ -965,7 +965,7 @@ function ProfileForm({ userInfo, setUserInfo }) {
                       console.error("Error:", error);
                     });
 
-                  // 前端删除最爱的公司
+                  // delete favourite company at frontend
                   const updatedFavouriteCompanies = favourite_companies.filter(
                     (item) => item.name !== favourite_company.name
                   );
@@ -997,7 +997,7 @@ function validateEmail(email) {
 
 // Validate Password
 function validatePasswordLen(password) {
-  // 长度为8-16个字符
+  // length is 8-16 characters
   const lengthRegex = /^.{8,16}$/;
   if (!lengthRegex.test(password)) {
     return false;
@@ -1007,7 +1007,7 @@ function validatePasswordLen(password) {
 }
 
 function validatePasswordLow(password) {
-  // 至少有一个小写字符
+  // at least one lowercase letter
   const lowercaseRegex = /[a-z]/;
   if (!lowercaseRegex.test(password)) {
     return false;
@@ -1017,7 +1017,7 @@ function validatePasswordLow(password) {
 }
 
 function validatePasswordUpper(password) {
-  // 至少有一个大写字符
+  // at least one uppercase letter
   const uppercaseRegex = /[A-Z]/;
   if (!uppercaseRegex.test(password)) {
     return false;
@@ -1027,7 +1027,7 @@ function validatePasswordUpper(password) {
 }
 
 function validatePasswordSpecial(password) {
-  // 至少有一个特殊字符，这里使用自定义的特殊字符列表
+  // at least one special character
   const specialChars = "!@#$%^&*()_+{}[\\]:\";'<>?,./|\\\\`~=-";
   const specialRegex = new RegExp(`[${specialChars}]`);
   if (!specialRegex.test(password)) {

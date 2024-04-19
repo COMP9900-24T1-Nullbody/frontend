@@ -91,7 +91,7 @@ function PasswordReset() {
       })
       .then((data) => {
         if (data.error) {
-          // 检查是否有错误消息
+          // check if there is any error message
           setDialogContent(data.error);
           setOpenDialog(true);
         } else {
@@ -130,7 +130,7 @@ function PasswordReset() {
       })
       .then((data) => {
         if (data.error) {
-          // 检查是否有错误消息
+          // check if there is any error message
           setDialogContent(data.error);
           setOpenDialog(true);
         } else {
@@ -207,128 +207,130 @@ function PasswordReset() {
             }
           }}
         >
-                  <Grid
-          container
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column"
-          }}
-        >
-          {/* Welcome Message */}
-          <Grid item id="form-title" marginBottom={4}>
-            <Box sx={{ textAlign: "center" }}>
-              <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
-                Welcome!
-              </Typography>
-              <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
-                Please confirm your email address to reset your password.
-              </Typography>
-            </Box>
-          </Grid>
-
           <Grid
-            item
             container
-            rowSpacing={2}
-            id="form-inputs"
-            sx={{ display: "flex", justifyContent: "center", width: "70%" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column"
+            }}
           >
-            {/* Password Reset Form */}
-            <Grid item xs={12}>
-              <TextField
-                required
-                id="reset-email"
-                label="Email Address"
-                variant="outlined"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={emailDisabled}
-                sx={{ width: "100%", marginBottom: "10px" }}
-              />
-              {!emailDisabled && (
-                <Typography variant="body2">
-                  Remember your password? <Link href="/login">Login here</Link>
+            {/* Welcome Message */}
+            <Grid item id="form-title" marginBottom={4}>
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="h1" sx={{ fontSize: "2.5rem" }}>
+                  Welcome!
                 </Typography>
-              )}
-              {!emailDisabled && (
-                <Typography variant="body2">
-                  Don&apos;t have an account?{" "}
-                  <Link href="/register">Register here</Link>
+                <Typography variant="body1" sx={{ fontSize: "1.25rem" }}>
+                  Please confirm your email address to reset your password.
                 </Typography>
-              )}
+              </Box>
             </Grid>
 
-            {/* Show verification code TextField only when email is disabled */}
-            {emailDisabled && (
-              <Grid item xs={12}>
-                <MuiOtpInput
-                  value={otp}
-                  TextFieldsProps={{ placeholder: "-" }}
-                  onChange={handleChange}
-                  length={6}
-                />
-              </Grid>
-            )}
-
-            {/* Password Reset Form */}
-            {passwordshow && (
+            <Grid
+              item
+              container
+              rowSpacing={2}
+              id="form-inputs"
+              sx={{ display: "flex", justifyContent: "center", width: "70%" }}
+            >
+              {/* Password Reset Form */}
               <Grid item xs={12}>
                 <TextField
                   required
-                  id="new-password"
-                  label="New Password"
+                  id="reset-email"
+                  label="Email Address"
                   variant="outlined"
-                  type="password"
-                  value={newpassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={emailDisabled}
                   sx={{ width: "100%", marginBottom: "10px" }}
                 />
+                {!emailDisabled && (
+                  <Typography variant="body2">
+                    Remember your password?{" "}
+                    <Link href="/login">Login here</Link>
+                  </Typography>
+                )}
+                {!emailDisabled && (
+                  <Typography variant="body2">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/register">Register here</Link>
+                  </Typography>
+                )}
               </Grid>
-            )}
 
-            {/* Send Verification Code Button */}
-            <Grid item xs={12}>
-              {!submitshow && (
-                <Button
-                  style={{ textTransform: "none" }}
-                  variant="contained"
-                  sx={{ width: "100%" }}
-                  disabled={loading || timer > 0}
-                  onClick={handleSendVerificationCode}
-                >
-                  {loading ? (
-                    <>
-                      <CircularProgress
-                        size={24}
-                        variant="determinate"
-                        value={((initial_timer - timer) / initial_timer) * 100}
-                      />
-                      `Resend in {timer}s`
-                    </>
-                  ) : (
-                    "Send Verification Code"
-                  )}
-                </Button>
+              {/* Show verification code TextField only when email is disabled */}
+              {emailDisabled && (
+                <Grid item xs={12}>
+                  <MuiOtpInput
+                    value={otp}
+                    TextFieldsProps={{ placeholder: "-" }}
+                    onChange={handleChange}
+                    length={6}
+                  />
+                </Grid>
               )}
 
-              {submitshow && (
-                <Button
-                  color="success"
-                  style={{ textTransform: "none" }}
-                  variant="contained"
-                  sx={{ width: "100%" }}
-                  onClick={handleOTPSubmit}
-                >
-                  Submit && Reset
-                </Button>
+              {/* Password Reset Form */}
+              {passwordshow && (
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    id="new-password"
+                    label="New Password"
+                    variant="outlined"
+                    type="password"
+                    value={newpassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    sx={{ width: "100%", marginBottom: "10px" }}
+                  />
+                </Grid>
               )}
+
+              {/* Send Verification Code Button */}
+              <Grid item xs={12}>
+                {!submitshow && (
+                  <Button
+                    style={{ textTransform: "none" }}
+                    variant="contained"
+                    sx={{ width: "100%" }}
+                    disabled={loading || timer > 0}
+                    onClick={handleSendVerificationCode}
+                  >
+                    {loading ? (
+                      <>
+                        <CircularProgress
+                          size={24}
+                          variant="determinate"
+                          value={
+                            ((initial_timer - timer) / initial_timer) * 100
+                          }
+                        />
+                        `Resend in {timer}s`
+                      </>
+                    ) : (
+                      "Send Verification Code"
+                    )}
+                  </Button>
+                )}
+
+                {submitshow && (
+                  <Button
+                    color="success"
+                    style={{ textTransform: "none" }}
+                    variant="contained"
+                    sx={{ width: "100%" }}
+                    onClick={handleOTPSubmit}
+                  >
+                    Submit && Reset
+                  </Button>
+                )}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
         </Box>
-
       </Grid>
 
       {/* Dialog for displaying password reset result */}

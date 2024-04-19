@@ -35,29 +35,32 @@ import { useNavigate } from "react-router-dom";
 import { green } from "@mui/material/colors";
 
 function Login() {
+  // State for email and password input fields
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // navigate config
+  // Navigation hook
   const navigate = useNavigate();
 
-  // shadow config
+  // State for box shadow on form section
   const [boxShadow, setBoxShadow] = useState(3);
 
-  // dialog config
+  // State for dialog (popup) visibility and content
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
 
-  // password visibility config
+  // State for password visibility toggle
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  // error/helperText config
+  // State for email validation error and helper text
   const [EmailError, setEmailError] = useState(false);
   const [EmailErrorMessage, setEmailErrorMessage] = useState("");
+
+  // Email validation effect
   useEffect(() => {
     if (validateEmail(email)) {
       setEmailError(false);
@@ -68,7 +71,7 @@ function Login() {
     }
   }, [email]);
 
-  // auto-login with token only
+  // Auto-login effect using token from localStorage
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -89,7 +92,7 @@ function Login() {
     }
   }, []);
 
-  // OAuth
+  // OAuth login effects for Google and Microsoft
   const [GoogleProfile, setGoogleProfile] = useState([]);
   const [MicrosoftProfile, setMicrosoftProfile] = useState([]);
   useEffect(() => {
@@ -126,6 +129,7 @@ function Login() {
     }
   }, [GoogleProfile, MicrosoftProfile]);
 
+  // Function to handle normal login
   const handleNormalLogin = () => {
     const request = {
       method: "POST",
@@ -155,6 +159,7 @@ function Login() {
     }
   };
 
+  // Function to handle login requests
   const handleLogin = (request, error_print = true) => {
     fetch(`${config.BACKEND_URL}/login`, request)
       .then((response) => {
@@ -162,12 +167,11 @@ function Login() {
           console.error("Network response was not ok");
           return response.json();
         }
-        return response.json(); // 这里移到下一个then中
+        return response.json();
       })
       .then((data) => {
         if (data.error) {
           if (error_print) {
-            // 检查是否有错误消息
             setDialogContent(data.error);
             setOpenDialog(true);
           }
@@ -212,10 +216,10 @@ function Login() {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          position: "relative", // 相对定位，用于覆盖在虚化背景上面
-          zIndex: 1, // 提高层级，使得表单内容在虚化背景上方
-          backgroundColor: "rgba(255, 255, 255, 0.8)", // 添加半透明背景
-          padding: "20px", // 增加内边距
+          position: "relative",
+          zIndex: 1,
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          padding: "20px",
         }}
       >
         <Box
@@ -224,14 +228,14 @@ function Login() {
             borderRadius: 4,
             p: 4,
             width: "80%",
-            transition: "box-shadow 0.5s ease" // 添加过渡效果
+            transition: "box-shadow 0.5s ease"
           }}
           onMouseEnter={() => {
             setBoxShadow(24);
 
             const coverImg = document.getElementById("cover-img");
             if (coverImg) {
-              coverImg.style.filter = "blur(8px)"; // 让Cover Image 虚化
+              coverImg.style.filter = "blur(8px)";
             }
           }}
           onMouseLeave={() => {
@@ -239,7 +243,7 @@ function Login() {
 
             const coverImg = document.getElementById("cover-img");
             if (coverImg) {
-              coverImg.style.filter = "none"; // 恢复 Cover Image 正常显示
+              coverImg.style.filter = "none";
             }
           }}
         >
@@ -392,7 +396,7 @@ function Login() {
                 </Button>
               </Grid>
 
-              {/* Dont have an account */}
+              {/* Don't have an account */}
               <Grid item xs={12} textAlign={"center"}>
                 Don&apos;t have an account?{" "}
                 <Link href="/register">Register here</Link>

@@ -43,7 +43,7 @@ export default function CollapseSiderMenu({
       .then(
         (data) => {
           if (data.error) {
-            // 检查是否有错误消息
+            // check if there is any error message
             console.error(data.error);
           } else {
             alert(data.message);

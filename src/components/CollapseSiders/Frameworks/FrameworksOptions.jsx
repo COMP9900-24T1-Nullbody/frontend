@@ -15,10 +15,10 @@ import { green, grey, orange } from "@mui/material/colors";
 export default function FrameworkOptions({ setSelectedFramework }) {
   const [frameworks, setFrameworks] = useState([]);
   useEffect(() => {
-    // 获取 local storage 中的 token
+    // get token from local storage
     const token = localStorage.getItem("token");
 
-    // 发送请求获取框架数据
+    // send request to get frameworks
     fetch(`${config.BACKEND_URL}/list/frameworks`, {
       method: "POST",
       headers: {

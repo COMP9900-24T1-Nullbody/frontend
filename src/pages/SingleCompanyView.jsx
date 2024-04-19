@@ -19,7 +19,7 @@ export default function SingleCompanyView() {
   const [selectedFramework, setSelectedFramework] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
 
-  // Metrics和Indicators数据
+  // Metrics and Indicators data
   const [data, setData] = useState([]);
   useEffect(() => {
     if (selectedCompany && selectedFramework) {
@@ -49,7 +49,7 @@ export default function SingleCompanyView() {
     }
   }, [selectedCompany, selectedFramework]);
 
-  // 主题色
+  // Theme color
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("theme-color")
   );
@@ -57,21 +57,21 @@ export default function SingleCompanyView() {
     localStorage.setItem("theme-color", themeColor);
   }, [themeColor]);
 
-  // 默认头像
+  // Default avatar
   const [imageSrc, setImageSrc] = useState(Image01);
 
   const navigate = useNavigate();
 
-  // 添加解密逻辑
+  // Adding decryption logic
   useEffect(() => {
-    const token = localStorage.getItem("token"); // 从localStorage获取token
+    const token = localStorage.getItem("token"); // Get token from localStorage
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
+        const decodedToken = jwtDecode(token); // Decode token using jwt-decode library
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
         alert("Error: Token may be expired, Please Re-Login.");
-        console.error("Token Decode Error：", error);
+        console.error("Token Decode Error:", error);
         localStorage.removeItem("token");
         navigate("/login");
       }
@@ -79,7 +79,7 @@ export default function SingleCompanyView() {
       alert("Error: Token not found, Please Re-Login.");
       navigate("/login");
     }
-  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
+  }, []); // useEffect dependency array is empty, indicating it should run only once on component mount
 
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>

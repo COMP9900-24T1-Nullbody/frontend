@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
-
 import NavBar from "../components/NavBar";
 import CollapseCompareSiderMenu from "../components/CollapseCompareSideMenu";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
-
 import CompareTable from "../components/Views/CompareTable";
-
 import { Theme } from "../theme/main";
-
 import Image01 from "../img/1.jpg";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Assuming it's `jwt-decode` library
 import { useNavigate } from "react-router-dom";
-
 import config from "../config.json";
 import FinalScore from "../components/FinalCompareScore";
 
 export default function MultiConpanyView() {
+  // State for selected framework and companies, and data received from API
   const [selectedFramework, setSelectedFramework] = useState("");
   const [selectedCompany_1, setSelectedCompany1] = useState("");
   const [selectedCompany_2, setSelectedCompany2] = useState("");
-
   const [data, setData] = useState([]);
 
+  // Fetch data from backend when selections change
   useEffect(() => {
     if (selectedCompany_1 && selectedCompany_2 && selectedFramework) {
       const request = {
@@ -51,6 +47,7 @@ export default function MultiConpanyView() {
     }
   }, [selectedCompany_1, selectedCompany_2, selectedFramework]);
 
+  // State for theme color and image source
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("theme-color")
   );
@@ -62,16 +59,16 @@ export default function MultiConpanyView() {
 
   const navigate = useNavigate();
 
-  // 添加解密逻辑
+  // Decryption logic for avatar image
   useEffect(() => {
-    const token = localStorage.getItem("token"); // 从localStorage获取token
+    const token = localStorage.getItem("token"); // Get token from localStorage
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // 使用jwt-decode库解密token
+        const decodedToken = jwtDecode(token); // Decode token using jwt-decode library
         setImageSrc(decodedToken.avatar_url);
       } catch (error) {
         alert("Error: Token may be expired, Please Re-Login.");
-        console.error("Token Decode Error：", error);
+        console.error("Token Decode Error:", error);
         localStorage.removeItem("token");
         navigate("/login");
       }
@@ -79,7 +76,7 @@ export default function MultiConpanyView() {
       alert("Error: Token not found, Please Re-Login.");
       navigate("/login");
     }
-  }, []); // useEffect的依赖项为空数组，表示只在组件挂载时执行一次
+  }, []); // useEffect with an empty dependency array runs once on component mount
 
   return (
     <ThemeProvider theme={createTheme(Theme(themeColor))}>
