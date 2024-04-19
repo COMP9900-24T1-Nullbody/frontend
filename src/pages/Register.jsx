@@ -665,15 +665,11 @@ function validatePasswordUpper(password) {
 }
 
 function validatePasswordSpecial(password) {
-  // At least one special character, using a custom list of special characters here
-  const specialChars = "!@#$%^&*()_+{}[]:\";'<>?,./|\\`~=-";
-  const specialRegex = new RegExp(`[${specialChars}]`);
-  if (!specialRegex.test(password)) {
-    return false;
-  }
-
-  return true;
+  // At least one special character
+  const specialRegex = /[!@#$%^&*()_+{}[\]:";'<>?,./|\\`~=-]/;
+  return specialRegex.test(password);
 }
+
 
 // Validate Confirm Password
 function validateConfirmPassword(password, confirmPassword) {
